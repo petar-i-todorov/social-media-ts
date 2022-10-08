@@ -1,0 +1,28 @@
+.btn {
+  width: 364px;
+  height: 50px;
+  border: 1px solid lightgray;
+  font-size: 17px;
+  padding: 14px 16px;
+  border-radius: 3px;
+  color: white;
+  font-weight: bolder;
+  transition: all 1s ease-in-out;
+  &:hover {
+    cursor: pointer;
+  }
+}
+
+.blue {
+  background-color: #1877f2;
+  &:hover {
+    background-color: #8aabd6;
+  }
+}
+
+.green {
+  background-color: rgb(83, 159, 83);
+  &:hover {
+    background-color: rgb(132, 184, 132);
+  }
+}
