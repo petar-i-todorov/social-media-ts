@@ -1,11 +1,11 @@
 import React from "react";
-import Login from "../../../components/LoginForm/LoginForm";
+import LoginForm from "../../../components/AuthForms/LoginForm";
 import styles from "./Login.module.scss";
 
 const LoginPage = () => {
   return (
     <div className={styles.login}>
-      <Login />
+      <LoginForm />
     </div>
   );
 };

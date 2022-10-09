@@ -1,9 +1,19 @@
 .input {
   width: 364px;
-  height: 20px;
+  height: 50px;
   border: 1px solid lightgray;
   font-size: 17px;
-  padding: 14px 16px;
+  padding: 10px;
   border-radius: 3px;
   box-shadow: 0 2px 4px rgb(0 0 0 / 0.1);
+  &:focus {
+    background-color: rgba(149, 214, 235, 0.3);
+  }
+  a {
+    color: white;
+  }
+}
+
+.split {
+  width: 47.5%;
 }

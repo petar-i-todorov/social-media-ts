@@ -1,6 +1,6 @@
-import Login from "./components/LoginForm/LoginForm";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import LoginPage from "./pages/Auth/Login/Login";
+import SignupPage from "./pages/Auth/Signup/Signup";
 import styles from "./scss/App.module.scss";
 
 function App() {
@@ -8,7 +8,8 @@ function App() {
     <BrowserRouter>
       <div className={styles.app}>
         <Routes>
-          <Route path="/" element={<LoginPage />} />
+          <Route path="login" element={<LoginPage />} />
+          <Route path="signup" element={<SignupPage />} />
         </Routes>
       </div>
     </BrowserRouter>
