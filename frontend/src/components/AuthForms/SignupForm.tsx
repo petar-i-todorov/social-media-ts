@@ -29,7 +29,7 @@ const SignupForm = () => {
               password: password,
             }),
           });
-          navigate("..", { relative: "path" });
+          navigate("../login", { relative: "path" });
         } catch (err) {
           console.log(err);
         }
