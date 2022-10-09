@@ -12,7 +12,6 @@ const LoginForm = () => {
       <Input type="password" placeholder="Password" />
       <Link to="reset">Forgot password?</Link>
       <Button color="blue">Log In</Button>
-      <hr />
       <Link to="../signup">
         <Button color="green">Sign up</Button>
       </Link>
