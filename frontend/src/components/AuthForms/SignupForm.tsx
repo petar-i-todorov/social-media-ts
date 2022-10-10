@@ -15,6 +15,7 @@ const SignupForm = () => {
   const [lastNameError, setLastNameError] = useState("");
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
+  const [confirmPasswordError, setConfirmPasswordError] = useState("");
   const navigate = useNavigate();
   return (
     <form
@@ -48,6 +49,8 @@ const SignupForm = () => {
             const firstNameValueRef = target.value;
             if (firstNameValueRef.length > 0) {
               setFirstNameError("");
+            } else {
+              setFirstNameError("What's your first name?");
             }
           }}
           type="text"
@@ -68,6 +71,8 @@ const SignupForm = () => {
             const lastNameValueRef = target.value;
             if (lastNameValueRef.length > 0) {
               setLastNameError("");
+            } else {
+              setLastNameError("What's your last name?");
             }
           }}
           type="text"
@@ -86,6 +91,18 @@ const SignupForm = () => {
         onChange={(event) => {
           const target = event.target as HTMLInputElement;
           setEmail(target.value);
+          const emailRef = target.value;
+          if (
+            String(emailRef)
+              .toLowerCase()
+              .match(
+                /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+              )
+          ) {
+            setEmailError("");
+          } else {
+            setEmailError("Please, enter a valid email.");
+          }
         }}
         type="email"
         placeholder="Email"
@@ -107,23 +124,44 @@ const SignupForm = () => {
         onChange={(event) => {
           const target = event.target as HTMLInputElement;
           setPassword(target.value);
+          if (target.value.length >= 10) {
+            setPasswordError("");
+          } else {
+            setPasswordError(
+              "Please, enter a combination of numbers and symbols."
+            );
+          }
         }}
         type="password"
         placeholder="Password"
         value={password}
         onBlur={() => {
-          if (password.length) {
+          if (password.length < 10) {
             setPasswordError(
               "Please, enter a combination of numbers and symbols."
             );
           }
         }}
       />
-      <Input type="password" placeholder="Confirm password" />
+      <Input
+        onChange={(event) => {
+          const target = event.target as HTMLInputElement;
+          setConfirmPassword(target.value);
+          if (target.value === password) {
+            setConfirmPasswordError("");
+          } else {
+            setConfirmPasswordError("Passwords don't match.");
+          }
+        }}
+        type="password"
+        placeholder="Confirm password"
+        value={confirmPassword}
+        valid={!confirmPasswordError}
+      />
       <Button color="green" type="submit">
         Sign up
       </Button>
-      <Link to="../login">
+      <Link to="../login" relative="path">
         <Button color="blue">Log in</Button>
       </Link>
     </form>

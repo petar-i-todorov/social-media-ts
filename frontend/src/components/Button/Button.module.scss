@@ -18,9 +18,17 @@
 .blue {
   background-color: #1877f2;
   box-shadow: 0 5px 0 blue;
+  border: 1px solid darkblue;
+  &:active {
+    box-shadow: 0 2.5px 0 blue;
+  }
 }
 
 .green {
   background-color: rgb(83, 159, 83);
   box-shadow: 0 5px 0 green;
+  border: 1px solid darkgreen;
+  &:active {
+    box-shadow: 0 2.5px 0 green;
+  }
 }

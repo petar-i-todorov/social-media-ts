@@ -30,6 +30,7 @@ const LoginForm = () => {
         }}
         type="email"
         placeholder="Email"
+        valid
       />
       <Input
         onChange={(e) => {
@@ -38,10 +39,13 @@ const LoginForm = () => {
         }}
         type="password"
         placeholder="Password"
+        valid
       />
-      <Link to="reset">Forgot password?</Link>
+      <Link to="../reset" relative="path">
+        Forgot password?
+      </Link>
       <Button color="blue">Log In</Button>
-      <Link to="../signup">
+      <Link to="../signup" relative="path">
         <Button color="green">Sign up</Button>
       </Link>
     </form>
