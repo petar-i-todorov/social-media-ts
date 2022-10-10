@@ -7,13 +7,14 @@
   border-radius: 3px;
   box-shadow: 0 2px 4px rgb(0 0 0 / 0.1);
   &:focus {
-    background-color: rgba(149, 214, 235, 0.3);
-  }
-  a {
-    color: white;
+    outline: none;
   }
 }
 
 .split {
   width: 47.5%;
+}
+
+.invalid {
+  border: 1px solid red;
 }

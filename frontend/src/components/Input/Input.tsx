@@ -7,8 +7,12 @@ const Input: React.FC<{
   split?: boolean;
   onChange?: (e: ChangeEvent) => void;
   value?: string;
-}> = ({ type, placeholder, split, onChange, value }) => {
-  const css = split ? `${styles.input} ${styles.split}` : styles.input;
+  onBlur?: () => void;
+  valid?: boolean;
+}> = ({ type, placeholder, split, onChange, value, onBlur, valid }) => {
+  let css = split ? `${styles.input} ${styles.split}` : styles.input;
+  css = !valid ? `${css} ${styles.invalid}` : css;
+  console.log(css);
   return (
     <input
       value={value}
@@ -16,6 +20,7 @@ const Input: React.FC<{
       type={type}
       placeholder={placeholder}
       className={css}
+      onBlur={onBlur}
     />
   );
 };
