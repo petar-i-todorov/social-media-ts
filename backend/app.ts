@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 import dotenv from "dotenv";
 import authRouter from "./routes/auth";
 import cors from "cors";
+import { DB_USERNAME, DB_PASSWORD, DB_DEFAULT } from "./dev-vars";
 
 dotenv.config();
 
@@ -16,7 +17,7 @@ app.use("/auth", authRouter);
 
 mongoose
   .connect(
-    `mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@cluster0.ci3rhos.mongodb.net/${process.env.DB_DEFAULT}?retryWrites=true&w=majority`
+    `mongodb+srv://${DB_USERNAME}:${DB_PASSWORD}@cluster0.ci3rhos.mongodb.net/${DB_DEFAULT}?retryWrites=true&w=majority`
   )
   .then(() => {
     app.listen(process.env.PORT || 8080);

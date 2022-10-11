@@ -32,6 +32,7 @@ const SignupForm = () => {
               name: firstName + " " + lastName,
               email: email,
               password: password,
+              confirmPassword: confirmPassword,
             }),
           });
           navigate("../login", { relative: "path" });
