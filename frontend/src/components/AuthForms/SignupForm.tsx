@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Button from "../Button/Button";
 import Input from "../Input/Input";
+import Loader from "../Loader/Loader";
 import formStyles from "./AuthForm.module.scss";
 import styles from "./SignupForm.module.scss";
 
@@ -22,6 +23,7 @@ const SignupForm = () => {
   const [emailError, setEmailError] = useState(false);
   const [passwordError, setPasswordError] = useState(false);
   const [confirmPasswordError, setConfirmPasswordError] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   return (
     <form
@@ -53,6 +55,7 @@ const SignupForm = () => {
           setConfirmPasswordErrorMessage("Passwords don't match.");
           setConfirmPasswordError(true);
         } else {
+          setIsLoading(true);
           try {
             await fetch("http://localhost:8080/auth/signup", {
               method: "POST",
@@ -66,6 +69,7 @@ const SignupForm = () => {
                 confirmPassword: confirmPassword,
               }),
             });
+            setIsLoading(false);
             navigate("../login", { relative: "path" });
           } catch (err) {
             console.log(err);
@@ -227,9 +231,12 @@ const SignupForm = () => {
         valid={!confirmPasswordErrorMessage}
         errorPosition="right"
       />
-      <Button color="green" type="submit">
-        Sign up
-      </Button>
+      <div className={styles.buttonContainer}>
+        <Button color="green" type="submit">
+          Sign up
+        </Button>
+        {isLoading && <Loader />}
+      </div>
       <Link to="../login" relative="path">
         <Button color="blue">Log in →</Button>
       </Link>
