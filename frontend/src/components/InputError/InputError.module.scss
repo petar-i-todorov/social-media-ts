@@ -1,0 +1,38 @@
+.validationError {
+  background-color: red;
+  border-radius: 3px;
+  width: 300px;
+  position: absolute;
+  min-height: 100%;
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bolder;
+  font-family: "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande",
+    "Lucida Sans", Arial, sans-serif;
+}
+
+.right {
+  left: calc(100% + 15px);
+  &::before {
+    content: "";
+    border-style: solid;
+    border-width: 10px 15px 10px 0;
+    border-color: transparent red transparent transparent;
+    position: absolute;
+    left: -15px;
+  }
+}
+
+.left {
+  left: calc(-300px - 15px);
+  &::after {
+    content: "";
+    border-style: solid;
+    border-width: 10px 0px 10px 15px;
+    border-color: transparent transparent transparent red;
+    position: absolute;
+    right: -15px;
+  }
+}

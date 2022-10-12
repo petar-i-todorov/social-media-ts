@@ -43,6 +43,8 @@ const SignupForm = () => {
     >
       <div className={styles.splitContainer}>
         <Input
+          errorMessage={firstNameError}
+          errorPosition="left"
           valid={!firstNameError}
           onChange={(event) => {
             const target = event.target as HTMLInputElement;
@@ -65,6 +67,8 @@ const SignupForm = () => {
           }}
         />
         <Input
+          errorMessage={lastNameError}
+          errorPosition="right"
           valid={!lastNameError}
           onChange={(event) => {
             const target = event.target as HTMLInputElement;
@@ -88,6 +92,7 @@ const SignupForm = () => {
         />
       </div>
       <Input
+        errorMessage={emailError}
         valid={!emailError}
         onChange={(event) => {
           const target = event.target as HTMLInputElement;
@@ -119,8 +124,10 @@ const SignupForm = () => {
             setEmailError("Please, enter a valid email address.");
           }
         }}
+        errorPosition="right"
       />
       <Input
+        errorMessage={passwordError}
         valid={!passwordError}
         onChange={(event) => {
           const target = event.target as HTMLInputElement;
@@ -143,8 +150,10 @@ const SignupForm = () => {
             );
           }
         }}
+        errorPosition="right"
       />
       <Input
+        errorMessage={confirmPasswordError}
         onChange={(event) => {
           const target = event.target as HTMLInputElement;
           setConfirmPassword(target.value);
@@ -158,6 +167,7 @@ const SignupForm = () => {
         placeholder="Confirm password"
         value={confirmPassword}
         valid={!confirmPasswordError}
+        errorPosition="right"
       />
       <Button color="green" type="submit">
         Sign up

@@ -26,6 +26,10 @@ const LoginForm = () => {
           const resData = await response.json();
           localStorage.setItem("token", resData.token);
           localStorage.setItem("userId", resData.userId);
+          setTimeout(() => {
+            localStorage.removeItem("token");
+            localStorage.removeItem("userId");
+          }, 3600000);
           navigate("..", { relative: "path" });
         } else {
           //show error component
