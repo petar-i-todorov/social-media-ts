@@ -11,45 +11,47 @@ const SignupForm = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [firstNameError, setFirstNameError] = useState("");
-  const [lastNameError, setLastNameError] = useState("");
-  const [emailError, setEmailError] = useState("");
-  const [passwordError, setPasswordError] = useState("");
-  const [confirmPasswordError, setConfirmPasswordError] = useState("");
-  const [firstNameErrorMessage, setFirstNameErrorMessage] = useState(false);
-  const [lastNameErrorMessage, setLastNameErrorMessage] = useState(false);
-  const [emailErrorMessage, setEmailErrorMessage] = useState(false);
-  const [passwordErrorMessage, setPasswordErrorMessage] = useState(false);
+  const [firstNameErrorMessage, setFirstNameErrorMessage] = useState("");
+  const [lastNameErrorMessage, setLastNameErrorMessage] = useState("");
+  const [emailErrorMessage, setEmailErrorMessage] = useState("");
+  const [passwordErrorMessage, setPasswordErrorMessage] = useState("");
   const [confirmPasswordErrorMessage, setConfirmPasswordErrorMessage] =
-    useState(false);
+    useState("");
+  const [firstNameError, setFirstNameError] = useState(false);
+  const [lastNameError, setLastNameError] = useState(false);
+  const [emailError, setEmailError] = useState(false);
+  const [passwordError, setPasswordError] = useState(false);
+  const [confirmPasswordError, setConfirmPasswordError] = useState(false);
   const navigate = useNavigate();
   return (
     <form
+      noValidate
       className={formStyles.authForm + " " + styles.signup}
       onSubmit={async (event) => {
         event.preventDefault();
         if (firstName.length < 1) {
-          setFirstNameError("What's your first name?");
-          setFirstNameErrorMessage(true);
+          setFirstNameErrorMessage("What's your first name?");
+          setFirstNameError(true);
         } else if (lastName.length < 1) {
-          setLastNameError("What's your last name?");
-          setLastNameErrorMessage(true);
+          setLastNameErrorMessage("What's your last name?");
+          setLastNameError(true);
         } else if (
-          String(email)
+          !String(email)
             .toLowerCase()
             .match(
               /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
             )
         ) {
-          setEmailError("Please, enter a valid email address.");
-          setEmailErrorMessage(true);
+          setEmailErrorMessage("Please, enter a valid email address.");
+          setEmailError(true);
         } else if (password.length < 10) {
-          setPasswordError(
+          setPasswordErrorMessage(
             "Please, enter a valid combination of at least 10 symbols."
           );
+          setPasswordError(true);
         } else if (password !== confirmPassword) {
-          setConfirmPasswordError("Passwords don't match.");
-          setConfirmPasswordErrorMessage(true);
+          setConfirmPasswordErrorMessage("Passwords don't match.");
+          setConfirmPasswordError(true);
         } else {
           try {
             await fetch("http://localhost:8080/auth/signup", {
@@ -75,19 +77,22 @@ const SignupForm = () => {
       <hr />
       <div className={styles.splitContainer}>
         <Input
-          isError={firstNameErrorMessage}
-          setIsError={setFirstNameErrorMessage}
-          errorMessage={firstNameError}
+          isError={firstNameError}
+          setIsError={setFirstNameError}
+          errorMessage={firstNameErrorMessage}
           errorPosition="left"
-          valid={!firstNameError}
+          valid={!firstNameErrorMessage}
           onChange={(event) => {
             const target = event.target as HTMLInputElement;
             setFirstName(target.value);
             const firstNameValueRef = target.value;
             if (firstNameValueRef.length > 0) {
-              setFirstNameError("");
+              setFirstNameErrorMessage("");
+              if (firstNameError) {
+                setFirstNameError(false);
+              }
             } else {
-              setFirstNameError("What's your first name?");
+              setFirstNameErrorMessage("What's your first name?");
             }
           }}
           type="text"
@@ -96,24 +101,27 @@ const SignupForm = () => {
           value={firstName}
           onBlur={() => {
             if (firstName.length === 0) {
-              setFirstNameError("What's your first name?");
+              setFirstNameErrorMessage("What's your first name?");
             }
           }}
         />
         <Input
-          isError={lastNameErrorMessage}
-          setIsError={setLastNameErrorMessage}
-          errorMessage={lastNameError}
+          isError={lastNameError}
+          setIsError={setLastNameError}
+          errorMessage={lastNameErrorMessage}
           errorPosition="right"
-          valid={!lastNameError}
+          valid={!lastNameErrorMessage}
           onChange={(event) => {
             const target = event.target as HTMLInputElement;
             setLastName(target.value);
             const lastNameValueRef = target.value;
             if (lastNameValueRef.length > 0) {
-              setLastNameError("");
+              setLastNameErrorMessage("");
+              if (lastNameError) {
+                setLastNameError(false);
+              }
             } else {
-              setLastNameError("What's your last name?");
+              setLastNameErrorMessage("What's your last name?");
             }
           }}
           type="text"
@@ -122,30 +130,32 @@ const SignupForm = () => {
           value={lastName}
           onBlur={() => {
             if (lastName.length === 0) {
-              setLastNameError("What's your last name?");
+              setLastNameErrorMessage("What's your last name?");
             }
           }}
         />
       </div>
       <Input
-        isError={emailErrorMessage}
-        setIsError={setEmailErrorMessage}
-        errorMessage={emailError}
-        valid={!emailError}
+        isError={emailError}
+        setIsError={setEmailError}
+        errorMessage={emailErrorMessage}
+        valid={!emailErrorMessage}
         onChange={(event) => {
           const target = event.target as HTMLInputElement;
           setEmail(target.value);
-          const emailRef = target.value;
           if (
-            String(emailRef)
+            String(target.value)
               .toLowerCase()
               .match(
                 /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
               )
           ) {
-            setEmailError("");
+            setEmailErrorMessage("");
+            if (emailError) {
+              setEmailError(false);
+            }
           } else {
-            setEmailError("Please, enter a valid email.");
+            setEmailErrorMessage("Please, enter a valid email address.");
           }
         }}
         type="email"
@@ -159,23 +169,26 @@ const SignupForm = () => {
                 /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
               )
           ) {
-            setEmailError("Please, enter a valid email address.");
+            setEmailErrorMessage("Please, enter a valid email address.");
           }
         }}
         errorPosition="right"
       />
       <Input
-        isError={passwordErrorMessage}
-        setIsError={setPasswordErrorMessage}
-        errorMessage={passwordError}
-        valid={!passwordError}
+        isError={passwordError}
+        setIsError={setPasswordError}
+        errorMessage={passwordErrorMessage}
+        valid={!passwordErrorMessage}
         onChange={(event) => {
           const target = event.target as HTMLInputElement;
           setPassword(target.value);
           if (target.value.length >= 10) {
-            setPasswordError("");
+            setPasswordErrorMessage("");
+            if (passwordError) {
+              setPasswordError(false);
+            }
           } else {
-            setPasswordError(
+            setPasswordErrorMessage(
               "Please, enter a valid combination of at least 10 symbols."
             );
           }
@@ -185,7 +198,7 @@ const SignupForm = () => {
         value={password}
         onBlur={() => {
           if (password.length < 10) {
-            setPasswordError(
+            setPasswordErrorMessage(
               "Please, enter a valid combination of at least 10 symbols."
             );
           }
@@ -193,22 +206,25 @@ const SignupForm = () => {
         errorPosition="right"
       />
       <Input
-        isError={confirmPasswordErrorMessage}
-        setIsError={setConfirmPasswordErrorMessage}
-        errorMessage={confirmPasswordError}
+        isError={confirmPasswordError}
+        setIsError={setConfirmPasswordError}
+        errorMessage={confirmPasswordErrorMessage}
         onChange={(event) => {
           const target = event.target as HTMLInputElement;
           setConfirmPassword(target.value);
           if (target.value === password) {
-            setConfirmPasswordError("");
+            setConfirmPasswordErrorMessage("");
+            if (confirmPasswordError) {
+              setConfirmPasswordError(false);
+            }
           } else {
-            setConfirmPasswordError("Passwords don't match.");
+            setConfirmPasswordErrorMessage("Passwords don't match.");
           }
         }}
         type="password"
         placeholder="Confirm password"
         value={confirmPassword}
-        valid={!confirmPasswordError}
+        valid={!confirmPasswordErrorMessage}
         errorPosition="right"
       />
       <Button color="green" type="submit">
