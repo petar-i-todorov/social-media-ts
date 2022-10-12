@@ -60,7 +60,7 @@ const LoginForm = () => {
       </Link>
       <Button color="blue">Log In</Button>
       <Link to="../signup" relative="path">
-        <Button color="green">Sign up</Button>
+        <Button color="green">Sign up →</Button>
       </Link>
     </form>
   );

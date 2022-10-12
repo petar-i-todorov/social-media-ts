@@ -13,6 +13,8 @@ const Input: React.FC<{
   onBlur?: () => void;
   valid?: boolean;
   errorMessage?: string;
+  isError?: boolean;
+  setIsError?: (arg: boolean) => void;
 }> = ({
   type,
   placeholder,
@@ -23,8 +25,9 @@ const Input: React.FC<{
   valid,
   errorPosition,
   errorMessage,
+  isError,
+  setIsError,
 }) => {
-  const [isError, setIsError] = useState(false);
   return (
     <div
       className={
@@ -37,9 +40,13 @@ const Input: React.FC<{
         <span
           onClick={() => {
             if (isError) {
-              setIsError(false);
+              if (setIsError) {
+                setIsError(false);
+              }
             } else {
-              setIsError(true);
+              if (setIsError) {
+                setIsError(true);
+              }
             }
           }}
           className={split ? styles.warningSplit : styles.warning}
