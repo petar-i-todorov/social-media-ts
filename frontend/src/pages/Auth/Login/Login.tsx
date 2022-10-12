@@ -1,4 +1,3 @@
-import React from "react";
 import LoginForm from "../../../components/AuthForms/LoginForm";
 import styles from "./Login.module.scss";
 
