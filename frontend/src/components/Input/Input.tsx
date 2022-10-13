@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useState } from "react";
+import React, { ChangeEvent, useEffect, useState } from "react";
 import styles from "./Input.module.scss";
 import { RiErrorWarningLine } from "react-icons/ri";
 import InputError from "../InputError/InputError";
@@ -11,10 +11,10 @@ const Input: React.FC<{
   onChange: (e: ChangeEvent) => void;
   value?: string;
   onBlur?: () => void;
-  valid?: boolean;
   errorMessage?: string;
   isError?: boolean;
   setIsError?: (arg: boolean) => void;
+  setErrorMessage?: (arg: string) => void;
 }> = ({
   type,
   placeholder,
@@ -22,12 +22,26 @@ const Input: React.FC<{
   onChange,
   value,
   onBlur,
-  valid,
   errorPosition,
   errorMessage,
   isError,
   setIsError,
+  setErrorMessage,
 }) => {
+  const [isFocused, setIsFocused] = useState(false);
+  const [isValid, setIsValid] = useState(true);
+  useEffect(() => {
+    if (errorMessage) {
+      setIsValid(false);
+    }
+  }, [errorMessage]);
+  useEffect(() => {
+    if (isFocused && setIsError) {
+      setIsValid(true);
+    }
+  }, [isFocused]);
+  let style = !isValid ? `${styles.invalid} ${styles.input}` : styles.input;
+  style = isFocused ? `${style} ${styles.focused}` : style;
   return (
     <div
       className={
@@ -36,7 +50,7 @@ const Input: React.FC<{
           : styles.inputContainer
       }
     >
-      {!valid ? (
+      {!isValid ? (
         <span
           onClick={() => {
             if (isError) {
@@ -58,11 +72,33 @@ const Input: React.FC<{
       )}
       <input
         value={value}
-        onChange={onChange}
+        onChange={(event) => {
+          onChange(event);
+          if (isFocused) {
+            setIsValid(true);
+            if (setErrorMessage) {
+              setErrorMessage("");
+            }
+          }
+        }}
         type={type}
         placeholder={placeholder}
-        className={!valid ? `${styles.invalid} ${styles.input}` : styles.input}
-        onBlur={onBlur}
+        className={style}
+        onBlur={() => {
+          if (onBlur) {
+            onBlur();
+          }
+          setIsFocused(false);
+        }}
+        onFocus={() => {
+          setIsFocused(true);
+          if (setErrorMessage) {
+            setErrorMessage("");
+          }
+          if (setIsError) {
+            setIsError(false);
+          }
+        }}
       />
       {isError && (
         <InputError

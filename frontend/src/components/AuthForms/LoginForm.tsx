@@ -43,7 +43,6 @@ const LoginForm = () => {
         }}
         type="email"
         placeholder="Email"
-        valid
       />
       <Input
         onChange={(e) => {
@@ -52,7 +51,6 @@ const LoginForm = () => {
         }}
         type="password"
         placeholder="Password"
-        valid
       />
       <Link to="../reset" relative="path">
         Forgot password?

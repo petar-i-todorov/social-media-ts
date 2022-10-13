@@ -11,7 +11,8 @@
   font-size: 17px;
   padding: 10px;
   border-radius: 3px;
-  box-shadow: 0 2px 4px rgb(0 0 0 / 0.1);
+  border: none;
+  border-bottom: 3px solid lightgray;
   &:focus {
     outline: none;
   }
@@ -22,7 +23,7 @@
 }
 
 .invalid {
-  border: 1px solid red;
+  border-bottom: 3px solid red;
 }
 
 .warning {
@@ -35,4 +36,8 @@
   position: absolute;
   left: 85%;
   top: 34%;
+}
+
+.focused {
+  border-bottom: 2px solid lightblue;
 }

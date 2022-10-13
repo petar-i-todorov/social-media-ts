@@ -86,26 +86,16 @@ const SignupForm = () => {
       }}
     >
       <h1>Sign up</h1>
-      <hr />
       <div className={styles.splitContainer}>
         <Input
+          setErrorMessage={setFirstNameErrorMessage}
           isError={firstNameError}
           setIsError={setFirstNameError}
           errorMessage={firstNameErrorMessage}
           errorPosition="left"
-          valid={!firstNameErrorMessage}
           onChange={(event) => {
             const target = event.target as HTMLInputElement;
             setFirstName(target.value);
-            const firstNameValueRef = target.value;
-            if (firstNameValueRef.length > 0) {
-              setFirstNameErrorMessage("");
-              if (firstNameError) {
-                setFirstNameError(false);
-              }
-            } else {
-              setFirstNameErrorMessage("What's your first name?");
-            }
           }}
           type="text"
           placeholder="First Name"
@@ -118,23 +108,14 @@ const SignupForm = () => {
           }}
         />
         <Input
+          setErrorMessage={setLastNameErrorMessage}
           isError={lastNameError}
           setIsError={setLastNameError}
           errorMessage={lastNameErrorMessage}
           errorPosition="right"
-          valid={!lastNameErrorMessage}
           onChange={(event) => {
             const target = event.target as HTMLInputElement;
             setLastName(target.value);
-            const lastNameValueRef = target.value;
-            if (lastNameValueRef.length > 0) {
-              setLastNameErrorMessage("");
-              if (lastNameError) {
-                setLastNameError(false);
-              }
-            } else {
-              setLastNameErrorMessage("What's your last name?");
-            }
           }}
           type="text"
           placeholder="Last Name"
@@ -148,27 +129,13 @@ const SignupForm = () => {
         />
       </div>
       <Input
+        setErrorMessage={setEmailErrorMessage}
         isError={emailError}
         setIsError={setEmailError}
         errorMessage={emailErrorMessage}
-        valid={!emailErrorMessage}
         onChange={(event) => {
           const target = event.target as HTMLInputElement;
           setEmail(target.value);
-          if (
-            String(target.value)
-              .toLowerCase()
-              .match(
-                /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-              )
-          ) {
-            setEmailErrorMessage("");
-            if (emailError) {
-              setEmailError(false);
-            }
-          } else {
-            setEmailErrorMessage("Please, enter a valid email address.");
-          }
         }}
         type="email"
         placeholder="Email"
@@ -187,23 +154,13 @@ const SignupForm = () => {
         errorPosition="right"
       />
       <Input
+        setErrorMessage={setPasswordErrorMessage}
         isError={passwordError}
         setIsError={setPasswordError}
         errorMessage={passwordErrorMessage}
-        valid={!passwordErrorMessage}
         onChange={(event) => {
           const target = event.target as HTMLInputElement;
           setPassword(target.value);
-          if (target.value.length >= 10) {
-            setPasswordErrorMessage("");
-            if (passwordError) {
-              setPasswordError(false);
-            }
-          } else {
-            setPasswordErrorMessage(
-              "Please, enter a valid combination of at least 10 symbols."
-            );
-          }
         }}
         type="password"
         placeholder="Password"
@@ -218,26 +175,23 @@ const SignupForm = () => {
         errorPosition="right"
       />
       <Input
+        setErrorMessage={setConfirmPasswordErrorMessage}
         isError={confirmPasswordError}
         setIsError={setConfirmPasswordError}
         errorMessage={confirmPasswordErrorMessage}
         onChange={(event) => {
           const target = event.target as HTMLInputElement;
           setConfirmPassword(target.value);
-          if (target.value === password) {
-            setConfirmPasswordErrorMessage("");
-            if (confirmPasswordError) {
-              setConfirmPasswordError(false);
-            }
-          } else {
-            setConfirmPasswordErrorMessage("Passwords don't match.");
-          }
         }}
         type="password"
         placeholder="Confirm password"
         value={confirmPassword}
-        valid={!confirmPasswordErrorMessage}
         errorPosition="right"
+        onBlur={() => {
+          if (password !== confirmPassword) {
+            setConfirmPasswordErrorMessage("Passwords don't match.");
+          }
+        }}
       />
       {serverErrorMessage && <FormError>{serverErrorMessage}</FormError>}
       <div className={styles.buttonContainer}>
