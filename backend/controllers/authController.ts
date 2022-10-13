@@ -18,7 +18,9 @@ const authController = {
           password: hashedPassword,
         });
         await user.save();
-        res.status(201).json({ message: "User created successfully." });
+        setTimeout(() => {
+          res.status(201).json({ message: "User created successfully." });
+        }, 5000);
       } catch (err: any) {
         const error = new CustomError(500, err.message);
         throw error;

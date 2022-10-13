@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import BouncingDotsLoader from "../BouncingDotsLoader/BouncingDotsLoader";
 import Button from "../Button/Button";
 import FormError from "../FormError/FormError";
 import Input from "../Input/Input";
@@ -85,7 +86,7 @@ const SignupForm = () => {
         }
       }}
     >
-      <h1>Sign up</h1>
+      <h2>Sign up</h2>
       <div className={styles.splitContainer}>
         <Input
           setErrorMessage={setFirstNameErrorMessage}
@@ -196,9 +197,8 @@ const SignupForm = () => {
       {serverErrorMessage && <FormError>{serverErrorMessage}</FormError>}
       <div className={styles.buttonContainer}>
         <Button color="green" type="submit">
-          Sign up
+          {isLoading ? <BouncingDotsLoader text="Signing up" /> : "Sign up"}
         </Button>
-        {isLoading && <Loader />}
       </div>
       <Link to="../login" relative="path">
         <Button color="blue">Log in →</Button>
