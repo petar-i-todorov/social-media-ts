@@ -11,8 +11,11 @@
   width: 440px;
   display: flex;
   flex-direction: column;
-  gap: 13px;
+  gap: 30px;
   a {
     width: 100%;
+  }
+  h2 {
+    font-weight: 600;
   }
 }
