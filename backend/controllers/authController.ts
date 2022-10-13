@@ -25,7 +25,7 @@ const authController = {
       }
     } else {
       const err = new CustomError(422, "Email validation failed.");
-      throw err;
+      next(err);
     }
   },
   login: async (req: Request, res: Response, next: NextFunction) => {

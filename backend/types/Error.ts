@@ -1,8 +1,8 @@
 class CustomError extends Error {
-  error: number;
-  constructor(error: number, message: string) {
+  status: number;
+  constructor(status: number, message: string) {
     super(message);
-    this.error = error;
+    this.status = status;
   }
 }
 

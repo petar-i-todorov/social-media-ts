@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Button from "../Button/Button";
+import FormError from "../FormError/FormError";
 import Input from "../Input/Input";
 import Loader from "../Loader/Loader";
 import formStyles from "./AuthForm.module.scss";
@@ -24,11 +25,12 @@ const SignupForm = () => {
   const [passwordError, setPasswordError] = useState(false);
   const [confirmPasswordError, setConfirmPasswordError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [serverErrorMessage, setServerErrorMessage] = useState("");
   const navigate = useNavigate();
   return (
     <form
       noValidate
-      className={formStyles.authForm + " " + styles.signup}
+      className={formStyles.authForm}
       onSubmit={async (event) => {
         event.preventDefault();
         if (firstName.length < 1) {
@@ -57,7 +59,7 @@ const SignupForm = () => {
         } else {
           setIsLoading(true);
           try {
-            await fetch("http://localhost:8080/auth/signup", {
+            const response = await fetch("http://localhost:8080/auth/signup", {
               method: "POST",
               headers: {
                 "Content-Type": "application/json",
@@ -70,7 +72,13 @@ const SignupForm = () => {
               }),
             });
             setIsLoading(false);
-            navigate("../login", { relative: "path" });
+            if (response.status === (200 || 201)) {
+              navigate("../login", { relative: "path" });
+              console.log(response.status);
+            } else {
+              const resData = await response.json();
+              setServerErrorMessage(resData.message);
+            }
           } catch (err) {
             console.log(err);
           }
@@ -231,6 +239,7 @@ const SignupForm = () => {
         valid={!confirmPasswordErrorMessage}
         errorPosition="right"
       />
+      {serverErrorMessage && <FormError>{serverErrorMessage}</FormError>}
       <div className={styles.buttonContainer}>
         <Button color="green" type="submit">
           Sign up

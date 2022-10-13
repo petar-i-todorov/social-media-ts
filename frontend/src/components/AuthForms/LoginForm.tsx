@@ -2,8 +2,7 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Button from "../Button/Button";
 import Input from "../Input/Input";
-import styles from "./LoginForm.module.scss";
-import formStyles from "./AuthForm.module.scss";
+import styles from "./AuthForm.module.scss";
 
 const LoginForm = () => {
   const [email, setEmail] = useState("");
@@ -12,7 +11,7 @@ const LoginForm = () => {
 
   return (
     <form
-      className={styles.login + " " + formStyles.authForm}
+      className={styles.authForm}
       onSubmit={async (event) => {
         event.preventDefault();
         const response = await fetch("http://localhost:8080/auth/login", {
