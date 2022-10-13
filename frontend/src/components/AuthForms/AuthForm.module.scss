@@ -1,3 +1,20 @@
+.formsContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 50px;
+  @keyframes appearance {
+    from {
+      opacity: 0;
+      transform: translateY(50px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  animation: appearance 1s;
+}
+
 .authForm {
   text-align: center;
   background-color: white;
@@ -17,5 +34,13 @@
   }
   h2 {
     font-weight: 600;
+    &:hover {
+      cursor: default;
+    }
   }
+}
+
+.buttonContainer {
+  position: relative;
+  width: 100%;
 }

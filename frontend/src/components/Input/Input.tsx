@@ -33,6 +33,8 @@ const Input: React.FC<{
   useEffect(() => {
     if (errorMessage) {
       setIsValid(false);
+    } else {
+      setIsValid(true);
     }
   }, [errorMessage]);
   useEffect(() => {

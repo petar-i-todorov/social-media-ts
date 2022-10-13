@@ -1,25 +1,3 @@
-.formsContainer {
-  display: flex;
-  flex-direction: column;
-  gap: 50px;
-  @keyframes appearance {
-    from {
-      opacity: 0;
-      transform: translateY(50px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-  animation: appearance 1s;
-}
-
-.buttonContainer {
-  position: relative;
-  width: 100%;
-}
-
 .splitContainer {
   display: flex;
   justify-content: space-between;

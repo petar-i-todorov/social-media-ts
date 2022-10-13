@@ -28,7 +28,7 @@ const SignupForm = () => {
   const [serverErrorMessage, setServerErrorMessage] = useState("");
   const navigate = useNavigate();
   return (
-    <div className={styles.formsContainer}>
+    <div className={formStyles.formsContainer}>
       <form
         noValidate
         className={formStyles.authForm}
@@ -164,6 +164,10 @@ const SignupForm = () => {
           onChange={(event) => {
             const target = event.target as HTMLInputElement;
             setPassword(target.value);
+            if (target.value === confirmPassword) {
+              setConfirmPasswordError(false);
+              setConfirmPasswordErrorMessage("");
+            }
           }}
           type="password"
           placeholder="Password"
@@ -197,7 +201,7 @@ const SignupForm = () => {
           }}
         />
         {serverErrorMessage && <FormError>{serverErrorMessage}</FormError>}
-        <div className={styles.buttonContainer}>
+        <div className={formStyles.buttonContainer}>
           <Button color="green" type="submit">
             {isLoading ? <BouncingDotsLoader text="Signing up" /> : "Sign up"}
           </Button>
