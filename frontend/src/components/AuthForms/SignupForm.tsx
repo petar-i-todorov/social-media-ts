@@ -76,9 +76,8 @@ const SignupForm = () => {
                 }
               );
               setIsLoading(false);
-              if (response.status === (200 || 201)) {
+              if (response.status === 200 || response.status === 201) {
                 navigate("../login", { relative: "path" });
-                console.log(response.status);
               } else {
                 const resData = await response.json();
                 setServerErrorMessage(resData.message);

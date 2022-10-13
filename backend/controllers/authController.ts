@@ -20,14 +20,16 @@ const authController = {
         await user.save();
         setTimeout(() => {
           res.status(201).json({ message: "User created successfully." });
-        }, 5000);
+        }, 4000);
       } catch (err: any) {
         const error = new CustomError(500, err.message);
         throw error;
       }
     } else {
-      const err = new CustomError(422, "Email validation failed.");
-      next(err);
+      const err = new CustomError(422, errors.array()[0].msg);
+      setTimeout(() => {
+        next(err);
+      }, 4000);
     }
   },
   login: async (req: Request, res: Response, next: NextFunction) => {
