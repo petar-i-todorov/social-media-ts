@@ -5,17 +5,19 @@ import InputError from "../InputError/InputError";
 
 const Input: React.FC<{
   id: string;
-  errorPosition?: "left" | "right";
   type: string;
   placeholder: string;
   split?: boolean;
-  onChange: (e: ChangeEvent) => void;
   value?: string;
-  onBlur?: () => void;
+  errorPosition?: "left" | "right";
+  isValid?: boolean;
+  setIsValid?: (arg: boolean) => void;
   errorMessage?: string;
-  isError?: boolean;
-  setIsError?: (arg: boolean) => void;
   setErrorMessage?: (arg: string) => void;
+  isErrorMessageVisible?: boolean;
+  setIsErrorMessageVisible?: (arg: boolean) => void;
+  onChange: (e: ChangeEvent) => void;
+  onBlur?: () => void;
 }> = ({
   id,
   type,
@@ -26,22 +28,16 @@ const Input: React.FC<{
   onBlur,
   errorPosition,
   errorMessage,
-  isError,
-  setIsError,
+  isErrorMessageVisible,
+  setIsErrorMessageVisible,
   setErrorMessage,
+  isValid, //css invalid input responsible
+  setIsValid,
 }) => {
   const [isFocused, setIsFocused] = useState(false);
-  const [isValid, setIsValid] = useState(true);
-  const [isActive, setIsActive] = useState(false); //if focused or value !== ""
+  const [isActive, setIsActive] = useState(false); //if focused or value !== ""; placeholder animation responsible
   useEffect(() => {
-    if (errorMessage) {
-      setIsValid(false);
-    } else {
-      setIsValid(true);
-    }
-  }, [errorMessage]);
-  useEffect(() => {
-    if (isFocused && setIsError) {
+    if (isFocused && setIsValid) {
       setIsValid(true);
     }
   }, [isFocused]);
@@ -52,30 +48,22 @@ const Input: React.FC<{
       setIsActive(false);
     }
   }, [isFocused, value]);
-  let style = !isValid ? `${styles.invalid} ${styles.input}` : styles.input;
-  style = isFocused ? `${style} ${styles.focusedInput}` : style;
   return (
-    <div className={styles.containerColumn}>
-      <label htmlFor={id} className={isActive ? styles.focusedPlaceholder : ""}>
+    <div className={styles.mainContainer}>
+      <label htmlFor={id} className={isActive ? styles.active : ""}>
         {placeholder}
       </label>
-      <div
-        className={
-          split
-            ? `${styles.split} ${styles.inputContainer}`
-            : styles.inputContainer
-        }
-      >
+      <div className={styles.inputContainer}>
         {!isValid ? (
           <span
             onClick={() => {
-              if (isError) {
-                if (setIsError) {
-                  setIsError(false);
+              if (isErrorMessageVisible) {
+                if (setIsErrorMessageVisible) {
+                  setIsErrorMessageVisible(false);
                 }
               } else {
-                if (setIsError) {
-                  setIsError(true);
+                if (setIsErrorMessageVisible) {
+                  setIsErrorMessageVisible(true);
                 }
               }
             }}
@@ -96,14 +84,18 @@ const Input: React.FC<{
           onChange={(event) => {
             onChange(event);
             if (isFocused) {
-              setIsValid(true);
+              if (setIsValid) {
+                setIsValid(true);
+              }
               if (setErrorMessage) {
                 setErrorMessage("");
               }
             }
           }}
           type={type}
-          className={style}
+          className={`${styles.input} ${!isValid && styles.invalid} ${
+            isFocused && styles.focused
+          }`}
           onBlur={() => {
             if (onBlur) {
               onBlur();
@@ -113,14 +105,16 @@ const Input: React.FC<{
           onFocus={() => {
             setIsFocused(true);
             if (setErrorMessage) {
-              setErrorMessage("");
+              if (setIsValid) {
+                setIsValid(true);
+              }
             }
-            if (setIsError) {
-              setIsError(false);
+            if (setIsErrorMessageVisible) {
+              setIsErrorMessageVisible(false);
             }
           }}
         />
-        {isError && (
+        {isErrorMessageVisible && (
           <InputError
             error={errorMessage || ""}
             position={errorPosition || "left"}

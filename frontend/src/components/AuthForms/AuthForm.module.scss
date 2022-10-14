@@ -1,4 +1,4 @@
-.formsContainer {
+.mainContainer {
   display: flex;
   flex-direction: column;
   gap: 50px;
@@ -13,34 +13,36 @@
     }
   }
   animation: appearance 1s;
-}
 
-.authForm {
-  text-align: center;
-  background-color: white;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  align-items: center;
-  padding: 30px;
-  border-radius: 3px;
-  box-shadow: 0 2px 4px rgb(0 0 0 / 0.1);
-  width: 440px;
-  display: flex;
-  flex-direction: column;
-  gap: 30px;
-  a {
-    width: 100%;
-  }
-  h2 {
-    font-weight: 600;
-    &:hover {
-      cursor: default;
+  .authForm {
+    text-align: center;
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    padding: 30px;
+    border-radius: 3px;
+    box-shadow: 0 2px 4px rgb(0 0 0 / 0.1);
+    width: 440px;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+
+    a {
+      width: 100%;
+    }
+
+    h2 {
+      font-weight: 600;
+      &:hover {
+        cursor: default;
+      }
+    }
+
+    .button {
+      position: relative;
+      width: 100%;
     }
   }
-}
-
-.buttonContainer {
-  position: relative;
-  width: 100%;
 }

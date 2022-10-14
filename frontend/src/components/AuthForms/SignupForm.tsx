@@ -19,16 +19,23 @@ const SignupForm = () => {
   const [passwordErrorMessage, setPasswordErrorMessage] = useState("");
   const [confirmPasswordErrorMessage, setConfirmPasswordErrorMessage] =
     useState("");
-  const [firstNameError, setFirstNameError] = useState(false);
-  const [lastNameError, setLastNameError] = useState(false);
-  const [emailError, setEmailError] = useState(false);
-  const [passwordError, setPasswordError] = useState(false);
-  const [confirmPasswordError, setConfirmPasswordError] = useState(false);
+  const [isFirstNameErrorVisible, setIsFirstNameErrorVisible] = useState(false);
+  const [isLastNameErrorVisible, setIsLastNameErrorVisible] = useState(false);
+  const [isEmailErrorVisible, setIsEmailErrorVisible] = useState(false);
+  const [isPasswordErrorVisible, setIsPasswordErrorVisible] = useState(false);
+  const [isConfirmPasswordErrorVisible, setIsConfirmPasswordErrorVisible] =
+    useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [serverErrorMessage, setServerErrorMessage] = useState("");
+  const [firstNameIsValid, setFirstNameIsValid] = useState(true);
+  const [lastNameIsValid, setLastNameIsValid] = useState(true);
+  const [emailIsValid, setEmailIsValid] = useState(true);
+  const [passwordIsValid, setPasswordIsValid] = useState(true);
+  const [confirmPasswordIsValid, setConfirmPasswordIsValid] = useState(true);
+
   const navigate = useNavigate();
   return (
-    <div className={formStyles.formsContainer}>
+    <div className={formStyles.mainContainer}>
       <form
         noValidate
         className={formStyles.authForm}
@@ -36,10 +43,10 @@ const SignupForm = () => {
           event.preventDefault();
           if (firstName.length < 1) {
             setFirstNameErrorMessage("What's your first name?");
-            setFirstNameError(true);
+            setIsFirstNameErrorVisible(true);
           } else if (lastName.length < 1) {
             setLastNameErrorMessage("What's your last name?");
-            setLastNameError(true);
+            setIsLastNameErrorVisible(true);
           } else if (
             !String(email)
               .toLowerCase()
@@ -48,15 +55,15 @@ const SignupForm = () => {
               )
           ) {
             setEmailErrorMessage("Please, enter a valid email address.");
-            setEmailError(true);
+            setIsEmailErrorVisible(true);
           } else if (password.length < 10) {
             setPasswordErrorMessage(
               "Please, enter a valid combination of at least 10 symbols."
             );
-            setPasswordError(true);
+            setIsPasswordErrorVisible(true);
           } else if (password !== confirmPassword) {
             setConfirmPasswordErrorMessage("Passwords don't match.");
-            setConfirmPasswordError(true);
+            setIsConfirmPasswordErrorVisible(true);
           } else {
             setIsLoading(true);
             try {
@@ -91,10 +98,12 @@ const SignupForm = () => {
         <h2>Sign up</h2>
         <div className={styles.splitContainer}>
           <Input
+            isValid={firstNameIsValid}
+            setIsValid={setFirstNameIsValid}
             id="firstName"
             setErrorMessage={setFirstNameErrorMessage}
-            isError={firstNameError}
-            setIsError={setFirstNameError}
+            isErrorMessageVisible={isFirstNameErrorVisible}
+            setIsErrorMessageVisible={setIsFirstNameErrorVisible}
             errorMessage={firstNameErrorMessage}
             errorPosition="left"
             onChange={(event) => {
@@ -108,14 +117,17 @@ const SignupForm = () => {
             onBlur={() => {
               if (firstName.length === 0) {
                 setFirstNameErrorMessage("What's your first name?");
+                setFirstNameIsValid(false);
               }
             }}
           />
           <Input
+            isValid={lastNameIsValid}
+            setIsValid={setLastNameIsValid}
             id="lastName"
             setErrorMessage={setLastNameErrorMessage}
-            isError={lastNameError}
-            setIsError={setLastNameError}
+            isErrorMessageVisible={isLastNameErrorVisible}
+            setIsErrorMessageVisible={setIsLastNameErrorVisible}
             errorMessage={lastNameErrorMessage}
             errorPosition="right"
             onChange={(event) => {
@@ -129,15 +141,18 @@ const SignupForm = () => {
             onBlur={() => {
               if (lastName.length === 0) {
                 setLastNameErrorMessage("What's your last name?");
+                setLastNameIsValid(false);
               }
             }}
           />
         </div>
         <Input
+          isValid={emailIsValid}
+          setIsValid={setEmailIsValid}
           id="email"
           setErrorMessage={setEmailErrorMessage}
-          isError={emailError}
-          setIsError={setEmailError}
+          isErrorMessageVisible={isEmailErrorVisible}
+          setIsErrorMessageVisible={setIsEmailErrorVisible}
           errorMessage={emailErrorMessage}
           onChange={(event) => {
             const target = event.target as HTMLInputElement;
@@ -155,21 +170,24 @@ const SignupForm = () => {
                 )
             ) {
               setEmailErrorMessage("Please, enter a valid email address.");
+              setEmailIsValid(false);
             }
           }}
           errorPosition="right"
         />
         <Input
+          isValid={passwordIsValid}
+          setIsValid={setPasswordIsValid}
           id="password"
           setErrorMessage={setPasswordErrorMessage}
-          isError={passwordError}
-          setIsError={setPasswordError}
+          isErrorMessageVisible={isPasswordErrorVisible}
+          setIsErrorMessageVisible={setIsPasswordErrorVisible}
           errorMessage={passwordErrorMessage}
           onChange={(event) => {
             const target = event.target as HTMLInputElement;
             setPassword(target.value);
             if (target.value === confirmPassword) {
-              setConfirmPasswordError(false);
+              setIsConfirmPasswordErrorVisible(false);
               setConfirmPasswordErrorMessage("");
             }
           }}
@@ -181,15 +199,18 @@ const SignupForm = () => {
               setPasswordErrorMessage(
                 "Please, enter a valid combination of at least 10 symbols."
               );
+              setPasswordIsValid(false);
             }
           }}
           errorPosition="right"
         />
         <Input
+          isValid={confirmPasswordIsValid}
+          setIsValid={setConfirmPasswordIsValid}
           id="confirmPassword"
           setErrorMessage={setConfirmPasswordErrorMessage}
-          isError={confirmPasswordError}
-          setIsError={setConfirmPasswordError}
+          isErrorMessageVisible={isConfirmPasswordErrorVisible}
+          setIsErrorMessageVisible={setIsConfirmPasswordErrorVisible}
           errorMessage={confirmPasswordErrorMessage}
           onChange={(event) => {
             const target = event.target as HTMLInputElement;
@@ -202,11 +223,12 @@ const SignupForm = () => {
           onBlur={() => {
             if (password !== confirmPassword) {
               setConfirmPasswordErrorMessage("Passwords don't match.");
+              setConfirmPasswordIsValid(false);
             }
           }}
         />
         {serverErrorMessage && <FormError>{serverErrorMessage}</FormError>}
-        <div className={formStyles.buttonContainer}>
+        <div className={formStyles.button}>
           <Button color="green" type="submit">
             {isLoading ? <BouncingDotsLoader text="Signing up" /> : "Sign up"}
           </Button>

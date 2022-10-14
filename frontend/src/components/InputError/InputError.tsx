@@ -5,9 +5,16 @@ const InputError: React.FC<{ error: string; position: "left" | "right" }> = ({
   error,
   position,
 }) => {
-  const positionStyle = position === "left" ? styles.left : styles.right;
   return (
-    <div className={styles.validationError + " " + positionStyle}>{error}</div>
+    <div
+      className={
+        styles.validationError + " " + position === "left"
+          ? styles.left
+          : styles.right
+      }
+    >
+      {error}
+    </div>
   );
 };
 

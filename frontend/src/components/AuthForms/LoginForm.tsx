@@ -64,7 +64,7 @@ const LoginForm = () => {
         <Link to="../reset" relative="path">
           Forgot password?
         </Link>
-        <div className={styles.buttonContainer}>
+        <div className={styles.button}>
           <Button color="blue" type="submit">
             {isLoading ? <BouncingDotsLoader text="Loging in" /> : "Log in"}
           </Button>
