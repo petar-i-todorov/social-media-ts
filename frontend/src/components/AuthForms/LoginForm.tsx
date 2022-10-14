@@ -12,7 +12,7 @@ const LoginForm = () => {
   const navigate = useNavigate();
 
   return (
-    <div className={styles.formsContainer}>
+    <div className={styles.mainContainer}>
       <form
         className={styles.authForm}
         onSubmit={async (event) => {
