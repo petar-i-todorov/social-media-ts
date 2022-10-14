@@ -236,8 +236,20 @@ const SignupForm = () => {
       </form>
       <div className={formStyles.authForm}>
         <h2>Already have an account?</h2>
-        <Link to="../login" relative="path">
-          <Button color="blue">Log in</Button>
+        <Link
+          to="../login"
+          relative="path"
+          className={isLoading ? formStyles.disabledLink : ""}
+        >
+          <Button
+            color="blue"
+            onClick={() => {
+              if (isLoading) {
+              }
+            }}
+          >
+            Log in
+          </Button>
         </Link>
       </div>
     </div>

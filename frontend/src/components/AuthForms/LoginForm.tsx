@@ -51,6 +51,8 @@ const LoginForm = () => {
           }}
           type="email"
           placeholder="Email"
+          isValid
+          value={email}
         />
         <Input
           id="password"
@@ -60,6 +62,8 @@ const LoginForm = () => {
           }}
           type="password"
           placeholder="Password"
+          isValid
+          value={password}
         />
         <Link to="../reset" relative="path">
           Forgot password?
@@ -72,7 +76,11 @@ const LoginForm = () => {
       </form>
       <div className={styles.authForm}>
         <h2>Don't have an account?</h2>
-        <Link to="../signup" relative="path">
+        <Link
+          to="../signup"
+          relative="path"
+          className={isLoading ? styles.disabledLink : ""}
+        >
           <Button color="green">Sign up</Button>
         </Link>
       </div>

@@ -44,5 +44,9 @@
       position: relative;
       width: 100%;
     }
+
+    .disabledLink {
+      pointer-events: none;
+    }
   }
 }
