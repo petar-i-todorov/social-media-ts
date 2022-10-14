@@ -44,6 +44,7 @@ const LoginForm = () => {
       >
         <h2>Log in</h2>
         <Input
+          id="email"
           onChange={(e) => {
             const target = e.target as HTMLInputElement;
             setEmail(target.value);
@@ -52,6 +53,7 @@ const LoginForm = () => {
           placeholder="Email"
         />
         <Input
+          id="password"
           onChange={(e) => {
             const target = e.target as HTMLInputElement;
             setPassword(target.value);

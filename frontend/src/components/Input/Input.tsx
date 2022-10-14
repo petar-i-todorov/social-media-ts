@@ -4,6 +4,7 @@ import { RiErrorWarningLine } from "react-icons/ri";
 import InputError from "../InputError/InputError";
 
 const Input: React.FC<{
+  id: string;
   errorPosition?: "left" | "right";
   type: string;
   placeholder: string;
@@ -16,6 +17,7 @@ const Input: React.FC<{
   setIsError?: (arg: boolean) => void;
   setErrorMessage?: (arg: string) => void;
 }> = ({
+  id,
   type,
   placeholder,
   split,
@@ -30,6 +32,7 @@ const Input: React.FC<{
 }) => {
   const [isFocused, setIsFocused] = useState(false);
   const [isValid, setIsValid] = useState(true);
+  const [isActive, setIsActive] = useState(false); //if focused or value !== ""
   useEffect(() => {
     if (errorMessage) {
       setIsValid(false);
@@ -42,72 +45,88 @@ const Input: React.FC<{
       setIsValid(true);
     }
   }, [isFocused]);
+  useEffect(() => {
+    if (isFocused || value !== "") {
+      setIsActive(true);
+    } else {
+      setIsActive(false);
+    }
+  }, [isFocused, value]);
   let style = !isValid ? `${styles.invalid} ${styles.input}` : styles.input;
-  style = isFocused ? `${style} ${styles.focused}` : style;
+  style = isFocused ? `${style} ${styles.focusedInput}` : style;
   return (
-    <div
-      className={
-        split
-          ? `${styles.split} ${styles.inputContainer}`
-          : styles.inputContainer
-      }
-    >
-      {!isValid ? (
-        <span
-          onClick={() => {
-            if (isError) {
-              if (setIsError) {
-                setIsError(false);
+    <div className={styles.containerColumn}>
+      <label htmlFor={id} className={isActive ? styles.focusedPlaceholder : ""}>
+        {placeholder}
+      </label>
+      <div
+        className={
+          split
+            ? `${styles.split} ${styles.inputContainer}`
+            : styles.inputContainer
+        }
+      >
+        {!isValid ? (
+          <span
+            onClick={() => {
+              if (isError) {
+                if (setIsError) {
+                  setIsError(false);
+                }
+              } else {
+                if (setIsError) {
+                  setIsError(true);
+                }
               }
-            } else {
-              if (setIsError) {
-                setIsError(true);
+            }}
+            className={
+              split
+                ? styles.warningIconSplitInput
+                : styles.warningIconDefaultInput
+            }
+          >
+            <RiErrorWarningLine color="red" />
+          </span>
+        ) : (
+          ""
+        )}
+        <input
+          id={id}
+          value={value}
+          onChange={(event) => {
+            onChange(event);
+            if (isFocused) {
+              setIsValid(true);
+              if (setErrorMessage) {
+                setErrorMessage("");
               }
             }
           }}
-          className={split ? styles.warningSplit : styles.warning}
-        >
-          <RiErrorWarningLine color="red" />
-        </span>
-      ) : (
-        ""
-      )}
-      <input
-        value={value}
-        onChange={(event) => {
-          onChange(event);
-          if (isFocused) {
-            setIsValid(true);
+          type={type}
+          className={style}
+          onBlur={() => {
+            if (onBlur) {
+              onBlur();
+            }
+            setIsFocused(false);
+          }}
+          onFocus={() => {
+            setIsFocused(true);
             if (setErrorMessage) {
               setErrorMessage("");
             }
-          }
-        }}
-        type={type}
-        placeholder={placeholder}
-        className={style}
-        onBlur={() => {
-          if (onBlur) {
-            onBlur();
-          }
-          setIsFocused(false);
-        }}
-        onFocus={() => {
-          setIsFocused(true);
-          if (setErrorMessage) {
-            setErrorMessage("");
-          }
-          if (setIsError) {
-            setIsError(false);
-          }
-        }}
-      />
-      {isError && (
-        <InputError
-          error={errorMessage || ""}
-          position={errorPosition || "left"}
-        ></InputError>
-      )}
+            if (setIsError) {
+              setIsError(false);
+            }
+          }}
+        />
+        {isError && (
+          <InputError
+            error={errorMessage || ""}
+            position={errorPosition || "left"}
+          ></InputError>
+        )}
+      </div>
     </div>
   );
 };

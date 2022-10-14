@@ -2,55 +2,55 @@
   display: flex;
   justify-content: center;
   align-items: center;
-}
 
-.dot1 {
-  @keyframes dot1-bounce {
-    from {
-      transform: translateY(0);
+  .dot1 {
+    @keyframes dot1-bounce {
+      from {
+        transform: translateY(0);
+      }
+      50% {
+        transform: translateY(-1px);
+      }
+      to {
+        transform: translateY(-2px);
+        opacity: 0.5;
+      }
     }
-    50% {
-      transform: translateY(-1px);
-    }
-    to {
-      transform: translateY(-2px);
-      opacity: 0.5;
-    }
+    margin-left: 2px;
+    animation: dot1-bounce 1s infinite;
   }
-  margin-left: 2px;
-  animation: dot1-bounce 1s infinite;
-}
 
-.dot2 {
-  @keyframes dot2-bounce {
-    from {
-      transform: translateY(0);
+  .dot2 {
+    @keyframes dot2-bounce {
+      from {
+        transform: translateY(0);
+      }
+      50% {
+        transform: translateY(-1px);
+      }
+      to {
+        transform: translateY(-2px);
+        opacity: 0.5;
+      }
     }
-    50% {
-      transform: translateY(-1px);
-    }
-    to {
-      transform: translateY(-2px);
-      opacity: 0.5;
-    }
+    animation: dot2-bounce 1s infinite;
+    animation-delay: 0.2s;
   }
-  animation: dot2-bounce 1s infinite;
-  animation-delay: 0.2s;
-}
 
-.dot3 {
-  @keyframes dot3-bounce {
-    from {
-      transform: translateY(0);
+  .dot3 {
+    @keyframes dot3-bounce {
+      from {
+        transform: translateY(0);
+      }
+      50% {
+        transform: translateY(-1px);
+      }
+      to {
+        transform: translateY(-2px);
+        opacity: 0.5;
+      }
     }
-    50% {
-      transform: translateY(-1px);
-    }
-    to {
-      transform: translateY(-2px);
-      opacity: 0.5;
-    }
+    animation: dot3-bounce 1s infinite;
+    animation-delay: 0.4s;
   }
-  animation: dot3-bounce 1s infinite;
-  animation-delay: 0.4s;
 }

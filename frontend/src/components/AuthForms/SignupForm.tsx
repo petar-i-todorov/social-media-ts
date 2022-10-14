@@ -91,6 +91,7 @@ const SignupForm = () => {
         <h2>Sign up</h2>
         <div className={styles.splitContainer}>
           <Input
+            id="firstName"
             setErrorMessage={setFirstNameErrorMessage}
             isError={firstNameError}
             setIsError={setFirstNameError}
@@ -111,6 +112,7 @@ const SignupForm = () => {
             }}
           />
           <Input
+            id="lastName"
             setErrorMessage={setLastNameErrorMessage}
             isError={lastNameError}
             setIsError={setLastNameError}
@@ -132,6 +134,7 @@ const SignupForm = () => {
           />
         </div>
         <Input
+          id="email"
           setErrorMessage={setEmailErrorMessage}
           isError={emailError}
           setIsError={setEmailError}
@@ -157,6 +160,7 @@ const SignupForm = () => {
           errorPosition="right"
         />
         <Input
+          id="password"
           setErrorMessage={setPasswordErrorMessage}
           isError={passwordError}
           setIsError={setPasswordError}
@@ -182,6 +186,7 @@ const SignupForm = () => {
           errorPosition="right"
         />
         <Input
+          id="confirmPassword"
           setErrorMessage={setConfirmPasswordErrorMessage}
           isError={confirmPasswordError}
           setIsError={setConfirmPasswordError}
