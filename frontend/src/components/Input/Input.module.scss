@@ -23,14 +23,14 @@
     width: 100%;
 
     .warningIconDefaultInput {
-      position: absolute;
+      position: absolute !important;
       left: 93%;
       top: 34%;
       z-index: 2;
     }
 
     .warningIconSplitInput {
-      position: absolute;
+      position: absolute !important;
       left: 85%;
       top: 34%;
       z-index: 2;
