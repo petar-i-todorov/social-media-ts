@@ -17,6 +17,51 @@ const transporter = createTransport({
 });
 
 const authController = {
+  setNewPassword: async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      let foundUser = await User.findOne({ resetToken: req.params.token });
+      if (!foundUser) {
+        const err = new CustomError(
+          404,
+          "User with such an email was not found."
+        );
+        throw err;
+      }
+      foundUser = await User.findOne({
+        resetToken: req.params.token,
+        resetTokenExpiresIn: { $gt: Date.now() },
+      });
+      if (!foundUser) {
+        const err = new CustomError(
+          422,
+          "Reset token has expired. Please, request a new one and try again."
+        );
+        throw err;
+      }
+      const hashedPassword = await bcrypt.hash(req.body.password, 12);
+      await User.updateOne(
+        {
+          resetToken: req.params.token,
+          resetTokenExpiresIn: { $gt: Date.now() },
+        },
+        { password: hashedPassword }
+      );
+      setTimeout(() => {
+        res.status(200).json({
+          message:
+            "Your password was successfully reset. You will be redirected in 5 seconds.",
+        });
+      }, 2000);
+    } catch (err) {
+      console.log(err);
+      if (err instanceof Error) {
+        const error = new CustomError(500, err.message);
+        next(error);
+      } else {
+        next(err);
+      }
+    }
+  },
   resetPassword: async (req: Request, res: Response, next: NextFunction) => {
     try {
       const foundUser = await User.findOne({ email: req.body.email });
@@ -32,7 +77,7 @@ const authController = {
           throw err;
         } else {
           const token = buffer.toString("hex");
-          await foundUser.updateOne(
+          await User.updateOne(
             { email: req.body.email },
             {
               resetToken: token,
@@ -128,7 +173,7 @@ const authController = {
       } else {
         const err = new CustomError(
           422,
-          "It seems like there is no password saved for this user. Please, contact our Customer Service."
+          "Something went wrong. Please, contact our Customer Service."
         );
         throw err;
       }

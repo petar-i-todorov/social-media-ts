@@ -13,7 +13,7 @@ const Input: React.FC<{
   isValid: boolean;
   setIsValid: (arg: boolean) => void;
   errorMessage: string;
-  setErrorMessage?: (arg: string) => void; //
+  setErrorMessage?: (arg: string) => void;
   isErrorMessageVisible: boolean;
   setIsErrorMessageVisible: (arg: boolean) => void;
   onChange: (e: ChangeEvent) => void;

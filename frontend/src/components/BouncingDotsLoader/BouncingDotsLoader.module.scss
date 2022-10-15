@@ -8,9 +8,6 @@
       from {
         transform: translateY(0);
       }
-      50% {
-        transform: translateY(-1px);
-      }
       to {
         transform: translateY(-2px);
         opacity: 0.5;
@@ -25,9 +22,6 @@
       from {
         transform: translateY(0);
       }
-      50% {
-        transform: translateY(-1px);
-      }
       to {
         transform: translateY(-2px);
         opacity: 0.5;
@@ -41,9 +35,6 @@
     @keyframes dot3-bounce {
       from {
         transform: translateY(0);
-      }
-      50% {
-        transform: translateY(-1px);
       }
       to {
         transform: translateY(-2px);
