@@ -4,9 +4,64 @@ import { validationResult } from "express-validator";
 import CustomError from "../types/Error";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import { JWT_SECRET } from "../dev-vars";
+import { HOTMAIL_PASSWORD, HOTMAIL_USER, JWT_SECRET } from "../dev-vars";
+import crypto from "crypto";
+import { createTransport } from "nodemailer";
+
+const transporter = createTransport({
+  service: "hotmail",
+  auth: {
+    user: HOTMAIL_USER,
+    pass: HOTMAIL_PASSWORD,
+  },
+});
 
 const authController = {
+  resetPassword: async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const foundUser = await User.findOne({ email: req.body.email });
+      if (!foundUser) {
+        const err = new CustomError(
+          404,
+          "User with such an email was not found."
+        );
+        throw err;
+      }
+      crypto.randomBytes(12, async (err, buffer) => {
+        if (err) {
+          throw err;
+        } else {
+          const token = buffer.toString("hex");
+          await foundUser.updateOne(
+            { email: req.body.email },
+            {
+              resetToken: token,
+              resetTokenExpiresIn: Date.now() + 3600000,
+            }
+          );
+          await transporter.sendMail({
+            to: req.body.email,
+            from: HOTMAIL_USER,
+            subject: "Reset password - social-media-ts",
+            html: `
+            <h2>Reset password</h2>
+            <br/>
+            <p>Did you lose your documents? Again? No problem, we're here to assist you receive new ones. Just go there: <a href="http://localhost:3000/reset/${token}">Reset your password</a></p>
+            <br/>
+            <hr/>
+            <br/>
+            <p>If you received this email by mistake and don't understand what's going on just forget it like a nightmare.</p>`,
+          });
+        }
+      });
+    } catch (err) {
+      if (err instanceof Error) {
+        const error = new CustomError(500, err.message);
+        next(error);
+      }
+      next(err);
+    }
+  },
   signup: async (req: Request, res: Response, next: NextFunction) => {
     const errors = validationResult(req);
     if (errors.isEmpty()) {

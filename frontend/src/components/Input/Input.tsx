@@ -8,9 +8,9 @@ const Input: React.FC<{
   type: string;
   placeholder: string;
   split?: boolean;
-  value?: string;
+  value: string;
   errorPosition?: "left" | "right";
-  isValid?: boolean;
+  isValid: boolean;
   setIsValid?: (arg: boolean) => void;
   errorMessage?: string;
   setErrorMessage?: (arg: string) => void;

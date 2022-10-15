@@ -65,7 +65,7 @@ const LoginForm = () => {
           isValid
           value={password}
         />
-        <Link to="../reset" relative="path">
+        <Link to="../reset-password" relative="path">
           Forgot password?
         </Link>
         <div className={styles.button}>
