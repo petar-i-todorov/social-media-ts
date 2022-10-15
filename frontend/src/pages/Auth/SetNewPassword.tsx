@@ -6,6 +6,7 @@ import FormMessage from "../../components/FormMessage/FormMessage";
 import Input from "../../components/Input/Input";
 import { isPassword } from "../../utils/validation";
 import styles from "./AuthPage.module.scss";
+import { BiArrowBack } from "react-icons/bi";
 
 const SetNewPasswordPage = () => {
   const [password, setPassword] = useState("");
@@ -25,39 +26,51 @@ const SetNewPasswordPage = () => {
           className={styles.authForm}
           onSubmit={async (event) => {
             event.preventDefault();
-            setIsLoading(true);
-            setIsServerError(false);
-            setIsServerSuccess(false);
-            try {
-              const response = await fetch(
-                `http://localhost:8080/auth/reset/${params.token}`,
-                {
-                  method: "POST",
-                  headers: { "Content-Type": "application/json" },
-                  body: JSON.stringify({ password: password }),
+            if (!isPassword(password)) {
+              setErrorMessage("Invalid password. Must be at least 10 symbols.");
+              setIsErrorMessageVisible(true);
+            } else {
+              setIsLoading(true);
+              setIsServerError(false);
+              setIsServerSuccess(false);
+              try {
+                const response = await fetch(
+                  `http://localhost:8080/auth/reset/${params.token}`,
+                  {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ password: password }),
+                  }
+                );
+                if (response.status === 200) {
+                  setIsServerSuccess(true);
+                  setTimeout(() => {
+                    navigate("../../login", { relative: "path" });
+                  }, 5000);
+                } else {
+                  setIsServerError(true);
                 }
-              );
-              if (response.status === 200) {
-                setIsServerSuccess(true);
-                setTimeout(() => {
-                  navigate("../../login", { relative: "path" });
-                }, 5000);
-              } else {
+                const resData = await response.json();
+                setIsLoading(false);
+                setResponseMessage(resData.message);
+              } catch (err: any) {
+                setIsLoading(false);
                 setIsServerError(true);
+                console.log(err.message);
+                setResponseMessage(
+                  "Something went wrong. Please try again later."
+                );
               }
-              const resData = await response.json();
-              setIsLoading(false);
-              setResponseMessage(resData.message);
-            } catch (err: any) {
-              setIsLoading(false);
-              setIsServerError(true);
-              console.log(err.message);
-              setResponseMessage(
-                "Something went wrong. Please try again later."
-              );
             }
           }}
         >
+          <BiArrowBack
+            size="30"
+            className={styles.back}
+            onClick={() => {
+              navigate("../../login", { relative: "path" });
+            }}
+          />
           <h2>Set a new password</h2>
           <Input
             id="password"
