@@ -1,8 +1,9 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { isEmail, isPassword } from "../../utils/validation";
 import BouncingDotsLoader from "../BouncingDotsLoader/BouncingDotsLoader";
 import Button from "../Button/Button";
-import FormError from "../FormError/FormError";
+import FormMessage from "../FormMessage/FormMessage";
 import Input from "../Input/Input";
 import formStyles from "./AuthForm.module.scss";
 import styles from "./SignupForm.module.scss";
@@ -47,16 +48,10 @@ const SignupForm = () => {
           } else if (lastName.length < 1) {
             setLastNameErrorMessage("What's your last name?");
             setIsLastNameErrorVisible(true);
-          } else if (
-            !String(email)
-              .toLowerCase()
-              .match(
-                /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-              )
-          ) {
+          } else if (isEmail(email)) {
             setEmailErrorMessage("Please, enter a valid email address.");
             setIsEmailErrorVisible(true);
-          } else if (password.length < 10) {
+          } else if (!isPassword(password)) {
             setPasswordErrorMessage(
               "Please, enter a valid combination of at least 10 symbols."
             );
@@ -162,13 +157,7 @@ const SignupForm = () => {
           placeholder="Email"
           value={email}
           onBlur={() => {
-            if (
-              !String(email)
-                .toLowerCase()
-                .match(
-                  /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-                )
-            ) {
+            if (isEmail(email)) {
               setEmailErrorMessage("Please, enter a valid email address.");
               setEmailIsValid(false);
             }
@@ -195,7 +184,7 @@ const SignupForm = () => {
           placeholder="Password"
           value={password}
           onBlur={() => {
-            if (password.length < 10) {
+            if (!isPassword(password)) {
               setPasswordErrorMessage(
                 "Please, enter a valid combination of at least 10 symbols."
               );
@@ -227,7 +216,9 @@ const SignupForm = () => {
             }
           }}
         />
-        {serverErrorMessage && <FormError>{serverErrorMessage}</FormError>}
+        {serverErrorMessage && (
+          <FormMessage color="red">{serverErrorMessage}</FormMessage>
+        )}
         <div className={formStyles.button}>
           <Button color="green" type="submit">
             {isLoading ? <BouncingDotsLoader text="Signing up" /> : "Sign up"}

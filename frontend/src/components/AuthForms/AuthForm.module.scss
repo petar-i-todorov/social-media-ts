@@ -43,6 +43,30 @@
     span {
       font-weight: 400;
       font-size: 20px;
+      position: relative;
+    }
+
+    .lines {
+      &::before {
+        content: "";
+        display: block;
+        width: 170px;
+        height: 2px;
+        background: lightgray;
+        position: absolute;
+        top: 14px;
+        right: 60px;
+      }
+      &::after {
+        content: "";
+        display: block;
+        width: 170px;
+        height: 2px;
+        background: lightgray;
+        position: absolute;
+        bottom: 10px;
+        left: 60px;
+      }
     }
 
     .button {

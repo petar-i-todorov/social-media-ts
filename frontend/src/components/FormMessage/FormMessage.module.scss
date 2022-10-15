@@ -1,11 +1,18 @@
-.formError {
+.formMessage {
   width: 100%;
-  background-color: red;
-  height: 40px;
+  padding: 10px;
   display: flex;
   justify-content: center;
   align-items: center;
   border-radius: 3px;
   text-shadow: 2px 2px 5px black;
   color: white;
+}
+
+.red {
+  background-color: rgb(223, 147, 147);
+}
+
+.green {
+  background-color: rgb(80, 203, 80);
 }

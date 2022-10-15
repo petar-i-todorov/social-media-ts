@@ -52,6 +52,10 @@ const authController = {
             <br/>
             <p>If you received this email by mistake and don't understand what's going on just forget it like a nightmare.</p>`,
           });
+          res.status(200).json({
+            message:
+              "Email was sent successfully. Please, don't forget to check your spam folder. It could be sent there by mistake.",
+          });
         }
       });
     } catch (err) {

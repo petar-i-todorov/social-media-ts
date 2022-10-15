@@ -9,15 +9,15 @@ const Input: React.FC<{
   placeholder: string;
   split?: boolean;
   value: string;
-  errorPosition?: "left" | "right";
+  errorPosition: "left" | "right";
   isValid: boolean;
-  setIsValid?: (arg: boolean) => void;
-  errorMessage?: string;
-  setErrorMessage?: (arg: string) => void;
-  isErrorMessageVisible?: boolean;
-  setIsErrorMessageVisible?: (arg: boolean) => void;
+  setIsValid: (arg: boolean) => void;
+  errorMessage: string;
+  setErrorMessage?: (arg: string) => void; //
+  isErrorMessageVisible: boolean;
+  setIsErrorMessageVisible: (arg: boolean) => void;
   onChange: (e: ChangeEvent) => void;
-  onBlur?: () => void;
+  onBlur: () => void;
 }> = ({
   id,
   type,

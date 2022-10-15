@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { isEmail, isPassword } from "../../utils/validation";
 import BouncingDotsLoader from "../BouncingDotsLoader/BouncingDotsLoader";
 import Button from "../Button/Button";
 import Input from "../Input/Input";
@@ -9,41 +10,61 @@ const LoginForm = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [isEmailValid, setIsEmailValid] = useState(true);
+  const [isPasswordValid, setIsPasswordValid] = useState(true);
+  const [emailErrorMessage, setEmailErrorMessage] = useState("");
+  const [passwordErrorMessage, setPasswordErrorMessage] = useState("");
+  const [isEmailErrorMessageVisible, setIsEmailErrorVisible] = useState(false);
+  const [isPasswordErrorMessageVisible, setIsPasswordErrorVisible] =
+    useState(false);
   const navigate = useNavigate();
-
   return (
     <div className={styles.mainContainer}>
       <form
         className={styles.authForm}
         onSubmit={async (event) => {
           event.preventDefault();
-          setIsLoading(true);
-          const response = await fetch("http://localhost:8080/auth/login", {
-            method: "POST",
-            body: JSON.stringify({ email: email, password: password }),
-            headers: {
-              "Content-Type": "application/json",
-            },
-          });
-          if (response.status === 200 || response.status === 201) {
-            const resData = await response.json();
-            localStorage.setItem("token", resData.token);
-            localStorage.setItem("userId", resData.userId);
-            setTimeout(() => {
-              localStorage.removeItem("token");
-              localStorage.removeItem("userId");
-            }, 3600000);
-            setTimeout(() => {
-              navigate("..", { relative: "path" });
-            }, 4000);
+          if (!isEmail(email)) {
+            setEmailErrorMessage("Invalid email address.");
+            setIsEmailErrorVisible(true);
+          } else if (!isPassword(password)) {
+            setPasswordErrorMessage(
+              "Invalid password. Must be at least 10 symbols."
+            );
+            setIsPasswordErrorVisible(true);
           } else {
-            //show error component
-            console.log("An error occured.");
+            setIsLoading(true);
+            const response = await fetch("http://localhost:8080/auth/login", {
+              method: "POST",
+              body: JSON.stringify({ email: email, password: password }),
+              headers: {
+                "Content-Type": "application/json",
+              },
+            });
+            if (response.status === 200 || response.status === 201) {
+              const resData = await response.json();
+              localStorage.setItem("token", resData.token);
+              localStorage.setItem("userId", resData.userId);
+              setTimeout(() => {
+                localStorage.removeItem("token");
+                localStorage.removeItem("userId");
+              }, 3600000);
+              setTimeout(() => {
+                navigate("..", { relative: "path" });
+              }, 4000);
+            } else {
+              //show error component
+              console.log("An error occured.");
+            }
           }
         }}
       >
         <h2>Log in</h2>
         <Input
+          errorPosition="right"
+          isErrorMessageVisible={isEmailErrorMessageVisible}
+          setIsErrorMessageVisible={setIsEmailErrorVisible}
+          errorMessage={emailErrorMessage}
           id="email"
           onChange={(e) => {
             const target = e.target as HTMLInputElement;
@@ -51,10 +72,21 @@ const LoginForm = () => {
           }}
           type="email"
           placeholder="Email"
-          isValid
+          isValid={isEmailValid}
+          setIsValid={setIsEmailValid}
           value={email}
+          onBlur={() => {
+            if (!isEmail(email)) {
+              setEmailErrorMessage("Invalid email address.");
+              setIsEmailValid(false);
+            }
+          }}
         />
         <Input
+          errorPosition="right"
+          isErrorMessageVisible={isPasswordErrorMessageVisible}
+          setIsErrorMessageVisible={setIsPasswordErrorVisible}
+          errorMessage={passwordErrorMessage}
           id="password"
           onChange={(e) => {
             const target = e.target as HTMLInputElement;
@@ -62,8 +94,17 @@ const LoginForm = () => {
           }}
           type="password"
           placeholder="Password"
-          isValid
+          isValid={isPasswordValid}
+          setIsValid={setIsPasswordValid}
           value={password}
+          onBlur={() => {
+            if (isPassword(password)) {
+              setPasswordErrorMessage(
+                "Invalid password. Must be at least 10 symbols."
+              );
+              setIsPasswordValid(false);
+            }
+          }}
         />
         <Link to="../reset-password" relative="path">
           Forgot password?
