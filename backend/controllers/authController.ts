@@ -19,6 +19,14 @@ const transporter = createTransport({
 const authController = {
   setNewPassword: async (req: Request, res: Response, next: NextFunction) => {
     try {
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        const error = new CustomError(
+          422,
+          "Invalid password. Must be at least 10 symbols."
+        );
+        throw error;
+      }
       let foundUser = await User.findOne({ resetToken: req.params.token });
       if (!foundUser) {
         const err = new CustomError(

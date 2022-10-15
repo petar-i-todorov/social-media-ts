@@ -45,6 +45,10 @@ router.post("/login", authController.login);
 
 router.post("/reset-password", authController.resetPassword);
 
-router.post("/reset/:token", authController.setNewPassword);
+router.post(
+  "/reset/:token",
+  body("password").isLength({ min: 10 }),
+  authController.setNewPassword
+);
 
 export default router;
