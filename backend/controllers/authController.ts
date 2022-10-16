@@ -60,14 +60,12 @@ const authController = {
             "Your password was successfully reset. You will be redirected in 5 seconds.",
         });
       }, 2000);
-    } catch (err) {
-      console.log(err);
-      if (err instanceof Error) {
+    } catch (err: any) {
+      if (!(err instanceof CustomError)) {
         const error = new CustomError(500, err.message);
         next(error);
-      } else {
-        next(err);
       }
+      next(err);
     }
   },
   resetPassword: async (req: Request, res: Response, next: NextFunction) => {
@@ -111,8 +109,8 @@ const authController = {
           });
         }
       });
-    } catch (err) {
-      if (err instanceof Error) {
+    } catch (err: any) {
+      if (!(err instanceof CustomError)) {
         const error = new CustomError(500, err.message);
         next(error);
       }
@@ -145,46 +143,54 @@ const authController = {
     }
   },
   login: async (req: Request, res: Response, next: NextFunction) => {
-    const foundUser = await User.findOne({ email: req.body.email });
-    if (!foundUser) {
-      const err = new CustomError(
-        404,
-        "User with such an email was not found."
-      );
-      throw err;
-    } else {
-      if (foundUser.password) {
-        const doesMatch = await bcrypt.compare(
-          req.body.password,
-          foundUser.password
+    try {
+      const foundUser = await User.findOne({ email: req.body.email });
+      if (!foundUser) {
+        const err = new CustomError(
+          404,
+          "User with such an email was not found."
         );
-        if (doesMatch) {
-          const token = jwt.sign(
-            {
-              email: foundUser.email,
-              _id: foundUser._id.toString(),
-            },
-            JWT_SECRET
+        throw err;
+      } else {
+        if (foundUser.password) {
+          const doesMatch = await bcrypt.compare(
+            req.body.password,
+            foundUser.password
           );
-          res.status(200).json({
-            token: token,
-            userId: foundUser._id.toString(),
-            message: "User logged in successfully.",
-          });
+          if (doesMatch) {
+            const token = jwt.sign(
+              {
+                email: foundUser.email,
+                _id: foundUser._id.toString(),
+              },
+              JWT_SECRET
+            );
+            res.status(200).json({
+              token: token,
+              userId: foundUser._id.toString(),
+              message: "User logged in successfully.",
+            });
+          } else {
+            const err = new CustomError(
+              422,
+              "Validation failed. Wrong password."
+            );
+            throw err;
+          }
         } else {
           const err = new CustomError(
             422,
-            "Validation failed. Wrong password."
+            "Something went wrong. Please, contact our Customer Service."
           );
           throw err;
         }
-      } else {
-        const err = new CustomError(
-          422,
-          "Something went wrong. Please, contact our Customer Service."
-        );
-        throw err;
       }
+    } catch (err: any) {
+      if (!(err instanceof CustomError)) {
+        const error = new CustomError(500, err.message);
+        next(error);
+      }
+      next(err);
     }
   },
 };

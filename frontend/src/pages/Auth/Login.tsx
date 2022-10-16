@@ -5,6 +5,7 @@ import { isEmail, isPassword } from "../../utils/validation";
 import BouncingDotsLoader from "../../components/BouncingDotsLoader/BouncingDotsLoader";
 import Button from "../../components/Button/Button";
 import Input from "../../components/Input/Input";
+import FormMessage from "../../components/FormMessage/FormMessage";
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
@@ -17,6 +18,8 @@ const LoginPage = () => {
   const [isEmailErrorMessageVisible, setIsEmailErrorVisible] = useState(false);
   const [isPasswordErrorMessageVisible, setIsPasswordErrorVisible] =
     useState(false);
+  const [isServerError, setIsServerError] = useState(false);
+  const [responseMessage, setResponseMessage] = useState("");
   const navigate = useNavigate();
   return (
     <div className={styles.authPage}>
@@ -25,6 +28,7 @@ const LoginPage = () => {
           className={styles.authForm}
           onSubmit={async (event) => {
             event.preventDefault();
+            setIsServerError(false);
             if (!isEmail(email)) {
               setEmailErrorMessage("Invalid email address.");
               setIsEmailErrorVisible(true);
@@ -42,8 +46,9 @@ const LoginPage = () => {
                   "Content-Type": "application/json",
                 },
               });
+              const resData = await response.json();
+              setIsLoading(false);
               if (response.status === 200 || response.status === 201) {
-                const resData = await response.json();
                 localStorage.setItem("token", resData.token);
                 localStorage.setItem("userId", resData.userId);
                 setTimeout(() => {
@@ -54,8 +59,8 @@ const LoginPage = () => {
                   navigate("..", { relative: "path" });
                 }, 4000);
               } else {
-                //show error component
-                console.log("An error occured.");
+                setIsServerError(true);
+                setResponseMessage(resData.message);
               }
             }
           }}
@@ -110,6 +115,9 @@ const LoginPage = () => {
           <Link to="../reset-password" relative="path">
             Forgot password?
           </Link>
+          {isServerError && (
+            <FormMessage color="red">{responseMessage}</FormMessage>
+          )}
           <div className={styles.button}>
             <Button color="blue" type="submit">
               {isLoading ? <BouncingDotsLoader text="Loging in" /> : "Log in"}

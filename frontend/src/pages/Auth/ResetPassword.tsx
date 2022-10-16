@@ -29,6 +29,8 @@ const ResetPasswordPage = () => {
               setIsEmailErrorMessageVisible(true);
             } else {
               setIsLoading(true);
+              setIsServerError(false);
+              setIsServerSuccess(false);
               const response = await fetch(
                 "http://localhost:8080/auth/reset-password",
                 {
@@ -90,7 +92,11 @@ const ResetPasswordPage = () => {
             {isLoading ? <BouncingDotsLoader text="Submitting" /> : "Submit"}
           </Button>
           <span className={styles.lines}>or</span>
-          <Link to="../login" relative="path">
+          <Link
+            to="../login"
+            relative="path"
+            className={isLoading ? styles.disabledLink : ""}
+          >
             <Button color="blue">Log in</Button>
           </Link>
         </form>

@@ -47,7 +47,7 @@ const SignupPage = () => {
             } else if (lastName.length < 1) {
               setLastNameErrorMessage("What's your last name?");
               setIsLastNameErrorVisible(true);
-            } else if (isEmail(email)) {
+            } else if (!isEmail(email)) {
               setEmailErrorMessage("Please, enter a valid email address.");
               setIsEmailErrorVisible(true);
             } else if (!isPassword(password)) {

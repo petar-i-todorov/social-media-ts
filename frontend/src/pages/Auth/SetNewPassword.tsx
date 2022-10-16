@@ -66,7 +66,7 @@ const SetNewPasswordPage = () => {
         >
           <BiArrowBack
             size="30"
-            className={styles.back}
+            className={styles.back + " " + (isLoading && styles.disabledLink)}
             onClick={() => {
               navigate("../../login", { relative: "path" });
             }}

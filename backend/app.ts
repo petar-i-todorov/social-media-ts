@@ -16,12 +16,30 @@ app.use(cors());
 
 app.use("/auth", authRouter);
 
+class Test {
+  test: string;
+  constructor(test: string) {
+    this.test = test;
+  }
+}
+
+class ExtendsTest extends Test {
+  test2: string;
+  constructor(test: string, test2: string) {
+    super(test);
+    this.test2 = test2;
+  }
+}
+
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {
   if (err instanceof CustomError) {
-    res.status(err.status).json({ message: err.message });
-  } else {
-    res.status(500).json({ message: err.message });
+    setTimeout(() => {
+      res.status(err.status).json({ message: err.message });
+    }, 2000);
   }
+  setTimeout(() => {
+    res.status(500).json({ message: err.message });
+  }, 2000);
 });
 
 mongoose
