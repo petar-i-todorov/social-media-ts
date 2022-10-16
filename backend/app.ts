@@ -32,13 +32,12 @@ class ExtendsTest extends Test {
 }
 
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {
-  if (err instanceof CustomError) {
-    setTimeout(() => {
-      res.status(err.status).json({ message: err.message });
-    }, 2000);
-  }
   setTimeout(() => {
-    res.status(500).json({ message: err.message });
+    if (err instanceof CustomError) {
+      res.status(err.status).json({ message: err.message });
+    } else {
+      res.status(500).json({ message: err.message });
+    }
   }, 2000);
 });
 

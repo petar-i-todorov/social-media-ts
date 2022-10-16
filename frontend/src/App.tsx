@@ -4,6 +4,7 @@ import LoginPage from "./pages/Auth/Login";
 import SignupPage from "./pages/Auth/Signup";
 import styles from "./scss/App.module.scss";
 import SetNewPasswordPage from "./pages/Auth/SetNewPassword";
+import Header from "./components/Header/Header";
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
           <Route path="signup" element={<SignupPage />} />
           <Route path="reset-password" element={<ResetPasswordPage />} />
           <Route path="reset/:token" element={<SetNewPasswordPage />} />
+          <Route path="" element={<Header />}></Route>
         </Routes>
       </div>
     </BrowserRouter>
