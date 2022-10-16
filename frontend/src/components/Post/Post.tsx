@@ -18,11 +18,11 @@ const Post: React.FC<{
   return (
     <div className={styles.post}>
       <div className={styles.voteContainer}>
-        <Button color="blue" className={styles.voteBtn}>
+        <Button color="green" className={styles.voteBtn}>
           +
         </Button>
         <span className={styles.votesQty}>{upvotes}</span>
-        <Button color="green" className={styles.voteBtn}>
+        <Button color="red" className={styles.voteBtn}>
           -
         </Button>
       </div>

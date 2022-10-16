@@ -3,6 +3,7 @@
   gap: 20px;
   box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
   padding: 20px;
+  outline: 1px solid lightgray;
 
   .postInfo {
     display: flex;
@@ -27,6 +28,7 @@
 
     .votesQty {
       font-size: 20px;
+      transform: translateY(2.5px);
     }
   }
 }

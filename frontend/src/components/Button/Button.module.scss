@@ -32,3 +32,12 @@
     box-shadow: 0 2.5px 0 green;
   }
 }
+
+.red {
+  background-color: rgba(255, 0, 0, 0.9);
+  box-shadow: 0 5px 0 rgba(139, 0, 0, 0.6);
+  border: 1px solid red;
+  &:active {
+    box-shadow: 0 2.5px 0 red;
+  }
+}
