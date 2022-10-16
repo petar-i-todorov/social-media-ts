@@ -6,12 +6,13 @@ const Button: React.FC<{
   children: string | JSX.Element;
   onClick?: MouseEventHandler;
   type?: "submit";
-}> = ({ children, color, type, onClick }) => {
+  className?: string;
+}> = ({ children, color, type, onClick, className }) => {
   const styleColor = color === "blue" ? styles.blue : styles.green;
   return (
     <button
       type={type}
-      className={styles.btn + " " + styleColor}
+      className={styles.btn + " " + styleColor + " " + className}
       onClick={onClick}
     >
       {children}

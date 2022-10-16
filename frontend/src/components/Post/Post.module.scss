@@ -1,0 +1,32 @@
+.post {
+  display: flex;
+  gap: 20px;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+
+  .postInfo {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  .voteContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+
+    .voteBtn {
+      height: 30px;
+      width: 30px;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .votesQty {
+      font-size: 20px;
+    }
+  }
+}

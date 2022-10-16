@@ -1,0 +1,22 @@
+.themeSwapper {
+  width: 50px;
+  height: 20px;
+  background-color: black;
+  border-radius: 10px;
+  transition: all 0.2s;
+  cursor: pointer;
+  .circle {
+    width: 20px;
+    height: 100%;
+    border-radius: 50%;
+    background-color: white;
+    transition: all 0.2s;
+  }
+  .darkCircle {
+    background-color: black;
+    transform: translateX(30px);
+  }
+}
+.whiteBackground {
+  background-color: white;
+}

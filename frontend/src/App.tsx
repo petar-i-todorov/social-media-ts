@@ -5,6 +5,7 @@ import SignupPage from "./pages/Auth/Signup";
 import styles from "./scss/App.module.scss";
 import SetNewPasswordPage from "./pages/Auth/SetNewPassword";
 import Header from "./components/Header/Header";
+import FeedPage from "./pages/Feed/Feed";
 
 function App() {
   return (
@@ -15,7 +16,9 @@ function App() {
           <Route path="signup" element={<SignupPage />} />
           <Route path="reset-password" element={<ResetPasswordPage />} />
           <Route path="reset/:token" element={<SetNewPasswordPage />} />
-          <Route path="" element={<Header />}></Route>
+          <Route path="" element={<Header />}>
+            <Route path="" element={<FeedPage />} />
+          </Route>
         </Routes>
       </div>
     </BrowserRouter>
