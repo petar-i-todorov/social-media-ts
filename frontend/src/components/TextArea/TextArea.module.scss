@@ -1,0 +1,53 @@
+.textAreaContainer {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  height: 150px;
+  align-items: flex-start;
+
+  .focused {
+    border: 2px solid lightblue !important;
+  }
+
+  .invalid {
+    border: 2px solid red !important;
+  }
+
+  .textareaError {
+    left: calc(100% - 15px);
+  }
+
+  .pseudoTextarea {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    border: 2px solid lightgray;
+
+    .textarea {
+      resize: none;
+      height: 100%;
+      width: 100%;
+      border: none;
+      font-size: 15px;
+      &:focus {
+        outline: none;
+      }
+    }
+
+    svg {
+      margin: 0 9px 3px 0;
+    }
+  }
+}
+
+.desc {
+  width: 100%;
+  resize: none;
+}
+
+.descLabel {
+  text-align: left;
+}

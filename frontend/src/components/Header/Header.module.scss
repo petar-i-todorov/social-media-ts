@@ -3,7 +3,7 @@
   height: 50px;
   display: flex;
   align-items: center;
-  background-color: rgb(48, 225, 225);
+  background-color: darkblue;
 
   .nav {
     display: flex;
@@ -13,7 +13,8 @@
     width: 80%;
     height: 100%;
     margin: 0 auto;
-    color: darkgreen;
+    color: white;
+    font-weight: bold;
 
     .searchContainer {
       width: 50%;

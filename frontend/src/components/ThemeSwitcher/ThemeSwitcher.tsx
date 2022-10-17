@@ -6,7 +6,7 @@ const ThemeSwapper = () => {
   return (
     <div
       className={
-        styles.themeSwapper + " " + (isDarkTheme && styles.whiteBackground)
+        styles.themeSwitcher + " " + (isDarkTheme && styles.whiteBackground)
       }
       onClick={() => {
         if (isDarkTheme) {

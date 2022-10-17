@@ -23,7 +23,7 @@ const SetNewPasswordPage = () => {
     <div className={styles.authPage}>
       <div className={styles.mainContainer}>
         <form
-          className={styles.authForm}
+          className={styles.form}
           onSubmit={async (event) => {
             event.preventDefault();
             if (!isPassword(password)) {

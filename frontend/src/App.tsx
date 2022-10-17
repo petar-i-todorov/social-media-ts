@@ -6,6 +6,7 @@ import styles from "./scss/App.module.scss";
 import SetNewPasswordPage from "./pages/Auth/SetNewPassword";
 import Header from "./components/Header/Header";
 import FeedPage from "./pages/Feed/Feed";
+import AddPost from "./components/CreatePost/CreatePost";
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
             <Route path="" element={<FeedPage />} />
           </Route>
         </Routes>
+        <AddPost></AddPost>
       </div>
     </BrowserRouter>
   );

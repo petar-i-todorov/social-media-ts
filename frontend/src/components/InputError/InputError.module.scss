@@ -3,7 +3,7 @@
   border-radius: 3px;
   width: 300px;
   position: absolute;
-  min-height: 100%;
+  max-height: 100%;
   padding: 10px;
   display: flex;
   align-items: center;
@@ -17,6 +17,7 @@
 
 .right {
   left: calc(100% + 15px);
+  bottom: 3px;
   &::before {
     content: "";
     border-style: solid;

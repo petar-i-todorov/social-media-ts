@@ -38,7 +38,7 @@ const SignupPage = () => {
       <div className={styles.mainContainer}>
         <form
           noValidate
-          className={styles.authForm}
+          className={styles.form}
           onSubmit={async (event) => {
             event.preventDefault();
             if (firstName.length < 1) {
@@ -224,7 +224,7 @@ const SignupPage = () => {
             </Button>
           </div>
         </form>
-        <div className={styles.authForm}>
+        <div className={styles.form}>
           <h2>Already have an account?</h2>
           <Link
             to="../login"

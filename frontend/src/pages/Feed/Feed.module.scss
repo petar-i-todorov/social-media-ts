@@ -15,4 +15,31 @@
   .addBtn {
     width: 20%;
   }
+
+  .sortDropdown {
+    background: none;
+    width: 20%;
+    height: 50px;
+    text-align: center;
+    background-color: #1877f2;
+    border: 1px solid darkblue;
+    font-weight: bolder;
+    color: white;
+    outline: none;
+    border: none;
+    font-size: 17px;
+    border-radius: 3px;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+
+    &::-ms-expand {
+      display: none;
+    }
+
+    option {
+      background-color: white;
+      color: black;
+    }
+  }
 }

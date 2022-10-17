@@ -9,7 +9,10 @@ const FeedPage = () => {
         <Button color="blue" className={styles.addBtn}>
           Add a post
         </Button>
-        <div>Sort</div>
+        <select id="sort" className={styles.sortDropdown}>
+          <option value="date">Most recent</option>
+          <option value="upvotes">Most upvoted</option>
+        </select>
       </menu>
       <Post
         title="This course is trash."

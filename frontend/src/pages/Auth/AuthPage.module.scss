@@ -23,7 +23,7 @@
     }
     animation: appearance 1s;
 
-    .authForm {
+    .form {
       text-align: center;
       background-color: white;
       display: flex;
@@ -60,6 +60,10 @@
         font-weight: 400;
         font-size: 20px;
         position: relative;
+      }
+
+      textarea {
+        resize: none;
       }
 
       .lines {

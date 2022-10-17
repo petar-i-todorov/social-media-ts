@@ -6,6 +6,7 @@ import BouncingDotsLoader from "../../components/BouncingDotsLoader/BouncingDots
 import Button from "../../components/Button/Button";
 import Input from "../../components/Input/Input";
 import FormMessage from "../../components/FormMessage/FormMessage";
+import formStyles from "../../scss/Form.module.scss";
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
@@ -23,9 +24,9 @@ const LoginPage = () => {
   const navigate = useNavigate();
   return (
     <div className={styles.authPage}>
-      <div className={styles.mainContainer}>
+      <div className={formStyles.mainContainer}>
         <form
-          className={styles.authForm}
+          className={formStyles.form}
           onSubmit={async (event) => {
             event.preventDefault();
             setIsServerError(false);
@@ -118,18 +119,18 @@ const LoginPage = () => {
           {isServerError && (
             <FormMessage color="red">{responseMessage}</FormMessage>
           )}
-          <div className={styles.button}>
+          <div className={formStyles.button}>
             <Button color="blue" type="submit">
               {isLoading ? <BouncingDotsLoader text="Loging in" /> : "Log in"}
             </Button>
           </div>
         </form>
-        <div className={styles.authForm}>
+        <div className={formStyles.form}>
           <h2>Don't have an account?</h2>
           <Link
             to="../signup"
             relative="path"
-            className={isLoading ? styles.disabledLink : ""}
+            className={isLoading ? formStyles.disabledLink : ""}
           >
             <Button color="green">Sign up</Button>
           </Link>
