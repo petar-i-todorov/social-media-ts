@@ -77,6 +77,13 @@ const TextArea: React.FC<{
             }
           }}
         />
+        {isErrorMessageVisible && (
+          <InputError
+            error={errorMessage}
+            position="right"
+            className={styles.textareaError}
+          ></InputError>
+        )}
         {!isValid && (
           <RiErrorWarningLine
             color="red"
@@ -95,13 +102,6 @@ const TextArea: React.FC<{
           />
         )}
       </div>
-      {isErrorMessageVisible && (
-        <InputError
-          error={errorMessage}
-          position="right"
-          className={styles.textareaError}
-        ></InputError>
-      )}
     </div>
   );
 };

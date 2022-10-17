@@ -44,20 +44,25 @@ const SignupPage = () => {
             if (firstName.length < 1) {
               setFirstNameErrorMessage("What's your first name?");
               setIsFirstNameErrorVisible(true);
+              setFirstNameIsValid(false);
             } else if (lastName.length < 1) {
               setLastNameErrorMessage("What's your last name?");
               setIsLastNameErrorVisible(true);
+              setLastNameIsValid(false);
             } else if (!isEmail(email)) {
               setEmailErrorMessage("Please, enter a valid email address.");
               setIsEmailErrorVisible(true);
+              setEmailIsValid(false);
             } else if (!isPassword(password)) {
               setPasswordErrorMessage(
                 "Please, enter a valid combination of at least 10 symbols."
               );
               setIsPasswordErrorVisible(true);
+              setPasswordIsValid(false);
             } else if (password !== confirmPassword) {
               setConfirmPasswordErrorMessage("Passwords don't match.");
               setIsConfirmPasswordErrorVisible(true);
+              setConfirmPasswordIsValid(false);
             } else {
               setIsLoading(true);
               try {

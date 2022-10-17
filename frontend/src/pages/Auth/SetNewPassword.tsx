@@ -29,6 +29,7 @@ const SetNewPasswordPage = () => {
             if (!isPassword(password)) {
               setErrorMessage("Invalid password. Must be at least 10 symbols.");
               setIsErrorMessageVisible(true);
+              setIsValid(false);
             } else {
               setIsLoading(true);
               setIsServerError(false);

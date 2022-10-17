@@ -27,6 +27,7 @@ const ResetPasswordPage = () => {
             if (!isEmail(email)) {
               setEmailErrorMessage("Invalid email address.");
               setIsEmailErrorMessageVisible(true);
+              setIsEmailValid(false);
             } else {
               setIsLoading(true);
               setIsServerError(false);

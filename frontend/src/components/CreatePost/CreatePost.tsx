@@ -34,7 +34,27 @@ const AddPost = () => {
   return (
     <div className={styles.overlay}>
       <div className={formStyles.mainContainer}>
-        <form className={formStyles.form}>
+        <form
+          className={formStyles.form}
+          onSubmit={(event) => {
+            event.preventDefault();
+            if (title.length < 5) {
+              setTitleErrorMessage("Title has to be at least 5 symbols.");
+              setIsTitleErrorMessageVisible(true);
+              setIsTitleValid(false);
+            } else if (description.length < 20) {
+              setDescriptionErrorMessage(
+                "Description has to be at least 20 symbols. Please, describe the course with more details."
+              );
+              setIsDescriptionErrorMessageVisible(true);
+              setIsDescriptionValid(false);
+            } else if (url.length < 10) {
+              setUrlErrorMessage("Invalid Url.");
+              setIsUrlValid(false);
+              setIsUrlErrorMessageVisible(true);
+            }
+          }}
+        >
           <h2>Enter the source info:</h2>
           <Input
             id="title"

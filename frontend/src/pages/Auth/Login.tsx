@@ -33,11 +33,13 @@ const LoginPage = () => {
             if (!isEmail(email)) {
               setEmailErrorMessage("Invalid email address.");
               setIsEmailErrorVisible(true);
+              setIsEmailValid(false);
             } else if (!isPassword(password)) {
               setPasswordErrorMessage(
                 "Invalid password. Must be at least 10 symbols."
               );
               setIsPasswordErrorVisible(true);
+              setIsPasswordValid(false);
             } else {
               setIsLoading(true);
               const response = await fetch("http://localhost:8080/auth/login", {
