@@ -14,7 +14,7 @@ const postSchema = new Schema(
       required: true,
       type: String,
     },
-    source: {
+    platform: {
       required: true,
       type: String,
     },

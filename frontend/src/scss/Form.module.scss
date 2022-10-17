@@ -29,6 +29,10 @@
     gap: 30px;
     position: relative;
 
+    .invalidSelect {
+      border: 1px solid red;
+    }
+
     .optionsContainer {
       display: flex;
       width: 100%;
@@ -43,10 +47,15 @@
         width: 50px;
         border: 1px solid black;
         border-radius: 5px;
+        cursor: pointer;
       }
 
-      .active {
-        background-color: rgba(0, 0, 0, 0.1);
+      .selected {
+        border: 2px solid aqua;
+      }
+
+      .invalid {
+        border: 2px solid red;
       }
     }
 

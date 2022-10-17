@@ -1,4 +1,4 @@
-import { ChangeEvent, useState } from "react";
+import { useState } from "react";
 import Input from "../Input/Input";
 import formStyles from "../../scss/Form.module.scss";
 import styles from "./CreatePost.module.scss";
@@ -31,6 +31,16 @@ const AddPost = () => {
   const [urlErrorMessage, setUrlErrorMessage] = useState("");
   const [isUrlErrorMessageVisible, setIsUrlErrorMessageVisible] =
     useState(false);
+  const [devRole, setDevRole] = useState("");
+  const [isDevRoleValid, setIsDevRoleValid] = useState(true);
+  const [isYoutubeSelected, setIsYoutubeSelected] = useState(false);
+  const [isStackoverflowSelected, setIsStackoverflowSelected] = useState(false);
+  const [isGithubSelected, setIsGithubSelected] = useState(false);
+  const [isRedditSelected, setIsRedditSelected] = useState(false);
+  const [isLinkedinSelected, setIsLinkedinSelected] = useState(false);
+  const [isUdemySelected, setIsUdemySelected] = useState(false);
+  const [isOtherSelected, setIsOtherSelected] = useState(false);
+  const [isHighlighted, setIsHighlighted] = useState(false);
   return (
     <div className={styles.overlay}>
       <div className={formStyles.mainContainer}>
@@ -52,10 +62,47 @@ const AddPost = () => {
               setUrlErrorMessage("Invalid Url.");
               setIsUrlValid(false);
               setIsUrlErrorMessageVisible(true);
+            } else if (!devRole) {
+              setIsDevRoleValid(false);
+            } else if (
+              !isYoutubeSelected &&
+              !isStackoverflowSelected &&
+              !isGithubSelected &&
+              !isRedditSelected &&
+              !isLinkedinSelected &&
+              !isUdemySelected &&
+              !isOtherSelected
+            ) {
+              setIsHighlighted(true);
+            } else {
+              const platform = isYoutubeSelected
+                ? "YOUTUBE"
+                : isStackoverflowSelected
+                ? "STACKOVERFLOW"
+                : isGithubSelected
+                ? "GITHUB"
+                : isRedditSelected
+                ? "REDDIT"
+                : isLinkedinSelected
+                ? "LINKEDIN"
+                : isUdemySelected
+                ? "UDEMY"
+                : "OTHER";
+              fetch("http://localhost:8080/posts/new", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                  title: title,
+                  description: description,
+                  url: url,
+                  devRole: devRole,
+                  platform: platform,
+                }),
+              });
             }
           }}
         >
-          <h2>Enter the source info:</h2>
+          <h2>Source info</h2>
           <Input
             id="title"
             type="text"
@@ -122,35 +169,169 @@ const AddPost = () => {
               }
             }}
           />
-          <select name="Dev Role" id="">
+          <select
+            name="Dev Role"
+            onChange={(event) => {
+              const target = event.target as HTMLSelectElement;
+              setDevRole(target.value);
+            }}
+            className={!isDevRoleValid ? formStyles.invalidSelect : ""}
+          >
             <option selected disabled value="">
               -- choose a dev role --
             </option>
-            <option value="frontend">Frontend</option>
-            <option value="backend">Backend</option>
-            <option value="devops">DevOps</option>
+            <option value="Frontend">Frontend</option>
+            <option value="Backend">Backend</option>
+            <option value="DevOps">DevOps</option>
           </select>
           <span>Source Social Media</span>
           <div className={formStyles.optionsContainer}>
             <RiYoutubeFill
-              className={formStyles.option}
+              className={
+                formStyles.option +
+                " " +
+                (isYoutubeSelected && formStyles.selected) +
+                " " +
+                (isHighlighted && formStyles.invalid)
+              }
               size="50"
               color="red"
+              onClick={() => {
+                setIsHighlighted(false);
+                setIsYoutubeSelected(true);
+                setIsUdemySelected(false);
+                setIsStackoverflowSelected(false);
+                setIsGithubSelected(false);
+                setIsRedditSelected(false);
+                setIsLinkedinSelected(false);
+                setIsOtherSelected(false);
+              }}
             />
             <RiStackOverflowFill
-              className={formStyles.option}
+              className={
+                formStyles.option +
+                " " +
+                (isStackoverflowSelected && formStyles.selected) +
+                " " +
+                (isHighlighted && formStyles.invalid)
+              }
               size="50"
               color="orange"
+              onClick={() => {
+                setIsHighlighted(false);
+                setIsStackoverflowSelected(true);
+                setIsYoutubeSelected(false);
+                setIsUdemySelected(false);
+                setIsGithubSelected(false);
+                setIsRedditSelected(false);
+                setIsLinkedinSelected(false);
+                setIsOtherSelected(false);
+              }}
             />
-            <RiGithubFill className={formStyles.option} size="50" />
-            <RiRedditFill className={formStyles.option} size="50" color="red" />
+            <RiGithubFill
+              className={
+                formStyles.option +
+                " " +
+                (isGithubSelected && formStyles.selected) +
+                " " +
+                (isHighlighted && formStyles.invalid)
+              }
+              size="50"
+              onClick={() => {
+                setIsHighlighted(false);
+                setIsGithubSelected(true);
+                setIsYoutubeSelected(false);
+                setIsUdemySelected(false);
+                setIsStackoverflowSelected(false);
+                setIsRedditSelected(false);
+                setIsLinkedinSelected(false);
+                setIsOtherSelected(false);
+              }}
+            />
+            <RiRedditFill
+              className={
+                formStyles.option +
+                " " +
+                (isRedditSelected && formStyles.selected) +
+                " " +
+                (isHighlighted && formStyles.invalid)
+              }
+              size="50"
+              color="red"
+              onClick={() => {
+                setIsHighlighted(false);
+                setIsRedditSelected(true);
+                setIsYoutubeSelected(false);
+                setIsUdemySelected(false);
+                setIsStackoverflowSelected(false);
+                setIsGithubSelected(false);
+                setIsLinkedinSelected(false);
+                setIsOtherSelected(false);
+              }}
+            />
             <RiLinkedinBoxFill
-              className={formStyles.option}
+              className={
+                formStyles.option +
+                " " +
+                (isLinkedinSelected && formStyles.selected) +
+                " " +
+                (isHighlighted && formStyles.invalid)
+              }
               size="50"
               color="blue"
+              onClick={() => {
+                setIsHighlighted(false);
+                setIsLinkedinSelected(true);
+                setIsYoutubeSelected(false);
+                setIsUdemySelected(false);
+                setIsStackoverflowSelected(false);
+                setIsGithubSelected(false);
+                setIsRedditSelected(false);
+                setIsOtherSelected(false);
+              }}
             />
-            <SiUdemy className={formStyles.option} size="50" color="purple" />
-            <span className={formStyles.option}>OTHER</span>
+            <SiUdemy
+              className={
+                formStyles.option +
+                " " +
+                (isUdemySelected && formStyles.selected) +
+                " " +
+                (isHighlighted && formStyles.invalid)
+              }
+              size="50"
+              color="purple"
+              onClick={() => {
+                setIsHighlighted(false);
+                setIsUdemySelected(true);
+                setIsYoutubeSelected(false);
+                setIsStackoverflowSelected(false);
+                setIsGithubSelected(false);
+                setIsRedditSelected(false);
+                setIsLinkedinSelected(false);
+                setIsOtherSelected(false);
+              }}
+            />
+            <span
+              className={
+                formStyles.option +
+                " " +
+                (isOtherSelected && formStyles.selected) +
+                " " +
+                (isHighlighted && formStyles.invalid)
+              }
+              onClick={() => {
+                setIsHighlighted(false);
+                setIsOtherSelected(true);
+                setIsYoutubeSelected(false);
+                setIsUdemySelected(false);
+                setIsStackoverflowSelected(false);
+                setIsGithubSelected(false);
+                setIsRedditSelected(false);
+                setIsLinkedinSelected(false);
+              }}
+            >
+              OTHER
+            </span>
           </div>
           <Button color="green" type="submit">
             Submit
