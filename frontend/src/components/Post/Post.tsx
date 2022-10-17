@@ -12,6 +12,7 @@ const Post: React.FC<{
     | "UDEMY"
     | "GITHUB"
     | "COURSERA"
+    | "REDDIT"
     | "OTHER";
   upvotes: number;
 }> = ({ title, description, platform, upvotes }) => {
