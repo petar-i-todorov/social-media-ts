@@ -92,6 +92,7 @@ const AddPost = () => {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
+                  creator: localStorage.getItem("userId"),
                   title: title,
                   description: description,
                   url: url,
@@ -170,6 +171,7 @@ const AddPost = () => {
             }}
           />
           <select
+            defaultValue="choose"
             name="Dev Role"
             onChange={(event) => {
               const target = event.target as HTMLSelectElement;
@@ -177,7 +179,7 @@ const AddPost = () => {
             }}
             className={!isDevRoleValid ? formStyles.invalidSelect : ""}
           >
-            <option selected disabled value="">
+            <option disabled value="choose">
               -- choose a dev role --
             </option>
             <option value="Frontend">Frontend</option>

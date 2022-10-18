@@ -5,6 +5,7 @@ import authRouter from "./routes/auth";
 import cors from "cors";
 import { DB_USERNAME, DB_PASSWORD, DB_DEFAULT } from "./dev-vars";
 import CustomError from "./types/Error";
+import feedRouter from "./routes/feed";
 
 dotenv.config();
 
@@ -16,20 +17,7 @@ app.use(cors());
 
 app.use("/auth", authRouter);
 
-class Test {
-  test: string;
-  constructor(test: string) {
-    this.test = test;
-  }
-}
-
-class ExtendsTest extends Test {
-  test2: string;
-  constructor(test: string, test2: string) {
-    super(test);
-    this.test2 = test2;
-  }
-}
+app.use("/posts", feedRouter);
 
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {
   setTimeout(() => {
