@@ -6,8 +6,9 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: rgba(221, 190, 190, 0.881);
+  background-color: rgba(221, 202, 202, 0.679);
   z-index: 5;
+  transform: none;
 }
 
 .other {
@@ -15,4 +16,8 @@
   justify-content: center;
   align-items: center;
   width: 50px;
+}
+
+.nonAnimated {
+  animation: none !important;
 }

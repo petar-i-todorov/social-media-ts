@@ -3,10 +3,11 @@ import Button from "../../components/Button/Button";
 import Post from "../../components/Post/Post";
 import styles from "./Feed.module.scss";
 import { IPost } from "../../types/post";
-import { AddPostContext } from "../../context/AddPostContext";
+import { AddPostContext } from "../../contexts/AddPostContext";
+import { PostsContext } from "../../contexts/PostsContext";
 
 const FeedPage = () => {
-  const [posts, setPosts] = useState<IPost[]>([]);
+  const { posts, setPosts } = useContext(PostsContext);
   const { setAddPost } = useContext(AddPostContext);
   useEffect(() => {
     async function fetchData() {
@@ -38,6 +39,7 @@ const FeedPage = () => {
       {posts.map((post) => {
         return (
           <Post
+            key={post._id}
             title={post.title}
             description={post.description}
             platform={post.platform}

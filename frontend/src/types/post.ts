@@ -8,11 +8,12 @@ export interface IPost {
     | "STACKOVERFLOW"
     | "UDEMY"
     | "GITHUB"
-    | "COURSERA"
     | "REDDIT"
+    | "LINKEDIN"
     | "OTHER";
   upvotes: number;
   url: string;
   devRole: "Frontend" | "Backend" | "DevOps";
   creator: string;
+  _id: string;
 }

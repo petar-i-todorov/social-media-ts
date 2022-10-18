@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import Input from "../Input/Input";
 import formStyles from "../../scss/Form.module.scss";
 import styles from "./CreatePost.module.scss";
@@ -12,6 +12,9 @@ import {
 } from "react-icons/ri";
 import { SiUdemy } from "react-icons/si";
 import Button from "../Button/Button";
+import BouncingDotsLoader from "../BouncingDotsLoader/BouncingDotsLoader";
+import { AddPostContext } from "../../contexts/AddPostContext";
+import { PostsContext } from "../../contexts/PostsContext";
 
 const AddPost = () => {
   const [title, setTitle] = useState("");
@@ -31,7 +34,9 @@ const AddPost = () => {
   const [urlErrorMessage, setUrlErrorMessage] = useState("");
   const [isUrlErrorMessageVisible, setIsUrlErrorMessageVisible] =
     useState(false);
-  const [devRole, setDevRole] = useState("");
+  const [devRole, setDevRole] = useState<"Frontend" | "Backend" | "DevOps">(
+    "Frontend"
+  );
   const [isDevRoleValid, setIsDevRoleValid] = useState(true);
   const [isYoutubeSelected, setIsYoutubeSelected] = useState(false);
   const [isStackoverflowSelected, setIsStackoverflowSelected] = useState(false);
@@ -41,12 +46,23 @@ const AddPost = () => {
   const [isUdemySelected, setIsUdemySelected] = useState(false);
   const [isOtherSelected, setIsOtherSelected] = useState(false);
   const [isHighlighted, setIsHighlighted] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const { setAddPost } = useContext(AddPostContext);
+  const { posts, setPosts } = useContext(PostsContext);
   return (
-    <div className={styles.overlay}>
-      <div className={formStyles.mainContainer}>
+    <div
+      className={styles.overlay}
+      onClick={() => {
+        setAddPost(false);
+      }}
+    >
+      <div className={formStyles.mainContainer + " " + styles.nonAnimated}>
         <form
+          onClick={(event) => {
+            event.stopPropagation();
+          }}
           className={formStyles.form}
-          onSubmit={(event) => {
+          onSubmit={async (event) => {
             event.preventDefault();
             if (title.length < 5) {
               setTitleErrorMessage("Title has to be at least 5 symbols.");
@@ -75,6 +91,7 @@ const AddPost = () => {
             ) {
               setIsHighlighted(true);
             } else {
+              setIsLoading(true);
               const platform = isYoutubeSelected
                 ? "YOUTUBE"
                 : isStackoverflowSelected
@@ -88,18 +105,29 @@ const AddPost = () => {
                 : isUdemySelected
                 ? "UDEMY"
                 : "OTHER";
-              fetch("http://localhost:8080/posts/new", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                  creator: localStorage.getItem("userId"),
-                  title: title,
-                  description: description,
-                  url: url,
-                  devRole: devRole,
-                  platform: platform,
-                }),
-              });
+              try {
+                await fetch("http://localhost:8080/posts/new", {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({
+                    creator: localStorage.getItem("userId"),
+                    title: title,
+                    description: description,
+                    url: url,
+                    devRole: devRole,
+                    platform: platform,
+                  }),
+                });
+                const response = await fetch("http://localhost:8080/posts", {
+                  method: "GET",
+                });
+                const posts = await response.json();
+                setIsLoading(false);
+                setAddPost(false);
+                setPosts(posts);
+              } catch (err) {
+                //todo
+              }
             }
           }}
         >
@@ -175,7 +203,13 @@ const AddPost = () => {
             name="Dev Role"
             onChange={(event) => {
               const target = event.target as HTMLSelectElement;
-              setDevRole(target.value);
+              if (
+                target.value === "Frontend" ||
+                target.value === "Backend" ||
+                target.value === "DevOps"
+              ) {
+                setDevRole(target.value);
+              }
             }}
             className={!isDevRoleValid ? formStyles.invalidSelect : ""}
           >
@@ -336,7 +370,7 @@ const AddPost = () => {
             </span>
           </div>
           <Button color="green" type="submit">
-            Submit
+            {isLoading ? <BouncingDotsLoader text="Submitting" /> : "Submit"}
           </Button>
         </form>
       </div>

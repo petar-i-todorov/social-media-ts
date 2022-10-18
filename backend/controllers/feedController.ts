@@ -11,8 +11,17 @@ export const feedController = {
       devRole: req.body.devRole,
       platform: req.body.platform,
     });
-    console.log(createdPost);
     createdPost.save();
-    res.json({ message: "Post was created successfully." });
+    setTimeout(() => {
+      res.json({ message: "Post was created successfully." });
+    }, 2000);
+  },
+  getPosts: async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const posts = await Post.find();
+      res.status(200).json(posts);
+    } catch (err) {
+      //todo
+    }
   },
 };

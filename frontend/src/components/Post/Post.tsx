@@ -7,12 +7,12 @@ const Post: React.FC<{
   description: string;
   platform:
     | "YOUTUBE"
-    | "FACEBOOK"
     | "STACKOVERFLOW"
     | "UDEMY"
     | "GITHUB"
-    | "COURSERA"
+    | "LINKEDIN"
     | "REDDIT"
+    | "FACEBOOK"
     | "OTHER";
   upvotes: number;
 }> = ({ title, description, platform, upvotes }) => {
