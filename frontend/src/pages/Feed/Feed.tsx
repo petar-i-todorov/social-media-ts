@@ -1,12 +1,33 @@
+import { useContext, useEffect, useState } from "react";
 import Button from "../../components/Button/Button";
 import Post from "../../components/Post/Post";
 import styles from "./Feed.module.scss";
+import { IPost } from "../../types/post";
+import { AddPostContext } from "../../context/AddPostContext";
 
 const FeedPage = () => {
+  const [posts, setPosts] = useState<IPost[]>([]);
+  const { setAddPost } = useContext(AddPostContext);
+  useEffect(() => {
+    async function fetchData() {
+      const response = await fetch("http://localhost:8080/posts", {
+        method: "GET",
+      });
+      const posts = await response.json();
+      setPosts(posts);
+    }
+    fetchData();
+  }, []);
   return (
     <main className={styles.feed}>
       <menu className={styles.feedMenu}>
-        <Button color="blue" className={styles.addBtn}>
+        <Button
+          color="blue"
+          className={styles.addBtn}
+          onClick={() => {
+            setAddPost(true);
+          }}
+        >
           Add a post
         </Button>
         <select id="sort" className={styles.sortDropdown}>
@@ -14,12 +35,16 @@ const FeedPage = () => {
           <option value="upvotes">Most upvoted</option>
         </select>
       </menu>
-      <Post
-        title="This course is trash."
-        description="I didn't like this course. It was a waste of time watching it. The instructor is unprofessional."
-        platform="YOUTUBE"
-        upvotes={0}
-      />
+      {posts.map((post) => {
+        return (
+          <Post
+            title={post.title}
+            description={post.description}
+            platform={post.platform}
+            upvotes={post.upvotes}
+          />
+        );
+      })}
     </main>
   );
 };
