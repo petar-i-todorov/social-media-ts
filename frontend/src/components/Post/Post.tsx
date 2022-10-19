@@ -19,6 +19,8 @@ const Post: React.FC<{
   upvotes: number;
   upvotedBy: string[];
   downvotedBy: string[];
+  setIsFlashMessage: React.Dispatch<React.SetStateAction<boolean>>;
+  setFlashMessageText: React.Dispatch<React.SetStateAction<string>>;
 }> = ({
   title,
   description,
@@ -27,6 +29,8 @@ const Post: React.FC<{
   id,
   upvotedBy,
   downvotedBy,
+  setIsFlashMessage,
+  setFlashMessageText,
 }) => {
   const { setPosts } = useContext(PostsContext);
   const [isUpvoteLocked, setIsUpvoteLocked] = useState(false);
@@ -68,11 +72,15 @@ const Post: React.FC<{
                 }),
               }
             );
+            const resData = await response.json();
             if (response.status === 200) {
-              const resData = await response.json();
               setPosts(resData.updatedPosts);
             } else {
-              //todo
+              setFlashMessageText(resData.message);
+              setIsFlashMessage(true);
+              setTimeout(() => {
+                setIsFlashMessage(false);
+              }, 5000);
             }
           }}
         >
@@ -99,11 +107,15 @@ const Post: React.FC<{
                 }),
               }
             );
+            const resData = await response.json();
             if (response.status === 200) {
-              const resData = await response.json();
               setPosts(resData.updatedPosts);
             } else {
-              //todo
+              setFlashMessageText(resData.message);
+              setIsFlashMessage(true);
+              setTimeout(() => {
+                setIsFlashMessage(false);
+              }, 5000);
             }
           }}
         >

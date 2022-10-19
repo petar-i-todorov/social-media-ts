@@ -2,13 +2,15 @@ import { useContext, useEffect, useState } from "react";
 import Button from "../../components/Button/Button";
 import Post from "../../components/Post/Post";
 import styles from "./Feed.module.scss";
-import { IPost } from "../../types/post";
 import { AddPostContext } from "../../contexts/AddPostContext";
 import { PostsContext } from "../../contexts/PostsContext";
+import FormMessage from "../../components/FormMessage/FormMessage";
 
 const FeedPage = () => {
   const { posts, setPosts } = useContext(PostsContext);
   const { setAddPost } = useContext(AddPostContext);
+  const [isFlashMessage, setIsFlashMessage] = useState(false);
+  const [flashMessageText, setFlashMessageText] = useState("");
   useEffect(() => {
     async function fetchData() {
       const response = await fetch("http://localhost:8080/posts", {
@@ -47,9 +49,14 @@ const FeedPage = () => {
             upvotes={post.upvotes}
             upvotedBy={post.upvotedBy}
             downvotedBy={post.downvotedBy}
+            setIsFlashMessage={setIsFlashMessage}
+            setFlashMessageText={setFlashMessageText}
           />
         );
       })}
+      {isFlashMessage && (
+        <FormMessage children={flashMessageText} color="red" flash />
+      )}
     </main>
   );
 };
