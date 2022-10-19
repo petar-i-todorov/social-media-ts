@@ -26,6 +26,24 @@ const postSchema = new Schema(
       default: 0,
       type: Number,
     },
+    upvotedBy: {
+      type: [
+        {
+          type: Types.ObjectId,
+          ref: "User",
+        },
+      ],
+      default: [],
+    },
+    downvotedBy: {
+      type: [
+        {
+          type: Types.ObjectId,
+          ref: "User",
+        },
+      ],
+      default: [],
+    },
     creator: {
       type: Types.ObjectId,
       ref: "User",

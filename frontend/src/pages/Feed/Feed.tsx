@@ -40,6 +40,7 @@ const FeedPage = () => {
         return (
           <Post
             key={post._id}
+            id={post._id}
             title={post.title}
             description={post.description}
             platform={post.platform}

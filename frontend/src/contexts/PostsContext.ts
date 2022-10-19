@@ -1,4 +1,4 @@
-import React, { Dispatch, useState } from "react";
+import React, { Dispatch } from "react";
 import { IPost } from "../types/post";
 
 export const PostsContext = React.createContext<{
