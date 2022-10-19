@@ -10,7 +10,7 @@ const NavBar = () => {
         <ul className={styles.nav}>
           <li>Avatar</li>
           <li className={styles.searchContainer}>
-            <AiOutlineSearch size="30" />
+            <AiOutlineSearch size="30" color="black" />
             <input
               placeholder="Search for posts"
               className={styles.searchBar}
