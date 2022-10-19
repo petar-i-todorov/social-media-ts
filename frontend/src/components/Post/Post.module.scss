@@ -1,14 +1,15 @@
 .post {
   display: flex;
-  gap: 20px;
   box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
   padding: 20px;
   outline: 1px solid lightgray;
+  justify-content: space-between;
 
   .postInfo {
     display: flex;
     flex-direction: column;
     gap: 5px;
+    width: 80%;
   }
 
   .voteContainer {
@@ -16,6 +17,7 @@
     flex-direction: column;
     gap: 10px;
     align-items: center;
+    width: 30px;
 
     .voteBtn {
       height: 30px;
@@ -29,6 +31,38 @@
     .votesQty {
       font-size: 20px;
       transform: translateY(2.5px);
+    }
+  }
+
+  .postSidebar {
+    width: 60px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+
+    .moreOptionsContainer {
+      position: relative;
+      .threeDots {
+        cursor: pointer;
+        border-radius: 50%;
+        transition: background-color 0.4s ease-in-out;
+        &:hover {
+          background-color: lightgray;
+        }
+        &:active {
+          background-color: darkgray;
+        }
+      }
+    }
+
+    .other {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 60px;
+      height: 60px;
+      font-weight: bold;
     }
   }
 }
