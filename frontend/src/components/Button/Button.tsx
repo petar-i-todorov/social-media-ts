@@ -7,7 +7,8 @@ const Button: React.FC<{
   onClick?: MouseEventHandler;
   type?: "submit";
   className?: string;
-}> = ({ children, color, type, onClick, className }) => {
+  isLocked?: boolean;
+}> = ({ children, color, type, onClick, className, isLocked }) => {
   const styleColor =
     color === "blue"
       ? styles.blue
@@ -17,7 +18,15 @@ const Button: React.FC<{
   return (
     <button
       type={type}
-      className={styles.btn + " " + styleColor + " " + className}
+      className={
+        styles.btn +
+        " " +
+        styleColor +
+        " " +
+        className +
+        " " +
+        (isLocked && styles.locked)
+      }
       onClick={onClick}
     >
       {children}

@@ -1,4 +1,6 @@
 export interface IPost {
+  upvotedBy: string[];
+  downvotedBy: string[];
   title: string;
   description: string;
   createdAt: Date;

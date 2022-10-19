@@ -45,6 +45,8 @@ const FeedPage = () => {
             description={post.description}
             platform={post.platform}
             upvotes={post.upvotes}
+            upvotedBy={post.upvotedBy}
+            downvotedBy={post.downvotedBy}
           />
         );
       })}
