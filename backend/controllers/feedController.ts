@@ -6,7 +6,7 @@ import { validationResult } from "express-validator";
 export const feedController = {
   createPost: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      if (!validationResult(req).isEmpty()) {
+      if (validationResult(req).isEmpty()) {
         const createdPost = new Post({
           creator: req.body.creator,
           title: req.body.title,
@@ -27,8 +27,11 @@ export const feedController = {
         throw error;
       }
     } catch (err) {
-      const error = new CustomError(500, "Something went wrong.");
-      next(error);
+      if (!(err instanceof CustomError)) {
+        const error = new CustomError(500, "Something went wrong.");
+        next(error);
+      }
+      next(err);
     }
   },
   getPosts: async (req: Request, res: Response, next: NextFunction) => {

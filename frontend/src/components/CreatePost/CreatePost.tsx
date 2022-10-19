@@ -15,6 +15,7 @@ import Button from "../Button/Button";
 import BouncingDotsLoader from "../BouncingDotsLoader/BouncingDotsLoader";
 import { AddPostContext } from "../../contexts/AddPostContext";
 import { PostsContext } from "../../contexts/PostsContext";
+import FormMessage from "../FormMessage/FormMessage";
 
 const AddPost = () => {
   const [title, setTitle] = useState("");
@@ -49,6 +50,8 @@ const AddPost = () => {
   const [isLoading, setIsLoading] = useState(false);
   const { setAddPost } = useContext(AddPostContext);
   const { setPosts } = useContext(PostsContext);
+  const [isFormError, setIsFormError] = useState(false);
+  const [formErrorText, setFormErrorText] = useState("");
   return (
     <div
       className={styles.overlay}
@@ -107,7 +110,7 @@ const AddPost = () => {
                 ? "UDEMY"
                 : "OTHER";
               try {
-                await fetch("http://localhost:8080/posts/new", {
+                const res = await fetch("http://localhost:8080/posts/new", {
                   method: "POST",
                   headers: { "Content-Type": "application/json" },
                   body: JSON.stringify({
@@ -119,13 +122,20 @@ const AddPost = () => {
                     platform: platform,
                   }),
                 });
-                const response = await fetch("http://localhost:8080/posts", {
-                  method: "GET",
-                });
-                const posts = await response.json();
                 setIsLoading(false);
-                setAddPost(false);
-                setPosts(posts);
+                if (res.status === 200 || res.status === 201) {
+                  const response = await fetch("http://localhost:8080/posts", {
+                    method: "GET",
+                  });
+                  const posts = await response.json();
+                  setIsLoading(false);
+                  setAddPost(false);
+                  setPosts(posts);
+                } else {
+                  const resData = await res.json();
+                  setFormErrorText(resData.message);
+                  setIsFormError(true);
+                }
               } catch (err) {
                 //todo
               }
@@ -370,6 +380,9 @@ const AddPost = () => {
               OTHER
             </span>
           </div>
+          {isFormError && (
+            <FormMessage color="red">{formErrorText}</FormMessage>
+          )}
           <Button color="green" type="submit">
             {isLoading ? <BouncingDotsLoader text="Submitting" /> : "Submit"}
           </Button>
