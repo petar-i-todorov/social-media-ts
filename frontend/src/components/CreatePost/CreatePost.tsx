@@ -48,7 +48,7 @@ const AddPost = () => {
   const [isHighlighted, setIsHighlighted] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const { setAddPost } = useContext(AddPostContext);
-  const { posts, setPosts } = useContext(PostsContext);
+  const { setPosts } = useContext(PostsContext);
   return (
     <div
       className={styles.overlay}

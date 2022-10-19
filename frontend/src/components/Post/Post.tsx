@@ -19,6 +19,7 @@ const Post: React.FC<{
   upvotes: number;
   upvotedBy: string[];
   downvotedBy: string[];
+  isFlashMessage: boolean;
   setIsFlashMessage: React.Dispatch<React.SetStateAction<boolean>>;
   setFlashMessageText: React.Dispatch<React.SetStateAction<string>>;
 }> = ({
@@ -29,6 +30,7 @@ const Post: React.FC<{
   id,
   upvotedBy,
   downvotedBy,
+  isFlashMessage,
   setIsFlashMessage,
   setFlashMessageText,
 }) => {
@@ -75,7 +77,7 @@ const Post: React.FC<{
             const resData = await response.json();
             if (response.status === 200) {
               setPosts(resData.updatedPosts);
-            } else {
+            } else if (!isFlashMessage) {
               setFlashMessageText(resData.message);
               setIsFlashMessage(true);
               setTimeout(() => {
@@ -110,7 +112,7 @@ const Post: React.FC<{
             const resData = await response.json();
             if (response.status === 200) {
               setPosts(resData.updatedPosts);
-            } else {
+            } else if (!isFlashMessage) {
               setFlashMessageText(resData.message);
               setIsFlashMessage(true);
               setTimeout(() => {

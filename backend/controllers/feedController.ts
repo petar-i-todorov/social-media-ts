@@ -1,27 +1,45 @@
 import { NextFunction, Request, Response } from "express";
 import Post from "../models/post";
+import CustomError from "../types/Error";
 
 export const feedController = {
-  createPost: (req: Request, res: Response, next: NextFunction) => {
-    const createdPost = new Post({
-      creator: req.body.creator,
-      title: req.body.title,
-      description: req.body.description,
-      url: req.body.url,
-      devRole: req.body.devRole,
-      platform: req.body.platform,
-    });
-    createdPost.save();
-    setTimeout(() => {
-      res.json({ message: "Post was created successfully." });
-    }, 2000);
+  createPost: async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const createdPost = new Post({
+        creator: req.body.creator,
+        title: req.body.title,
+        description: req.body.description,
+        url: req.body.url,
+        devRole: req.body.devRole,
+        platform: req.body.platform,
+      });
+      await createdPost.save();
+      setTimeout(() => {
+        res.json({ message: "Post was created successfully." });
+      }, 2000);
+    } catch (err) {
+      const error = new CustomError(500, "Something went wrong.");
+      next(error);
+    }
   },
   getPosts: async (req: Request, res: Response, next: NextFunction) => {
     try {
       const posts = await Post.find();
+      if (!posts) {
+        const err = new CustomError(
+          404,
+          "Posts were not found in our storages."
+        );
+        throw err;
+      }
       res.status(200).json(posts);
     } catch (err) {
-      //todo
+      if (!(err instanceof CustomError)) {
+        const error = new CustomError(500, "Something went wrong.");
+        next(error);
+      } else {
+        next(err);
+      }
     }
   },
   upvotePost: async (req: Request, res: Response, next: NextFunction) => {
@@ -58,10 +76,15 @@ export const feedController = {
           message: "Post was successfully updated.",
         });
       } else {
-        //todo
+        const err = new CustomError(404, "Such a post was not found.");
+        throw err;
       }
     } catch (err) {
-      //todo
+      if (!(err instanceof CustomError)) {
+        const error = new CustomError(500, "Something went wrong.");
+        next(error);
+      }
+      next(err);
     }
   },
   downvotePost: async (req: Request, res: Response, next: NextFunction) => {
@@ -98,10 +121,15 @@ export const feedController = {
           message: "Post was successfully updated.",
         });
       } else {
-        //todo
+        const err = new CustomError(404, "Such a post was not found.");
+        throw err;
       }
     } catch (err) {
-      //todo
+      if (!(err instanceof CustomError)) {
+        const error = new CustomError(500, "Something went wrong.");
+        next(error);
+      }
+      next(err);
     }
   },
 };

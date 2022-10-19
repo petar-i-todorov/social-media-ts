@@ -62,7 +62,7 @@ const authController = {
       }, 2000);
     } catch (err: any) {
       if (!(err instanceof CustomError)) {
-        const error = new CustomError(500, err.message);
+        const error = new CustomError(500, "Something went wrong.");
         next(error);
       }
       next(err);
@@ -111,7 +111,7 @@ const authController = {
       });
     } catch (err: any) {
       if (!(err instanceof CustomError)) {
-        const error = new CustomError(500, err.message);
+        const error = new CustomError(500, "Something went wrong.");
         next(error);
       }
       next(err);
@@ -132,7 +132,7 @@ const authController = {
           res.status(201).json({ message: "User created successfully." });
         }, 4000);
       } catch (err: any) {
-        const error = new CustomError(500, err.message);
+        const error = new CustomError(500, "Something went wrong.");
         throw error;
       }
     } else {
@@ -187,7 +187,7 @@ const authController = {
       }
     } catch (err: any) {
       if (!(err instanceof CustomError)) {
-        const error = new CustomError(500, err.message);
+        const error = new CustomError(500, "Something went wrong.");
         next(error);
       }
       next(err);

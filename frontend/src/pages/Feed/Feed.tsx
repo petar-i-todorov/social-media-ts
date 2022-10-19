@@ -20,7 +20,7 @@ const FeedPage = () => {
       setPosts(posts);
     }
     fetchData();
-  }, []);
+  }, [setPosts]);
   return (
     <main className={styles.feed}>
       <menu className={styles.feedMenu}>
@@ -49,6 +49,7 @@ const FeedPage = () => {
             upvotes={post.upvotes}
             upvotedBy={post.upvotedBy}
             downvotedBy={post.downvotedBy}
+            isFlashMessage={isFlashMessage}
             setIsFlashMessage={setIsFlashMessage}
             setFlashMessageText={setFlashMessageText}
           />
