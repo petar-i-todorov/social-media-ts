@@ -58,6 +58,7 @@ const AddPost = () => {
     >
       <div className={formStyles.mainContainer + " " + styles.nonAnimated}>
         <form
+          noValidate
           onClick={(event) => {
             event.stopPropagation();
           }}

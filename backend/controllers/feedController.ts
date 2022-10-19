@@ -1,22 +1,31 @@
 import { NextFunction, Request, Response } from "express";
 import Post from "../models/post";
 import CustomError from "../types/Error";
+import { validationResult } from "express-validator";
 
 export const feedController = {
   createPost: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const createdPost = new Post({
-        creator: req.body.creator,
-        title: req.body.title,
-        description: req.body.description,
-        url: req.body.url,
-        devRole: req.body.devRole,
-        platform: req.body.platform,
-      });
-      await createdPost.save();
-      setTimeout(() => {
-        res.json({ message: "Post was created successfully." });
-      }, 2000);
+      if (!validationResult(req).isEmpty()) {
+        const createdPost = new Post({
+          creator: req.body.creator,
+          title: req.body.title,
+          description: req.body.description,
+          url: req.body.url,
+          devRole: req.body.devRole,
+          platform: req.body.platform,
+        });
+        await createdPost.save();
+        setTimeout(() => {
+          res.json({ message: "Post was created successfully." });
+        }, 2000);
+      } else {
+        const error = new CustomError(
+          422,
+          validationResult(req).array()[0].msg
+        );
+        throw error;
+      }
     } catch (err) {
       const error = new CustomError(500, "Something went wrong.");
       next(error);
@@ -65,16 +74,21 @@ export const feedController = {
             (id) => id.toString() !== req.body.userId
           );
           await foundPost.save();
+          const posts = await Post.find();
+          res.status(200).json({
+            updatedPosts: posts,
+            message: "Post was successfully updated.",
+          });
         } else {
           foundPost.upvotes++;
           foundPost.upvotedBy.push(req.body.userId);
           await foundPost.save();
+          const posts = await Post.find();
+          res.status(200).json({
+            updatedPosts: posts,
+            message: "Post was successfully updated.",
+          });
         }
-        const posts = await Post.find();
-        res.status(200).json({
-          updatedPosts: posts,
-          message: "Post was successfully updated.",
-        });
       } else {
         const err = new CustomError(404, "Such a post was not found.");
         throw err;
@@ -110,16 +124,21 @@ export const feedController = {
             (id) => id.toString() !== req.body.userId
           );
           await foundPost.save();
+          const posts = await Post.find();
+          res.status(200).json({
+            updatedPosts: posts,
+            message: "Post was successfully updated.",
+          });
         } else {
           foundPost.upvotes--;
           foundPost.downvotedBy.push(req.body.userId);
           await foundPost.save();
+          const posts = await Post.find();
+          res.status(200).json({
+            updatedPosts: posts,
+            message: "Post was successfully updated.",
+          });
         }
-        const posts = await Post.find();
-        res.status(200).json({
-          updatedPosts: posts,
-          message: "Post was successfully updated.",
-        });
       } else {
         const err = new CustomError(404, "Such a post was not found.");
         throw err;
