@@ -12,9 +12,9 @@ import { AddPostContext } from "./contexts/AddPostContext";
 import { useState } from "react";
 import { PostsContext } from "./contexts/PostsContext";
 import { IPost } from "./types/post";
-import ConfirmOperation from "./components/ConfirmOperation/ConfirmOperation";
 import { DeletePostContext } from "./contexts/DeletePostContext";
 import { PostIdContext } from "./contexts/PostIdContext";
+import DeletePost from "./components/ConfirmationModals/DeletePost";
 
 function App() {
   const [addPost, setAddPost] = useState(false);
@@ -47,7 +47,7 @@ function App() {
                   )}
                 {deletePost &&
                   ReactDOM.createPortal(
-                    <ConfirmOperation postId={postId} />,
+                    <DeletePost postId={postId} />,
                     document.getElementById("modal") as HTMLElement
                   )}
               </div>

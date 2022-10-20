@@ -16,6 +16,7 @@ import { AddPostContext } from "../../contexts/AddPostContext";
 import { PostsContext } from "../../contexts/PostsContext";
 import FormMessage from "../FormMessage/FormMessage";
 import Form from "../Form/Form";
+import Overlay from "../Overlay/Overlay";
 
 const AddPost = () => {
   const [title, setTitle] = useState("");
@@ -51,8 +52,7 @@ const AddPost = () => {
   const [isFormError, setIsFormError] = useState(false);
   const [formErrorText, setFormErrorText] = useState("");
   return (
-    <div
-      className={styles.overlay}
+    <Overlay
       onClick={() => {
         setAddPost(false);
       }}
@@ -382,7 +382,7 @@ const AddPost = () => {
           </Button>
         </>
       </Form>
-    </div>
+    </Overlay>
   );
 };
 
