@@ -6,6 +6,8 @@
   align-items: center;
   background-image: url("../../assets/background.png");
   background-size: cover;
+  flex-direction: column;
+  gap: 50px;
 
   .mainContainer {
     display: flex;
@@ -89,15 +91,6 @@
         }
       }
 
-      .back {
-        position: absolute;
-        top: 30px;
-        left: 30px;
-        &:hover {
-          cursor: pointer;
-        }
-      }
-
       .button {
         position: relative;
         width: 100%;
@@ -107,5 +100,14 @@
         pointer-events: none;
       }
     }
+  }
+}
+
+.back {
+  position: absolute;
+  top: 30px;
+  left: 30px;
+  &:hover {
+    cursor: pointer;
   }
 }

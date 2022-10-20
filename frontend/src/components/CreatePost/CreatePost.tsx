@@ -60,7 +60,7 @@ const AddPost = () => {
       }}
     >
       <Form
-        animated={false}
+        nonAnimated
         onSubmit={async (event) => {
           event.preventDefault();
           if (title.length < 5) {

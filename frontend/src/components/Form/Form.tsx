@@ -2,14 +2,15 @@ import React from "react";
 import styles from "./Form.module.scss";
 
 const Form: React.FC<{
-  onSubmit: React.FormEventHandler;
+  onSubmit?: React.FormEventHandler;
   children: React.ReactNode;
-  animated: boolean;
-}> = ({ onSubmit, children, animated }) => {
-  console.log(styles.nonAnimated);
+  nonAnimated?: boolean;
+}> = ({ onSubmit, children, nonAnimated }) => {
   return (
     <div
-      className={styles.mainContainer + " " + (!animated && styles.nonAnimated)}
+      className={
+        styles.mainContainer + " " + (nonAnimated && styles.nonAnimated)
+      }
     >
       <form
         noValidate
