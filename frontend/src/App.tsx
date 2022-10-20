@@ -12,32 +12,49 @@ import { AddPostContext } from "./contexts/AddPostContext";
 import { useState } from "react";
 import { PostsContext } from "./contexts/PostsContext";
 import { IPost } from "./types/post";
+import ConfirmOperation from "./components/ConfirmOperation/ConfirmOperation";
+import { DeletePostContext } from "./contexts/DeletePostContext";
+import { PostIdContext } from "./contexts/PostIdContext";
 
 function App() {
   const [addPost, setAddPost] = useState(false);
+  const [deletePost, setDeletePost] = useState(false);
   const [posts, setPosts] = useState<IPost[]>([]);
+  const [postId, setPostId] = useState(""); //postId to be manipulated
   return (
     <BrowserRouter>
-      <AddPostContext.Provider value={{ addPost, setAddPost }}>
-        <PostsContext.Provider value={{ posts, setPosts }}>
-          <div className={styles.app}>
-            <Routes>
-              <Route path="login" element={<LoginPage />} />
-              <Route path="signup" element={<SignupPage />} />
-              <Route path="reset-password" element={<ResetPasswordPage />} />
-              <Route path="reset/:token" element={<SetNewPasswordPage />} />
-              <Route path="" element={<Header />}>
-                <Route path="" element={<FeedPage />} />
-              </Route>
-            </Routes>
-            {addPost &&
-              ReactDOM.createPortal(
-                <AddPost />,
-                document.getElementById("add-product") as HTMLElement
-              )}
-          </div>
-        </PostsContext.Provider>
-      </AddPostContext.Provider>
+      <PostIdContext.Provider value={{ postId, setPostId }}>
+        <DeletePostContext.Provider value={{ deletePost, setDeletePost }}>
+          <AddPostContext.Provider value={{ addPost, setAddPost }}>
+            <PostsContext.Provider value={{ posts, setPosts }}>
+              <div className={styles.app}>
+                <Routes>
+                  <Route path="login" element={<LoginPage />} />
+                  <Route path="signup" element={<SignupPage />} />
+                  <Route
+                    path="reset-password"
+                    element={<ResetPasswordPage />}
+                  />
+                  <Route path="reset/:token" element={<SetNewPasswordPage />} />
+                  <Route path="" element={<Header />}>
+                    <Route path="" element={<FeedPage />} />
+                  </Route>
+                </Routes>
+                {addPost &&
+                  ReactDOM.createPortal(
+                    <AddPost />,
+                    document.getElementById("modal") as HTMLElement
+                  )}
+                {deletePost &&
+                  ReactDOM.createPortal(
+                    <ConfirmOperation postId={postId} />,
+                    document.getElementById("modal") as HTMLElement
+                  )}
+              </div>
+            </PostsContext.Provider>
+          </AddPostContext.Provider>
+        </DeletePostContext.Provider>
+      </PostIdContext.Provider>
     </BrowserRouter>
   );
 }

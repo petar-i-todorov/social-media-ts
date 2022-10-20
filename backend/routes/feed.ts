@@ -42,5 +42,6 @@ router.post(
 );
 router.patch("/upvote/:postId", feedController.upvotePost);
 router.patch("/downvote/:postId", feedController.downvotePost);
+router.delete("/delete/:postId", feedController.deletePost);
 
 export default router;

@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { PostsContext } from "../../contexts/PostsContext";
 import Button from "../Button/Button";
 import styles from "./Post.module.scss";
@@ -32,6 +32,7 @@ const Post: React.FC<{
   isFlashMessage: boolean;
   setIsFlashMessage: React.Dispatch<React.SetStateAction<boolean>>;
   setFlashMessageText: React.Dispatch<React.SetStateAction<string>>;
+  creatorId: string;
 }> = ({
   title,
   description,
@@ -43,11 +44,13 @@ const Post: React.FC<{
   isFlashMessage,
   setIsFlashMessage,
   setFlashMessageText,
+  creatorId,
 }) => {
   const { setPosts } = useContext(PostsContext);
   const [isUpvoteLocked, setIsUpvoteLocked] = useState(false);
   const [isDownvoteLocked, setIsDownvoteLocked] = useState(false);
   const [moreOptionsVisibility, setMoreOptionsVisibility] = useState(false);
+  const isAuthor = useRef(creatorId === localStorage.getItem("userId"));
   useEffect(() => {
     if (upvotedBy.find((userId) => userId === localStorage.getItem("userId"))) {
       setIsUpvoteLocked(true);
@@ -154,7 +157,9 @@ const Post: React.FC<{
               }
             }}
           />
-          {moreOptionsVisibility && <MoreOptionsMenu />}
+          {moreOptionsVisibility && (
+            <MoreOptionsMenu isAuthor={isAuthor.current} postId={id} />
+          )}
         </div>
         {platform === "UDEMY" ? (
           <SiUdemy size="60" color="purple" />
