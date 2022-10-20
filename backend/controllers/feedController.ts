@@ -155,13 +155,11 @@ export const feedController = {
     }
   },
   deletePost: async (req: Request, res: Response, next: NextFunction) => {
-    await Post.deleteOne({ id: req.params.postId });
+    await Post.deleteOne({ _id: req.params.postId });
     const updatedPosts = await Post.find();
-    res
-      .status(200)
-      .json({
-        message: "Post was successfully deleted.",
-        updatedPosts: updatedPosts,
-      });
+    res.status(200).json({
+      message: "Post was successfully deleted.",
+      updatedPosts: updatedPosts,
+    });
   },
 };

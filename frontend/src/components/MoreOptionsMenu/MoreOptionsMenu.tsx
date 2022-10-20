@@ -5,10 +5,10 @@ import { useContext } from "react";
 import { PostIdContext } from "../../contexts/PostIdContext";
 import { DeletePostContext } from "../../contexts/DeletePostContext";
 
-const MoreOptionsMenu: React.FC<{ isAuthor: boolean; postId: string }> = ({
-  isAuthor,
-  postId,
-}) => {
+const MoreOptionsMenu: React.FC<{
+  isAuthor: boolean;
+  postId: string;
+}> = ({ isAuthor, postId }) => {
   const { setPostId } = useContext(PostIdContext);
   const { setDeletePost } = useContext(DeletePostContext);
   return (

@@ -1,6 +1,5 @@
 import { useContext, useState } from "react";
 import Input from "../Input/Input";
-import formStyles from "../../scss/Form.module.scss";
 import styles from "./CreatePost.module.scss";
 import TextArea from "../TextArea/TextArea";
 import {
@@ -16,6 +15,7 @@ import BouncingDotsLoader from "../BouncingDotsLoader/BouncingDotsLoader";
 import { AddPostContext } from "../../contexts/AddPostContext";
 import { PostsContext } from "../../contexts/PostsContext";
 import FormMessage from "../FormMessage/FormMessage";
+import Form from "../Form/Form";
 
 const AddPost = () => {
   const [title, setTitle] = useState("");
@@ -59,89 +59,85 @@ const AddPost = () => {
         setAddPost(false);
       }}
     >
-      <div className={formStyles.mainContainer + " " + styles.nonAnimated}>
-        <form
-          noValidate
-          onClick={(event) => {
-            event.stopPropagation();
-          }}
-          className={formStyles.form}
-          onSubmit={async (event) => {
-            event.preventDefault();
-            if (title.length < 5) {
-              setTitleErrorMessage("Title has to be at least 5 symbols.");
-              setIsTitleErrorMessageVisible(true);
-              setIsTitleValid(false);
-            } else if (description.length < 20) {
-              setDescriptionErrorMessage(
-                "Description has to be at least 20 symbols. Please, describe the course with more details."
-              );
-              setIsDescriptionErrorMessageVisible(true);
-              setIsDescriptionValid(false);
-            } else if (url.length < 10) {
-              setUrlErrorMessage("Invalid Url.");
-              setIsUrlValid(false);
-              setIsUrlErrorMessageVisible(true);
-            } else if (!devRole) {
-              setIsDevRoleValid(false);
-            } else if (
-              !isYoutubeSelected &&
-              !isStackoverflowSelected &&
-              !isGithubSelected &&
-              !isRedditSelected &&
-              !isLinkedinSelected &&
-              !isUdemySelected &&
-              !isOtherSelected
-            ) {
-              setIsHighlighted(true);
-            } else {
-              setIsLoading(true);
-              const platform = isYoutubeSelected
-                ? "YOUTUBE"
-                : isStackoverflowSelected
-                ? "STACKOVERFLOW"
-                : isGithubSelected
-                ? "GITHUB"
-                : isRedditSelected
-                ? "REDDIT"
-                : isLinkedinSelected
-                ? "LINKEDIN"
-                : isUdemySelected
-                ? "UDEMY"
-                : "OTHER";
-              try {
-                const res = await fetch("http://localhost:8080/posts/new", {
-                  method: "POST",
-                  headers: { "Content-Type": "application/json" },
-                  body: JSON.stringify({
-                    creator: localStorage.getItem("userId"),
-                    title: title,
-                    description: description,
-                    url: url,
-                    devRole: devRole,
-                    platform: platform,
-                  }),
+      <Form
+        animated={false}
+        onSubmit={async (event) => {
+          event.preventDefault();
+          if (title.length < 5) {
+            setTitleErrorMessage("Title has to be at least 5 symbols.");
+            setIsTitleErrorMessageVisible(true);
+            setIsTitleValid(false);
+          } else if (description.length < 20) {
+            setDescriptionErrorMessage(
+              "Description has to be at least 20 symbols. Please, describe the course with more details."
+            );
+            setIsDescriptionErrorMessageVisible(true);
+            setIsDescriptionValid(false);
+          } else if (url.length < 10) {
+            setUrlErrorMessage("Invalid Url.");
+            setIsUrlValid(false);
+            setIsUrlErrorMessageVisible(true);
+          } else if (!devRole) {
+            setIsDevRoleValid(false);
+          } else if (
+            !isYoutubeSelected &&
+            !isStackoverflowSelected &&
+            !isGithubSelected &&
+            !isRedditSelected &&
+            !isLinkedinSelected &&
+            !isUdemySelected &&
+            !isOtherSelected
+          ) {
+            setIsHighlighted(true);
+          } else {
+            setIsLoading(true);
+            const platform = isYoutubeSelected
+              ? "YOUTUBE"
+              : isStackoverflowSelected
+              ? "STACKOVERFLOW"
+              : isGithubSelected
+              ? "GITHUB"
+              : isRedditSelected
+              ? "REDDIT"
+              : isLinkedinSelected
+              ? "LINKEDIN"
+              : isUdemySelected
+              ? "UDEMY"
+              : "OTHER";
+            try {
+              const res = await fetch("http://localhost:8080/posts/new", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                  creator: localStorage.getItem("userId"),
+                  title: title,
+                  description: description,
+                  url: url,
+                  devRole: devRole,
+                  platform: platform,
+                }),
+              });
+              setIsLoading(false);
+              if (res.status === 200 || res.status === 201) {
+                const response = await fetch("http://localhost:8080/posts", {
+                  method: "GET",
                 });
+                const posts = await response.json();
                 setIsLoading(false);
-                if (res.status === 200 || res.status === 201) {
-                  const response = await fetch("http://localhost:8080/posts", {
-                    method: "GET",
-                  });
-                  const posts = await response.json();
-                  setIsLoading(false);
-                  setAddPost(false);
-                  setPosts(posts);
-                } else {
-                  const resData = await res.json();
-                  setFormErrorText(resData.message);
-                  setIsFormError(true);
-                }
-              } catch (err) {
-                //todo
+                setAddPost(false);
+                setPosts(posts);
+              } else {
+                const resData = await res.json();
+                setFormErrorText(resData.message);
+                setIsFormError(true);
               }
+            } catch (err) {
+              //todo
             }
-          }}
-        >
+          }
+        }}
+      >
+        <>
           <h2>Source info</h2>
           <Input
             id="title"
@@ -222,7 +218,7 @@ const AddPost = () => {
                 setDevRole(target.value);
               }
             }}
-            className={!isDevRoleValid ? formStyles.invalidSelect : ""}
+            className={!isDevRoleValid ? styles.invalidSelect : ""}
           >
             <option disabled value="choose">
               -- choose a dev role --
@@ -232,14 +228,14 @@ const AddPost = () => {
             <option value="DevOps">DevOps</option>
           </select>
           <span>Source' social media</span>
-          <div className={formStyles.optionsContainer}>
+          <div className={styles.optionsContainer}>
             <RiYoutubeFill
               className={
-                formStyles.option +
+                styles.option +
                 " " +
-                (isYoutubeSelected && formStyles.selected) +
+                (isYoutubeSelected && styles.selected) +
                 " " +
-                (isHighlighted && formStyles.invalid)
+                (isHighlighted && styles.invalid)
               }
               size="50"
               color="red"
@@ -256,11 +252,11 @@ const AddPost = () => {
             />
             <RiStackOverflowFill
               className={
-                formStyles.option +
+                styles.option +
                 " " +
-                (isStackoverflowSelected && formStyles.selected) +
+                (isStackoverflowSelected && styles.selected) +
                 " " +
-                (isHighlighted && formStyles.invalid)
+                (isHighlighted && styles.invalid)
               }
               size="50"
               color="orange"
@@ -277,11 +273,11 @@ const AddPost = () => {
             />
             <RiGithubFill
               className={
-                formStyles.option +
+                styles.option +
                 " " +
-                (isGithubSelected && formStyles.selected) +
+                (isGithubSelected && styles.selected) +
                 " " +
-                (isHighlighted && formStyles.invalid)
+                (isHighlighted && styles.invalid)
               }
               size="50"
               onClick={() => {
@@ -297,11 +293,11 @@ const AddPost = () => {
             />
             <RiRedditFill
               className={
-                formStyles.option +
+                styles.option +
                 " " +
-                (isRedditSelected && formStyles.selected) +
+                (isRedditSelected && styles.selected) +
                 " " +
-                (isHighlighted && formStyles.invalid)
+                (isHighlighted && styles.invalid)
               }
               size="50"
               color="red"
@@ -318,11 +314,11 @@ const AddPost = () => {
             />
             <RiLinkedinBoxFill
               className={
-                formStyles.option +
+                styles.option +
                 " " +
-                (isLinkedinSelected && formStyles.selected) +
+                (isLinkedinSelected && styles.selected) +
                 " " +
-                (isHighlighted && formStyles.invalid)
+                (isHighlighted && styles.invalid)
               }
               size="50"
               color="blue"
@@ -339,11 +335,11 @@ const AddPost = () => {
             />
             <SiUdemy
               className={
-                formStyles.option +
+                styles.option +
                 " " +
-                (isUdemySelected && formStyles.selected) +
+                (isUdemySelected && styles.selected) +
                 " " +
-                (isHighlighted && formStyles.invalid)
+                (isHighlighted && styles.invalid)
               }
               size="50"
               color="purple"
@@ -360,11 +356,11 @@ const AddPost = () => {
             />
             <span
               className={
-                formStyles.option +
+                styles.option +
                 " " +
-                (isOtherSelected && formStyles.selected) +
+                (isOtherSelected && styles.selected) +
                 " " +
-                (isHighlighted && formStyles.invalid)
+                (isHighlighted && styles.invalid)
               }
               onClick={() => {
                 setIsHighlighted(false);
@@ -386,8 +382,8 @@ const AddPost = () => {
           <Button color="green" type="submit">
             {isLoading ? <BouncingDotsLoader text="Submitting" /> : "Submit"}
           </Button>
-        </form>
-      </div>
+        </>
+      </Form>
     </div>
   );
 };
