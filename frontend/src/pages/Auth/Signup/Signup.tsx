@@ -1,12 +1,13 @@
-import styles from "./AuthPage.module.scss";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { isEmail, isPassword } from "../../utils/validation";
-import BouncingDotsLoader from "../../components/BouncingDotsLoader/BouncingDotsLoader";
-import Button from "../../components/Button/Button";
-import FormMessage from "../../components/FormMessage/FormMessage";
-import Input from "../../components/Input/Input";
-import Form from "../../components/Form/Form";
+import { isEmail, isPassword } from "../../../utils/validation";
+import BouncingDotsLoader from "../../../components/BouncingDotsLoader/BouncingDotsLoader";
+import Button from "../../../components/Button/Button";
+import FormMessage from "../../../components/FormMessage/FormMessage";
+import Input from "../../../components/Input/Input";
+import Form from "../../../components/Form/Form";
+import styles from "./Signup.module.scss";
+import AuthPage from "../AuthPageContainer/AuthPage";
 
 const SignupPage = () => {
   const [firstName, setFirstName] = useState("");
@@ -35,7 +36,7 @@ const SignupPage = () => {
   const [confirmPasswordIsValid, setConfirmPasswordIsValid] = useState(true);
   const navigate = useNavigate();
   return (
-    <div className={styles.authPage}>
+    <AuthPage>
       <Form
         onSubmit={async (event) => {
           event.preventDefault();
@@ -221,11 +222,9 @@ const SignupPage = () => {
         {serverErrorMessage && (
           <FormMessage color="red">{serverErrorMessage}</FormMessage>
         )}
-        <div className={styles.button}>
-          <Button color="green" type="submit">
-            {isLoading ? <BouncingDotsLoader text="Signing up" /> : "Sign up"}
-          </Button>
-        </div>
+        <Button color="green" type="submit">
+          {isLoading ? <BouncingDotsLoader text="Signing up" /> : "Sign up"}
+        </Button>
       </Form>
       <Form>
         <h2>Already have an account?</h2>
@@ -245,7 +244,7 @@ const SignupPage = () => {
           </Button>
         </Link>
       </Form>
-    </div>
+    </AuthPage>
   );
 };
 

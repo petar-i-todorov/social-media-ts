@@ -1,13 +1,14 @@
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import BouncingDotsLoader from "../../components/BouncingDotsLoader/BouncingDotsLoader";
-import Button from "../../components/Button/Button";
-import FormMessage from "../../components/FormMessage/FormMessage";
-import Input from "../../components/Input/Input";
-import { isPassword } from "../../utils/validation";
-import styles from "./AuthPage.module.scss";
+import BouncingDotsLoader from "../../../components/BouncingDotsLoader/BouncingDotsLoader";
+import Button from "../../../components/Button/Button";
+import FormMessage from "../../../components/FormMessage/FormMessage";
+import Input from "../../../components/Input/Input";
+import { isPassword } from "../../../utils/validation";
 import { BiArrowBack } from "react-icons/bi";
-import Form from "../../components/Form/Form";
+import Form from "../../../components/Form/Form";
+import styles from "./SetNewPassword.module.scss";
+import AuthPage from "../AuthPageContainer/AuthPage";
 
 const SetNewPasswordPage = () => {
   const [password, setPassword] = useState("");
@@ -21,7 +22,7 @@ const SetNewPasswordPage = () => {
   const params = useParams();
   const navigate = useNavigate();
   return (
-    <div className={styles.authPage}>
+    <AuthPage>
       <Form
         onSubmit={async (event) => {
           event.preventDefault();
@@ -108,7 +109,7 @@ const SetNewPasswordPage = () => {
           {isLoading ? <BouncingDotsLoader text="Submitting" /> : "Submit"}
         </Button>
       </Form>
-    </div>
+    </AuthPage>
   );
 };
 

@@ -1,12 +1,13 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import styles from "./AuthPage.module.scss";
-import { isEmail, isPassword } from "../../utils/validation";
-import BouncingDotsLoader from "../../components/BouncingDotsLoader/BouncingDotsLoader";
-import Button from "../../components/Button/Button";
-import Input from "../../components/Input/Input";
-import FormMessage from "../../components/FormMessage/FormMessage";
-import Form from "../../components/Form/Form";
+import styles from "./Login.module.scss";
+import { isEmail, isPassword } from "../../../utils/validation";
+import BouncingDotsLoader from "../../../components/BouncingDotsLoader/BouncingDotsLoader";
+import Button from "../../../components/Button/Button";
+import Input from "../../../components/Input/Input";
+import FormMessage from "../../../components/FormMessage/FormMessage";
+import Form from "../../../components/Form/Form";
+import AuthPage from "../AuthPageContainer/AuthPage";
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
@@ -23,7 +24,7 @@ const LoginPage = () => {
   const [responseMessage, setResponseMessage] = useState("");
   const navigate = useNavigate();
   return (
-    <div className={styles.authPage}>
+    <AuthPage>
       <>
         <Form
           onSubmit={async (event) => {
@@ -139,7 +140,7 @@ const LoginPage = () => {
           </>
         </Form>
       </>
-    </div>
+    </AuthPage>
   );
 };
 

@@ -1,9 +1,9 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import ResetPasswordPage from "./pages/Auth/ResetPassword/ResetPassword";
-import LoginPage from "./pages/Auth/Login";
-import SignupPage from "./pages/Auth/Signup";
+import LoginPage from "./pages/Auth/Login/Login";
+import SignupPage from "./pages/Auth/Signup/Signup";
 import styles from "./scss/App.module.scss";
-import SetNewPasswordPage from "./pages/Auth/SetNewPassword";
+import SetNewPasswordPage from "./pages/Auth/SetNewPassword/SetNewPassword";
 import Header from "./components/Header/Header";
 import FeedPage from "./pages/Feed/Feed";
 import AddPost from "./components/CreatePost/CreatePost";

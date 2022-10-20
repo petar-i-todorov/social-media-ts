@@ -1,4 +1,3 @@
-import styles from "../AuthPage.module.scss";
 import Button from "../../../components/Button/Button";
 import Input from "../../../components/Input/Input";
 import { useState } from "react";
@@ -7,7 +6,8 @@ import BouncingDotsLoader from "../../../components/BouncingDotsLoader/BouncingD
 import FormMessage from "../../../components/FormMessage/FormMessage";
 import { isEmail } from "../../../utils/validation";
 import Form from "../../../components/Form/Form";
-import resetStyles from "./ResetPassword.module.scss";
+import styles from "./ResetPassword.module.scss";
+import AuthPage from "../AuthPageContainer/AuthPage";
 
 const ResetPasswordPage = () => {
   const [email, setEmail] = useState("");
@@ -20,7 +20,7 @@ const ResetPasswordPage = () => {
   const [isEmailErrorMessageVisible, setIsEmailErrorMessageVisible] =
     useState(false);
   return (
-    <div className={styles.authPage}>
+    <AuthPage>
       <Form
         onSubmit={async (event) => {
           event.preventDefault();
@@ -54,7 +54,7 @@ const ResetPasswordPage = () => {
         }}
       >
         <h2>Forgot your password?</h2>
-        <span className={resetStyles.text}>
+        <span className={styles.text}>
           Enter the email you usually use to log in to your account:
         </span>
         <Input
@@ -92,7 +92,7 @@ const ResetPasswordPage = () => {
         <Button color="green" type="submit">
           {isLoading ? <BouncingDotsLoader text="Submitting" /> : "Submit"}
         </Button>
-        <span className={resetStyles.lines}>or</span>
+        <span className={styles.lines}>or</span>
         <Link
           to="../login"
           relative="path"
@@ -101,7 +101,7 @@ const ResetPasswordPage = () => {
           <Button color="blue">Log in</Button>
         </Link>
       </Form>
-    </div>
+    </AuthPage>
   );
 };
 

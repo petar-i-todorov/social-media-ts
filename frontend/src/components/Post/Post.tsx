@@ -166,7 +166,7 @@ const Post: React.FC<{
         ) : platform === "STACKOVERFLOW" ? (
           <RiStackOverflowFill size="60" color="orange" />
         ) : platform === "GITHUB" ? (
-          <RiGithubFill size="60" color="orange" />
+          <RiGithubFill size="60" color="black" />
         ) : platform === "YOUTUBE" ? (
           <RiYoutubeFill size="60" color="red" />
         ) : platform === "REDDIT" ? (

@@ -1,0 +1,9 @@
+.splitContainer {
+  display: flex;
+  width: 100%;
+  gap: 10%;
+}
+
+.disabledLink {
+  pointer-events: none;
+}

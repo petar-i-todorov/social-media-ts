@@ -35,9 +35,7 @@ const AddPost = () => {
   const [urlErrorMessage, setUrlErrorMessage] = useState("");
   const [isUrlErrorMessageVisible, setIsUrlErrorMessageVisible] =
     useState(false);
-  const [devRole, setDevRole] = useState<"Frontend" | "Backend" | "DevOps">(
-    "Frontend"
-  );
+  const [devRole, setDevRole] = useState("");
   const [isDevRoleValid, setIsDevRoleValid] = useState(true);
   const [isYoutubeSelected, setIsYoutubeSelected] = useState(false);
   const [isStackoverflowSelected, setIsStackoverflowSelected] = useState(false);
