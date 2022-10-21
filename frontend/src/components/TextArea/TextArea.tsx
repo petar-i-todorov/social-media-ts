@@ -4,17 +4,17 @@ import { ChangeEvent, useEffect, useState } from "react";
 import InputError from "../InputError/InputError";
 
 const TextArea: React.FC<{
-  id: string;
+  id?: string;
   label: string;
-  value: string;
+  value?: string;
   isValid: boolean;
-  setIsValid: (arg: boolean) => void;
-  errorMessage: string;
+  setIsValid?: (arg: boolean) => void;
+  errorMessage?: string;
   setErrorMessage?: (arg: string) => void;
-  isErrorMessageVisible: boolean;
-  setIsErrorMessageVisible: (arg: boolean) => void;
-  onChange: (e: ChangeEvent) => void;
-  onBlur: () => void;
+  isErrorMessageVisible?: boolean;
+  setIsErrorMessageVisible?: (arg: boolean) => void;
+  onChange?: (e: ChangeEvent) => void;
+  onBlur?: () => void;
 }> = ({
   id,
   label,
@@ -48,7 +48,9 @@ const TextArea: React.FC<{
         <textarea
           id={id}
           onChange={(event) => {
-            onChange(event);
+            if (onChange) {
+              onChange(event);
+            }
             if (isFocused) {
               if (setIsValid) {
                 setIsValid(true);
@@ -79,7 +81,7 @@ const TextArea: React.FC<{
         />
         {isErrorMessageVisible && (
           <InputError
-            error={errorMessage}
+            error={errorMessage || ""}
             position="right"
             className={styles.textareaError}
           ></InputError>

@@ -9,7 +9,15 @@ const ModalBuilder: React.FC<{
 }> = ({ children, onOverlayClick, onFormSubmit }) => {
   return (
     <div className={styles.overlay} onClick={onOverlayClick}>
-      <Form nonAnimated onSubmit={onFormSubmit}>
+      <Form
+        nonAnimated
+        onSubmit={(event) => {
+          event.preventDefault();
+          if (onFormSubmit) {
+            onFormSubmit(event);
+          }
+        }}
+      >
         {children}
       </Form>
     </div>

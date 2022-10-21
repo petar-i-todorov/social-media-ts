@@ -12,7 +12,7 @@ import {
 import { SiUdemy } from "react-icons/si";
 import Button from "../Button/Button";
 import BouncingDotsLoader from "../BouncingDotsLoader/BouncingDotsLoader";
-import { AddPostContext } from "../../contexts/AddPostContext";
+import { ModalsManipulationContext } from "../../contexts/ModalsManipulationContext";
 import { PostsContext } from "../../contexts/PostsContext";
 import FormMessage from "../FormMessage/FormMessage";
 import ModalBuilder from "../ModalBuilder/ModalBuilder";
@@ -50,7 +50,7 @@ const AddPost: React.FC<{
   const [isOtherSelected, setIsOtherSelected] = useState(false);
   const [isHighlighted, setIsHighlighted] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const { setAddPost } = useContext(AddPostContext);
+  const { setAddPostVisibility } = useContext(ModalsManipulationContext);
   const { setPosts } = useContext(PostsContext);
   const [isFormError, setIsFormError] = useState(false);
   const [formErrorText, setFormErrorText] = useState("");
@@ -122,7 +122,7 @@ const AddPost: React.FC<{
               });
               const posts = await response.json();
               setIsLoading(false);
-              setAddPost(false);
+              setAddPostVisibility(false);
               setPosts(posts);
             } else {
               const resData = await res.json();

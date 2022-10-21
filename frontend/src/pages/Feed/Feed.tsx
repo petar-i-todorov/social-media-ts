@@ -2,13 +2,13 @@ import { useContext, useEffect, useState } from "react";
 import Button from "../../components/Button/Button";
 import Post from "../../components/Post/Post";
 import styles from "./Feed.module.scss";
-import { AddPostContext } from "../../contexts/AddPostContext";
+import { ModalsManipulationContext } from "../../contexts/ModalsManipulationContext";
 import { PostsContext } from "../../contexts/PostsContext";
 import FormMessage from "../../components/FormMessage/FormMessage";
 
 const FeedPage = () => {
   const { posts, setPosts } = useContext(PostsContext);
-  const { setAddPost } = useContext(AddPostContext);
+  const { setAddPostVisibility } = useContext(ModalsManipulationContext);
   const [isFlashMessage, setIsFlashMessage] = useState(false);
   const [flashMessageText, setFlashMessageText] = useState("");
   useEffect(() => {
@@ -28,7 +28,7 @@ const FeedPage = () => {
           color="blue"
           className={styles.addBtn}
           onClick={() => {
-            setAddPost(true);
+            setAddPostVisibility(true);
           }}
         >
           Add a post
@@ -38,24 +38,28 @@ const FeedPage = () => {
           <option value="upvotes">Most upvoted</option>
         </select>
       </menu>
-      {posts.map((post) => {
-        return (
-          <Post
-            creatorId={post.creator}
-            key={post._id}
-            id={post._id}
-            title={post.title}
-            description={post.description}
-            platform={post.platform}
-            upvotes={post.upvotes}
-            upvotedBy={post.upvotedBy}
-            downvotedBy={post.downvotedBy}
-            isFlashMessage={isFlashMessage}
-            setIsFlashMessage={setIsFlashMessage}
-            setFlashMessageText={setFlashMessageText}
-          />
-        );
-      })}
+      {posts.length > 0 ? (
+        posts.map((post) => {
+          return (
+            <Post
+              creatorId={post.creator}
+              key={post._id}
+              id={post._id}
+              title={post.title}
+              description={post.description}
+              platform={post.platform}
+              upvotes={post.upvotes}
+              upvotedBy={post.upvotedBy}
+              downvotedBy={post.downvotedBy}
+              isFlashMessage={isFlashMessage}
+              setIsFlashMessage={setIsFlashMessage}
+              setFlashMessageText={setFlashMessageText}
+            />
+          );
+        })
+      ) : (
+        <h1 className={styles.text}>No posts were found...</h1>
+      )}
       {isFlashMessage && (
         <FormMessage children={flashMessageText} color="red" flash />
       )}
