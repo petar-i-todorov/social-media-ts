@@ -14,17 +14,21 @@ import { PostsContext } from "./contexts/PostsContext";
 import { IPost } from "./types/post";
 import { DeletePostContext } from "./contexts/DeletePostContext";
 import { PostIdContext } from "./contexts/PostIdContext";
-import DeletePost from "./components/ConfirmationModals/DeletePost";
+import ConfirmationModal from "./components/ConfirmationModalBuilder/ConfirmationModalBuilder";
 
 function App() {
   const [addPost, setAddPost] = useState(false);
-  const [deletePost, setDeletePost] = useState(false);
+  const [deletePostVisibility, setDeletePostVisibility] = useState(false);
   const [posts, setPosts] = useState<IPost[]>([]);
   const [postId, setPostId] = useState(""); //postId to be manipulated
+  const [confirmClosingAddPostVisibility, setConfirmClosingAddPostVisibility] =
+    useState(false);
   return (
     <BrowserRouter>
       <PostIdContext.Provider value={{ postId, setPostId }}>
-        <DeletePostContext.Provider value={{ deletePost, setDeletePost }}>
+        <DeletePostContext.Provider
+          value={{ deletePostVisibility, setDeletePostVisibility }}
+        >
           <AddPostContext.Provider value={{ addPost, setAddPost }}>
             <PostsContext.Provider value={{ posts, setPosts }}>
               <div className={styles.app}>
@@ -42,13 +46,48 @@ function App() {
                 </Routes>
                 {addPost &&
                   ReactDOM.createPortal(
-                    <AddPost />,
+                    <AddPost
+                      setClosingConfirmationVisibility={
+                        setConfirmClosingAddPostVisibility
+                      }
+                    />,
                     document.getElementById("modal") as HTMLElement
                   )}
-                {deletePost &&
+                {deletePostVisibility &&
                   ReactDOM.createPortal(
-                    <DeletePost postId={postId} />,
+                    <ConfirmationModal
+                      question="Are you sure you want to delete this post?"
+                      onConfirmation={async () => {
+                        try {
+                          const res = await fetch(
+                            `http://localhost:8080/posts/delete/${postId}`,
+                            {
+                              method: "DELETE",
+                            }
+                          );
+                          const { updatedPosts } = await res.json();
+                          setPosts(updatedPosts);
+                          setDeletePostVisibility(false);
+                        } catch (error) {
+                          //todo
+                        }
+                      }}
+                      setVisibility={setDeletePostVisibility}
+                    />,
                     document.getElementById("modal") as HTMLElement
+                  )}
+                {confirmClosingAddPostVisibility &&
+                  ReactDOM.createPortal(
+                    <ConfirmationModal
+                      question="Are you sure you want to close this modal?"
+                      onConfirmation={() => {
+                        setAddPost(false);
+                      }}
+                      setVisibility={setConfirmClosingAddPostVisibility}
+                    />,
+                    document.getElementById(
+                      "confirm-closing-modal"
+                    ) as HTMLElement
                   )}
               </div>
             </PostsContext.Provider>

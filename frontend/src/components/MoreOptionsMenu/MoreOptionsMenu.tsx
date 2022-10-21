@@ -10,9 +10,14 @@ const MoreOptionsMenu: React.FC<{
   postId: string;
 }> = ({ isAuthor, postId }) => {
   const { setPostId } = useContext(PostIdContext);
-  const { setDeletePost } = useContext(DeletePostContext);
+  const { setDeletePostVisibility } = useContext(DeletePostContext);
   return (
-    <div className={styles.moreOptionsMenu}>
+    <div
+      className={styles.moreOptionsMenu}
+      onClick={(event) => {
+        event.stopPropagation();
+      }}
+    >
       <span className={styles.option}>
         <span>Report</span> <MdReportProblem size="20px" color="orange" />
       </span>
@@ -25,7 +30,7 @@ const MoreOptionsMenu: React.FC<{
               onClick={(event) => {
                 event.preventDefault();
                 setPostId(postId);
-                setDeletePost(true);
+                setDeletePostVisibility(true);
               }}
             >
               Delete

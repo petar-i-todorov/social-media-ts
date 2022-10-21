@@ -66,7 +66,10 @@ const Post: React.FC<{
     }
   }, [upvotedBy, downvotedBy]);
   return (
-    <div className={styles.post}>
+    <div
+      className={styles.post}
+      onClick={() => setMoreOptionsVisibility(false)}
+    >
       <div className={styles.voteContainer}>
         <Button
           color="green"
@@ -149,7 +152,8 @@ const Post: React.FC<{
             size="30"
             color="gray"
             className={styles.threeDots}
-            onClick={() => {
+            onClick={(event) => {
+              event.stopPropagation();
               if (!moreOptionsVisibility) {
                 setMoreOptionsVisibility(true);
               } else {

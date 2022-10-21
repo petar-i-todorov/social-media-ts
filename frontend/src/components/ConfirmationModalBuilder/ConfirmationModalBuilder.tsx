@@ -1,19 +1,17 @@
 import React, { MouseEventHandler } from "react";
 import Button from "../Button/Button";
-import Form from "../Form/Form";
 import ModalBuilder from "../ModalBuilder/ModalBuilder";
-import Overlay from "../ModalBuilder/ModalBuilder";
-import styles from "./ConfirmationModal.module.scss";
+import styles from "./ConfirmationModalBuilder.module.scss";
 
 const Confirm: React.FC<{
   question: string;
   onConfirmation: MouseEventHandler;
-  setConfirmModal: React.Dispatch<React.SetStateAction<boolean>>;
-}> = ({ question, onConfirmation, setConfirmModal }) => {
+  setVisibility: React.Dispatch<React.SetStateAction<boolean>>;
+}> = ({ question, onConfirmation, setVisibility }) => {
   return (
     <ModalBuilder
       onOverlayClick={() => {
-        setConfirmModal(false);
+        setVisibility(false);
       }}
     >
       <h2>{question}</h2>
@@ -21,7 +19,7 @@ const Confirm: React.FC<{
         <Button
           color="red"
           onClick={() => {
-            setConfirmModal(false);
+            setVisibility(false);
           }}
         >
           Actually, no
@@ -30,6 +28,7 @@ const Confirm: React.FC<{
           color="green"
           onClick={async (event) => {
             event.preventDefault();
+            setVisibility(false);
             onConfirmation(event);
           }}
         >

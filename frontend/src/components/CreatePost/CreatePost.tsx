@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import React, { useContext, useState } from "react";
 import Input from "../Input/Input";
 import styles from "./CreatePost.module.scss";
 import TextArea from "../TextArea/TextArea";
@@ -15,11 +15,13 @@ import BouncingDotsLoader from "../BouncingDotsLoader/BouncingDotsLoader";
 import { AddPostContext } from "../../contexts/AddPostContext";
 import { PostsContext } from "../../contexts/PostsContext";
 import FormMessage from "../FormMessage/FormMessage";
-import Form from "../Form/Form";
-import Overlay from "../ModalBuilder/ModalBuilder";
 import ModalBuilder from "../ModalBuilder/ModalBuilder";
 
-const AddPost = () => {
+const AddPost: React.FC<{
+  setClosingConfirmationVisibility: React.Dispatch<
+    React.SetStateAction<boolean>
+  >;
+}> = ({ setClosingConfirmationVisibility }) => {
   const [title, setTitle] = useState("");
   const [isTitleValid, setIsTitleValid] = useState(true);
   const [titleErrorMessage, setTitleErrorMessage] = useState("");
@@ -55,7 +57,7 @@ const AddPost = () => {
   return (
     <ModalBuilder
       onOverlayClick={() => {
-        setAddPost(false);
+        setClosingConfirmationVisibility(true);
       }}
       onFormSubmit={async (event) => {
         event.preventDefault();
