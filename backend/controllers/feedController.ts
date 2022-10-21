@@ -2,6 +2,16 @@ import { NextFunction, Request, Response } from "express";
 import Post from "../models/post";
 import CustomError from "../types/Error";
 import { validationResult } from "express-validator";
+import { createTransport } from "nodemailer";
+import { HOTMAIL_PASSWORD, HOTMAIL_USER } from "../dev-vars";
+
+const transporter = createTransport({
+  service: "hotmail",
+  auth: {
+    user: HOTMAIL_USER,
+    pass: HOTMAIL_PASSWORD,
+  },
+});
 
 export const feedController = {
   createPost: async (req: Request, res: Response, next: NextFunction) => {
@@ -160,6 +170,23 @@ export const feedController = {
     res.status(200).json({
       message: "Post was successfully deleted.",
       updatedPosts: updatedPosts,
+    });
+  },
+  reportPost: async (req: Request, res: Response, next: NextFunction) => {
+    await transporter.sendMail({
+      from: HOTMAIL_USER,
+      to: HOTMAIL_USER,
+      subject: "A post was reported.",
+      html: `<h2>Post with id ${req.params.postId} was reported.</h2>
+      <br/>
+      <hr/>
+      <br/>
+      <p>Report type: ${req.body.reportType}</p>
+      <p>Report description: ${req.body.reportMessage || "None"}</p>`,
+    });
+    res.status(200).json({
+      message:
+        "Post was successfully reported. We'll check and delete it in case we find that it breaks our rules.",
     });
   },
 };

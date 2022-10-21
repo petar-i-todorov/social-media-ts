@@ -1,39 +1,81 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useContext, useEffect, useMemo, useState } from "react";
 import Button from "../Button/Button";
 import ModalBuilder from "../ModalBuilder/ModalBuilder";
 import styles from "./ReportPost.module.scss";
 import { TiTick } from "react-icons/ti";
 import TextArea from "../TextArea/TextArea";
+import { PostIdContext } from "../../contexts/PostIdContext";
 
 const ReportPost: React.FC<{
   setVisibility: React.Dispatch<React.SetStateAction<boolean>>;
 }> = ({ setVisibility }) => {
-  const [verbalAbuseChosen, setVerbalAbuseChosen] = useState(false);
+  const { postId } = useContext(PostIdContext);
+  const [inappropriateLanguageChosen, setInappropriateLanguageChosen] =
+    useState(false);
   const [offTopicChosen, setOffTopicChosen] = useState(false);
   const [scamChosen, setScamChosen] = useState(false);
   const [otherChosen, setOtherChosen] = useState(false);
   const [isError, setIsError] = useState(false);
   const [reportMessage, setReportMessage] = useState("");
   const canProceed = useMemo(() => {
-    if (!verbalAbuseChosen && !offTopicChosen && !scamChosen && !otherChosen)
+    if (
+      !inappropriateLanguageChosen &&
+      !offTopicChosen &&
+      !scamChosen &&
+      !otherChosen
+    )
       return false;
     else {
       return true;
     }
-  }, [verbalAbuseChosen, offTopicChosen, scamChosen, otherChosen]);
+  }, [inappropriateLanguageChosen, offTopicChosen, scamChosen, otherChosen]);
+  const reportType = useMemo(() => {
+    const reportTypesArray = [];
+    inappropriateLanguageChosen &&
+      reportTypesArray.push("Inappropriate language");
+    scamChosen && reportTypesArray.push("Scam");
+    offTopicChosen && reportTypesArray.push("Off-topic");
+    otherChosen && reportTypesArray.push("Other");
+    return reportTypesArray.join(", ");
+  }, [inappropriateLanguageChosen, offTopicChosen, scamChosen, otherChosen]);
   useEffect(() => {
-    if (verbalAbuseChosen || offTopicChosen || scamChosen || otherChosen) {
+    if (
+      inappropriateLanguageChosen ||
+      offTopicChosen ||
+      scamChosen ||
+      otherChosen
+    ) {
       setIsError(false);
     }
-  }, [verbalAbuseChosen, offTopicChosen, scamChosen, otherChosen]);
+  }, [inappropriateLanguageChosen, offTopicChosen, scamChosen, otherChosen]);
   return (
     <ModalBuilder
       onOverlayClick={() => {
         setVisibility(false);
       }}
-      onFormSubmit={() => {
+      onFormSubmit={async () => {
         if (!canProceed) {
           setIsError(true);
+        } else {
+          const res = await fetch(
+            `http://localhost:8080/posts/report/${postId}`,
+            {
+              method: "POST",
+              body: JSON.stringify({
+                reportType: reportType,
+                reportMessage: reportMessage || null,
+              }),
+              headers: {
+                "Content-Type": "application/json",
+              },
+            }
+          );
+          if (res.status !== 200) {
+            //todo
+          } else {
+            const resData = await res.json();
+            //todo
+          }
         }
       }}
     >
@@ -42,17 +84,17 @@ const ReportPost: React.FC<{
         <div
           className={styles.checkBoxContainer}
           onClick={() => {
-            if (verbalAbuseChosen) {
-              setVerbalAbuseChosen(false);
+            if (inappropriateLanguageChosen) {
+              setInappropriateLanguageChosen(false);
             } else {
-              setVerbalAbuseChosen(true);
+              setInappropriateLanguageChosen(true);
             }
           }}
         >
           <div className={styles.checkBox + " " + (isError && styles.invalid)}>
-            {verbalAbuseChosen && <TiTick size="23"></TiTick>}
+            {inappropriateLanguageChosen && <TiTick size="23"></TiTick>}
           </div>
-          <span>Verbal abuse</span>
+          <span>Inappropriate language</span>
         </div>
         <div
           className={styles.checkBoxContainer}
