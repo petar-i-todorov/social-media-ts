@@ -65,6 +65,9 @@ const Post: React.FC<{
       setIsDownvoteLocked(false);
     }
   }, [upvotedBy, downvotedBy]);
+  const [showMoreVisibility, setShowMoreVisibility] = useState(
+    description.length > 250
+  );
   return (
     <div
       className={styles.post}
@@ -144,7 +147,19 @@ const Post: React.FC<{
       <div className={styles.postInfo}>
         <h2>{title}</h2>
         <hr />
-        <p>{description}</p>
+        <p>
+          {showMoreVisibility ? description.substring(0, 250) : description}{" "}
+          {showMoreVisibility && (
+            <span
+              className={styles.showMore}
+              onClick={() => {
+                setShowMoreVisibility(false);
+              }}
+            >
+              Show More
+            </span>
+          )}
+        </p>
       </div>
       <div className={styles.postSidebar}>
         <div className={styles.moreOptionsContainer}>

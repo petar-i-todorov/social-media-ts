@@ -7,8 +7,10 @@ import TextArea from "../TextArea/TextArea";
 import { PostIdContext } from "../../contexts/PostIdContext";
 
 const ReportPost: React.FC<{
-  setVisibility: React.Dispatch<React.SetStateAction<boolean>>;
-}> = ({ setVisibility }) => {
+  setClosingConfirmationVisibility: React.Dispatch<
+    React.SetStateAction<boolean>
+  >;
+}> = ({ setClosingConfirmationVisibility }) => {
   const { postId } = useContext(PostIdContext);
   const [inappropriateLanguageChosen, setInappropriateLanguageChosen] =
     useState(false);
@@ -23,11 +25,10 @@ const ReportPost: React.FC<{
       !offTopicChosen &&
       !scamChosen &&
       !otherChosen
-    )
+    ) {
       return false;
-    else {
-      return true;
     }
+    return true;
   }, [inappropriateLanguageChosen, offTopicChosen, scamChosen, otherChosen]);
   const reportType = useMemo(() => {
     const reportTypesArray = [];
@@ -51,7 +52,7 @@ const ReportPost: React.FC<{
   return (
     <ModalBuilder
       onOverlayClick={() => {
-        setVisibility(false);
+        setClosingConfirmationVisibility(true);
       }}
       onFormSubmit={async () => {
         if (!canProceed) {

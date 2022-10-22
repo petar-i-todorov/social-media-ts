@@ -186,7 +186,7 @@ export const feedController = {
     });
     res.status(200).json({
       message:
-        "Post was successfully reported. We'll check and delete it in case we find that it breaks our rules.",
+        "Post was successfully reported. We'll check and delete it in case we find out that it breaks our rules.",
     });
   },
 };

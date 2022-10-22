@@ -9,13 +9,11 @@ import FeedPage from "./pages/Feed/Feed";
 import AddPost from "./components/CreatePost/CreatePost";
 import ReactDOM from "react-dom";
 import { ModalsManipulationContext } from "./contexts/ModalsManipulationContext";
-import { MouseEvent, useState } from "react";
+import { MouseEvent, SetStateAction, useState } from "react";
 import { PostsContext } from "./contexts/PostsContext";
 import { IPost } from "./types/post";
 import { PostIdContext } from "./contexts/PostIdContext";
 import ConfirmationModal from "./components/ConfirmationModalBuilder/ConfirmationModalBuilder";
-import ModalBuilder from "./components/ModalBuilder/ModalBuilder";
-import Button from "./components/Button/Button";
 import ReportPost from "./components/ReportPost/ReportPost";
 
 function App() {
@@ -25,6 +23,10 @@ function App() {
   const [postId, setPostId] = useState(""); //postId to be manipulated
   const [confirmClosingAddPostVisibility, setConfirmClosingAddPostVisibility] =
     useState(false);
+  const [
+    confirmClosingReportPostVisibility,
+    setConfirmClosingReportPostVisibility,
+  ] = useState(false);
   const [reportPostVisibility, setReportPostVisibility] = useState(false);
   return (
     <BrowserRouter>
@@ -52,7 +54,11 @@ function App() {
               </Routes>
               {reportPostVisibility &&
                 ReactDOM.createPortal(
-                  <ReportPost setVisibility={setReportPostVisibility} />,
+                  <ReportPost
+                    setClosingConfirmationVisibility={
+                      setConfirmClosingReportPostVisibility
+                    }
+                  />,
                   document.getElementById("modal") as HTMLElement
                 )}
               {addPostVisibility &&
@@ -95,6 +101,19 @@ function App() {
                       setAddPostVisibility(false);
                     }}
                     setVisibility={setConfirmClosingAddPostVisibility}
+                  />,
+                  document.getElementById(
+                    "confirm-closing-modal"
+                  ) as HTMLElement
+                )}
+              {confirmClosingReportPostVisibility &&
+                ReactDOM.createPortal(
+                  <ConfirmationModal
+                    question="Are you sure you want to close this modal?"
+                    onConfirmation={() => {
+                      setReportPostVisibility(false);
+                    }}
+                    setVisibility={setConfirmClosingReportPostVisibility}
                   />,
                   document.getElementById(
                     "confirm-closing-modal"
