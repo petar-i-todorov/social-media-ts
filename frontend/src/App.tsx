@@ -42,7 +42,7 @@ function App() {
           }}
         >
           <PostsContext.Provider value={{ posts, setPosts }}>
-            <div className={styles.app}>
+            <div className={styles.app} id="app">
               <Routes>
                 <Route path="login" element={<LoginPage />} />
                 <Route path="signup" element={<SignupPage />} />
@@ -68,7 +68,7 @@ function App() {
                       setConfirmClosingAddPostVisibility
                     }
                   />,
-                  document.getElementById("modal") as HTMLElement
+                  document.getElementById("app") as HTMLElement
                 )}
               {deletePostVisibility &&
                 ReactDOM.createPortal(

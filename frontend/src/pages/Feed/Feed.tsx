@@ -38,7 +38,7 @@ const FeedPage = () => {
           <option value="upvotes">Most upvoted</option>
         </select>
       </menu>
-      {posts.length > 0 ? (
+      {posts.length ? (
         posts.map((post) => {
           return (
             <Post
