@@ -68,7 +68,7 @@ function App() {
                       setConfirmClosingAddPostVisibility
                     }
                   />,
-                  document.getElementById("app") as HTMLElement
+                  document.getElementById("modal") as HTMLElement
                 )}
               {deletePostVisibility &&
                 ReactDOM.createPortal(

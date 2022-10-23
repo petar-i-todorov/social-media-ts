@@ -1,5 +1,4 @@
 .overlay {
-  position: absolute;
   top: 0;
   height: 100%;
   width: 100%;
@@ -8,5 +7,5 @@
   align-items: center;
   background-color: rgba(221, 202, 202, 0.679);
   z-index: 5;
-  transform: none;
+  position: fixed;
 }
