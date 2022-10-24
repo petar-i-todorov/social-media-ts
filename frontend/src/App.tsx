@@ -9,7 +9,7 @@ import FeedPage from "./pages/Feed/Feed";
 import AddPost from "./components/CreatePost/CreatePost";
 import ReactDOM from "react-dom";
 import { ModalsManipulationContext } from "./contexts/ModalsManipulationContext";
-import { MouseEvent, SetStateAction, useState } from "react";
+import { useState } from "react";
 import { PostsContext } from "./contexts/PostsContext";
 import { IPost } from "./types/post";
 import { PostIdContext } from "./contexts/PostIdContext";

@@ -33,6 +33,8 @@ const Post: React.FC<{
   setIsFlashMessage: React.Dispatch<React.SetStateAction<boolean>>;
   setFlashMessageText: React.Dispatch<React.SetStateAction<string>>;
   creatorId: string;
+  creatorName: string;
+  createdAt: Date;
 }> = ({
   title,
   description,
@@ -45,6 +47,8 @@ const Post: React.FC<{
   setIsFlashMessage,
   setFlashMessageText,
   creatorId,
+  creatorName,
+  createdAt,
 }) => {
   const { setPosts } = useContext(PostsContext);
   const [isUpvoteLocked, setIsUpvoteLocked] = useState(false);
@@ -73,95 +77,16 @@ const Post: React.FC<{
       className={styles.post}
       onClick={() => setMoreOptionsVisibility(false)}
     >
-      <div className={styles.voteContainer}>
-        <Button
-          color="green"
-          className={
-            styles.voteBtn + " " + (isUpvoteLocked && styles.greenLocked)
-          }
-          isLocked={isUpvoteLocked}
-          onClick={async () => {
-            const response = await fetch(
-              `http://localhost:8080/posts/upvote/${id}`,
-              {
-                method: "PATCH",
-                headers: {
-                  "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                  postId: id,
-                  userId: localStorage.getItem("userId"),
-                }),
-              }
-            );
-            const resData = await response.json();
-            if (response.status === 200) {
-              setPosts(resData.updatedPosts);
-            } else if (!isFlashMessage) {
-              setFlashMessageText(resData.message);
-              setIsFlashMessage(true);
-              setTimeout(() => {
-                setIsFlashMessage(false);
-              }, 5000);
-            }
-          }}
-        >
-          +
-        </Button>
-        <span className={styles.votesQty}>{upvotes}</span>
-        <Button
-          isLocked={isDownvoteLocked}
-          color="red"
-          className={
-            styles.voteBtn + " " + (isUpvoteLocked && styles.redLocked)
-          }
-          onClick={async () => {
-            const response = await fetch(
-              `http://localhost:8080/posts/downvote/${id}`,
-              {
-                method: "PATCH",
-                headers: {
-                  "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                  postId: id,
-                  userId: localStorage.getItem("userId"),
-                }),
-              }
-            );
-            const resData = await response.json();
-            if (response.status === 200) {
-              setPosts(resData.updatedPosts);
-            } else if (!isFlashMessage) {
-              setFlashMessageText(resData.message);
-              setIsFlashMessage(true);
-              setTimeout(() => {
-                setIsFlashMessage(false);
-              }, 5000);
-            }
-          }}
-        >
-          -
-        </Button>
-      </div>
-      <div className={styles.postInfo}>
-        <h2>{title}</h2>
-        <hr />
-        <p>
-          {showMoreVisibility ? description.substring(0, 250) : description}{" "}
-          {showMoreVisibility && (
-            <span
-              className={styles.showMore}
-              onClick={() => {
-                setShowMoreVisibility(false);
-              }}
-            >
-              Show More
-            </span>
-          )}
-        </p>
-      </div>
-      <div className={styles.postSidebar}>
+      <div className={styles.postHeader}>
+        <p>{`Created by ${creatorName} on ${new Intl.DateTimeFormat("en", {
+          day: "numeric",
+          month: "numeric",
+          year: "2-digit",
+          hour: "2-digit",
+          hour12: true,
+          minute: "2-digit",
+          second: "2-digit",
+        }).format(new Date(createdAt))}`}</p>
         <div className={styles.moreOptionsContainer}>
           <BsThreeDots
             size="30"
@@ -180,21 +105,115 @@ const Post: React.FC<{
             <MoreOptionsMenu isAuthor={isAuthor.current} postId={id} />
           )}
         </div>
-        {platform === "UDEMY" ? (
-          <SiUdemy size="60" color="purple" />
-        ) : platform === "STACKOVERFLOW" ? (
-          <RiStackOverflowFill size="60" color="orange" />
-        ) : platform === "GITHUB" ? (
-          <RiGithubFill size="60" color="black" />
-        ) : platform === "YOUTUBE" ? (
-          <RiYoutubeFill size="60" color="red" />
-        ) : platform === "REDDIT" ? (
-          <RiRedditFill size="60" color="red" />
-        ) : platform === "LINKEDIN" ? (
-          <RiLinkedinBoxFill size="60" color="blue" />
-        ) : (
-          <span className={styles.other}>OTHER</span>
-        )}
+      </div>
+      <hr />
+      <div className={styles.postContent}>
+        <div className={styles.voteContainer}>
+          <Button
+            color="green"
+            className={
+              styles.voteBtn + " " + (isUpvoteLocked && styles.greenLocked)
+            }
+            isLocked={isUpvoteLocked}
+            onClick={async () => {
+              const response = await fetch(
+                `http://localhost:8080/posts/upvote/${id}`,
+                {
+                  method: "PATCH",
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                  body: JSON.stringify({
+                    postId: id,
+                    userId: localStorage.getItem("userId"),
+                  }),
+                }
+              );
+              const resData = await response.json();
+              if (response.status === 200) {
+                setPosts(resData.updatedPosts);
+              } else if (!isFlashMessage) {
+                setFlashMessageText(resData.message);
+                setIsFlashMessage(true);
+                setTimeout(() => {
+                  setIsFlashMessage(false);
+                }, 5000);
+              }
+            }}
+          >
+            +
+          </Button>
+          <span className={styles.votesQty}>{upvotes}</span>
+          <Button
+            isLocked={isDownvoteLocked}
+            color="red"
+            className={
+              styles.voteBtn + " " + (isUpvoteLocked && styles.redLocked)
+            }
+            onClick={async () => {
+              const response = await fetch(
+                `http://localhost:8080/posts/downvote/${id}`,
+                {
+                  method: "PATCH",
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                  body: JSON.stringify({
+                    postId: id,
+                    userId: localStorage.getItem("userId"),
+                  }),
+                }
+              );
+              const resData = await response.json();
+              if (response.status === 200) {
+                setPosts(resData.updatedPosts);
+              } else if (!isFlashMessage) {
+                setFlashMessageText(resData.message);
+                setIsFlashMessage(true);
+                setTimeout(() => {
+                  setIsFlashMessage(false);
+                }, 5000);
+              }
+            }}
+          >
+            -
+          </Button>
+        </div>
+        <div className={styles.postInfo}>
+          <h2>{title}</h2>
+          <div className={styles.postDescritpion}>
+            <p>
+              {showMoreVisibility ? description.substring(0, 250) : description}{" "}
+              {showMoreVisibility && (
+                <span
+                  className={styles.showMore}
+                  onClick={() => {
+                    setShowMoreVisibility(false);
+                  }}
+                >
+                  Show More
+                </span>
+              )}
+            </p>
+          </div>
+        </div>
+        <div className={styles.postSidebar}>
+          {platform === "UDEMY" ? (
+            <SiUdemy size="60" color="purple" />
+          ) : platform === "STACKOVERFLOW" ? (
+            <RiStackOverflowFill size="60" color="orange" />
+          ) : platform === "GITHUB" ? (
+            <RiGithubFill size="60" color="black" />
+          ) : platform === "YOUTUBE" ? (
+            <RiYoutubeFill size="60" color="red" />
+          ) : platform === "REDDIT" ? (
+            <RiRedditFill size="60" color="red" />
+          ) : platform === "LINKEDIN" ? (
+            <RiLinkedinBoxFill size="60" color="blue" />
+          ) : (
+            <span className={styles.other}>OTHER</span>
+          )}
+        </div>
       </div>
     </div>
   );

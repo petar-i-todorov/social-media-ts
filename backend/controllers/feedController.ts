@@ -46,7 +46,7 @@ export const feedController = {
   },
   getPosts: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const posts = await Post.find();
+      const posts = await Post.find().populate("creator");
       if (!posts) {
         const err = new CustomError(
           404,
@@ -87,7 +87,7 @@ export const feedController = {
             (id) => id.toString() !== req.body.userId
           );
           await foundPost.save();
-          const posts = await Post.find();
+          const posts = await Post.find().populate("creator");
           res.status(200).json({
             updatedPosts: posts,
             message: "Post was successfully updated.",
@@ -96,7 +96,7 @@ export const feedController = {
           foundPost.upvotes++;
           foundPost.upvotedBy.push(req.body.userId);
           await foundPost.save();
-          const posts = await Post.find();
+          const posts = await Post.find().populate("creator");
           res.status(200).json({
             updatedPosts: posts,
             message: "Post was successfully updated.",
@@ -137,7 +137,7 @@ export const feedController = {
             (id) => id.toString() !== req.body.userId
           );
           await foundPost.save();
-          const posts = await Post.find();
+          const posts = await Post.find().populate("creator");
           res.status(200).json({
             updatedPosts: posts,
             message: "Post was successfully updated.",
@@ -146,7 +146,7 @@ export const feedController = {
           foundPost.upvotes--;
           foundPost.downvotedBy.push(req.body.userId);
           await foundPost.save();
-          const posts = await Post.find();
+          const posts = await Post.find().populate("creator");
           res.status(200).json({
             updatedPosts: posts,
             message: "Post was successfully updated.",
@@ -166,7 +166,7 @@ export const feedController = {
   },
   deletePost: async (req: Request, res: Response, next: NextFunction) => {
     await Post.deleteOne({ _id: req.params.postId });
-    const updatedPosts = await Post.find();
+    const updatedPosts = await Post.find().populate("creator");
     res.status(200).json({
       message: "Post was successfully deleted.",
       updatedPosts: updatedPosts,

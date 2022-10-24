@@ -16,6 +16,9 @@ export interface IPost {
   upvotes: number;
   url: string;
   devRole: "Frontend" | "Backend" | "DevOps";
-  creator: string;
+  creator: {
+    _id: string;
+    name: string;
+  };
   _id: string;
 }

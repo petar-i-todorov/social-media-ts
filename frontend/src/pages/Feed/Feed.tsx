@@ -42,7 +42,9 @@ const FeedPage = () => {
         posts.map((post) => {
           return (
             <Post
-              creatorId={post.creator}
+              createdAt={post.createdAt}
+              creatorId={post.creator._id}
+              creatorName={post.creator.name}
               key={post._id}
               id={post._id}
               title={post.title}

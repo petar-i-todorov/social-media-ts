@@ -1,55 +1,39 @@
 .post {
   display: flex;
+  flex-direction: column;
   box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
-  padding: 20px;
   outline: 1px solid lightgray;
   justify-content: space-between;
+  background-color: rgb(237, 233, 232);
 
   .postInfo {
     display: flex;
     flex-direction: column;
     gap: 5px;
     width: 80%;
-
-    p {
-      .showMore {
-        font-weight: 500;
-        text-decoration: underline;
-        cursor: pointer;
+    h2 {
+      text-align: center;
+    }
+    .postDescritpion {
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.1);
+      p {
+        .showMore {
+          font-weight: 500;
+          text-decoration: underline;
+          cursor: pointer;
+        }
       }
     }
   }
 
-  .voteContainer {
+  .postHeader {
     display: flex;
-    flex-direction: column;
-    gap: 10px;
-    align-items: center;
-    justify-content: center;
-    width: 30px;
-
-    .voteBtn {
-      height: 30px;
-      width: 30px;
-      padding: 0;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-
-    .votesQty {
-      font-size: 20px;
-      transform: translateY(2.5px);
-    }
-  }
-
-  .postSidebar {
-    width: 60px;
-    display: flex;
-    flex-direction: column;
     justify-content: space-between;
-    align-items: center;
-
+    padding: 10px 10px 0 10px;
+    p {
+      text-align: center;
+    }
     .moreOptionsContainer {
       position: relative;
       .threeDots {
@@ -64,14 +48,46 @@
         }
       }
     }
+  }
 
-    .other {
+  .postContent {
+    display: flex;
+    justify-content: space-around;
+    padding: 10px;
+
+    .voteContainer {
       display: flex;
-      justify-content: center;
+      flex-direction: column;
+      gap: 10px;
       align-items: center;
-      width: 60px;
-      height: 60px;
-      font-weight: bold;
+      justify-content: center;
+      width: 30px;
+
+      .voteBtn {
+        height: 30px;
+        width: 30px;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .votesQty {
+        font-size: 20px;
+        transform: translateY(2.5px);
+      }
+    }
+
+    .postSidebar {
+      margin: auto 0;
+      .other {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 60px;
+        height: 60px;
+        font-weight: bold;
+      }
     }
   }
 }
