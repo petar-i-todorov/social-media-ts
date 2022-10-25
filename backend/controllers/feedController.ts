@@ -4,7 +4,7 @@ import CustomError from "../types/Error";
 import { validationResult } from "express-validator";
 import { createTransport } from "nodemailer";
 import { HOTMAIL_PASSWORD, HOTMAIL_USER } from "../dev-vars";
-import user from "../models/user";
+import { getPosts, passToErrorHandlerMiddleware } from "../utils/feed";
 
 const transporter = createTransport({
   service: "hotmail",
@@ -19,12 +19,11 @@ export const feedController = {
     try {
       const post = await Post.findById(req.params.postId);
       if (!post) {
-        const err = new CustomError(404, "Post was not found.");
-        throw err;
+        passToErrorHandlerMiddleware(next, 404, "Such a post was not found.");
       }
       res.status(200).json({ post: post });
     } catch (err) {
-      //todo
+      passToErrorHandlerMiddleware(next, 500, "Something went wrong.");
     }
   },
   createPost: async (req: Request, res: Response, next: NextFunction) => {
@@ -43,38 +42,25 @@ export const feedController = {
           res.json({ message: "Post was created successfully." });
         }, 2000);
       } else {
-        const error = new CustomError(
+        passToErrorHandlerMiddleware(
+          next,
           422,
           validationResult(req).array()[0].msg
         );
-        throw error;
       }
     } catch (err) {
-      if (!(err instanceof CustomError)) {
-        const error = new CustomError(500, "Something went wrong.");
-        next(error);
-      }
-      next(err);
+      passToErrorHandlerMiddleware(next, 500, "Something went wrong.");
     }
   },
   getPosts: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const posts = await Post.find().populate("creator");
+      const posts = await getPosts();
       if (!posts) {
-        const err = new CustomError(
-          404,
-          "Posts were not found in our storages."
-        );
-        throw err;
+        passToErrorHandlerMiddleware(next, 404, "Such a post was not found.");
       }
       res.status(200).json(posts);
     } catch (err) {
-      if (!(err instanceof CustomError)) {
-        const error = new CustomError(500, "Something went wrong.");
-        next(error);
-      } else {
-        next(err);
-      }
+      passToErrorHandlerMiddleware(next, 500, "Something went wrong.");
     }
   },
   upvotePost: async (req: Request, res: Response, next: NextFunction) => {
@@ -100,18 +86,16 @@ export const feedController = {
             (id) => id.toString() !== req.body.userId
           );
           await foundPost.save();
-          const posts = await Post.find().populate("creator");
           res.status(200).json({
-            updatedPosts: posts,
+            updatedPosts: await getPosts(),
             message: "Post was successfully updated.",
           });
         } else {
           foundPost.upvotes++;
           foundPost.upvotedBy.push(req.body.userId);
           await foundPost.save();
-          const posts = await Post.find().populate("creator");
           res.status(200).json({
-            updatedPosts: posts,
+            updatedPosts: await getPosts(),
             message: "Post was successfully updated.",
           });
         }
@@ -120,11 +104,7 @@ export const feedController = {
         throw err;
       }
     } catch (err) {
-      if (!(err instanceof CustomError)) {
-        const error = new CustomError(500, "Something went wrong.");
-        next(error);
-      }
-      next(err);
+      passToErrorHandlerMiddleware(next, 500, "Something went wrong.");
     }
   },
   downvotePost: async (req: Request, res: Response, next: NextFunction) => {
@@ -150,39 +130,31 @@ export const feedController = {
             (id) => id.toString() !== req.body.userId
           );
           await foundPost.save();
-          const posts = await Post.find().populate("creator");
           res.status(200).json({
-            updatedPosts: posts,
+            updatedPosts: await getPosts(),
             message: "Post was successfully updated.",
           });
         } else {
           foundPost.upvotes--;
           foundPost.downvotedBy.push(req.body.userId);
           await foundPost.save();
-          const posts = await Post.find().populate("creator");
           res.status(200).json({
-            updatedPosts: posts,
+            updatedPosts: await getPosts(),
             message: "Post was successfully updated.",
           });
         }
       } else {
-        const err = new CustomError(404, "Such a post was not found.");
-        throw err;
+        passToErrorHandlerMiddleware(next, 404, "Such a post was not found.");
       }
     } catch (err) {
-      if (!(err instanceof CustomError)) {
-        const error = new CustomError(500, "Something went wrong.");
-        next(error);
-      }
-      next(err);
+      passToErrorHandlerMiddleware(next, 500, "Something went wrong.");
     }
   },
   deletePost: async (req: Request, res: Response, next: NextFunction) => {
     await Post.deleteOne({ _id: req.params.postId });
-    const updatedPosts = await Post.find().populate("creator");
     res.status(200).json({
       message: "Post was successfully deleted.",
-      updatedPosts: updatedPosts,
+      updatedPosts: await getPosts(),
     });
   },
   reportPost: async (req: Request, res: Response, next: NextFunction) => {
@@ -213,9 +185,9 @@ export const feedController = {
         platform: req.body.platform,
       }
     );
-    const posts = await Post.find();
-    res
-      .status(200)
-      .json({ updatedPosts: posts, message: "Post was successfully edit." });
+    res.status(200).json({
+      updatedPosts: await getPosts(),
+      message: "Post was successfully edit.",
+    });
   },
 };

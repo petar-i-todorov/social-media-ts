@@ -7,6 +7,7 @@ import jwt from "jsonwebtoken";
 import { HOTMAIL_PASSWORD, HOTMAIL_USER, JWT_SECRET } from "../dev-vars";
 import crypto from "crypto";
 import { createTransport } from "nodemailer";
+import { passToErrorHandlerMiddleware } from "../utils/feed";
 
 const transporter = createTransport({
   service: "hotmail",
@@ -21,30 +22,30 @@ const authController = {
     try {
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
-        const error = new CustomError(
+        passToErrorHandlerMiddleware(
+          next,
           422,
-          "Invalid password. Must be at least 10 symbols."
+          "Invalid password. It has to be at least 10 symbols."
         );
-        throw error;
       }
       let foundUser = await User.findOne({ resetToken: req.params.token });
       if (!foundUser) {
-        const err = new CustomError(
+        passToErrorHandlerMiddleware(
+          next,
           404,
           "User with such an email was not found."
         );
-        throw err;
       }
       foundUser = await User.findOne({
         resetToken: req.params.token,
         resetTokenExpiresIn: { $gt: Date.now() },
       });
       if (!foundUser) {
-        const err = new CustomError(
+        passToErrorHandlerMiddleware(
+          next,
           422,
           "Reset token has expired. Please, request a new one and try again."
         );
-        throw err;
       }
       const hashedPassword = await bcrypt.hash(req.body.password, 12);
       await User.updateOne(
@@ -60,23 +61,19 @@ const authController = {
             "Your password was successfully reset. You will be redirected in 5 seconds.",
         });
       }, 2000);
-    } catch (err: any) {
-      if (!(err instanceof CustomError)) {
-        const error = new CustomError(500, "Something went wrong.");
-        next(error);
-      }
-      next(err);
+    } catch (err) {
+      passToErrorHandlerMiddleware(next, 500, "Something went wrong.");
     }
   },
   resetPassword: async (req: Request, res: Response, next: NextFunction) => {
     try {
       const foundUser = await User.findOne({ email: req.body.email });
       if (!foundUser) {
-        const err = new CustomError(
+        passToErrorHandlerMiddleware(
+          next,
           404,
           "User with such an email was not found."
         );
-        throw err;
       }
       crypto.randomBytes(12, async (err, buffer) => {
         if (err) {
@@ -110,11 +107,7 @@ const authController = {
         }
       });
     } catch (err: any) {
-      if (!(err instanceof CustomError)) {
-        const error = new CustomError(500, "Something went wrong.");
-        next(error);
-      }
-      next(err);
+      passToErrorHandlerMiddleware(next, 500, "Something went wrong.");
     }
   },
   signup: async (req: Request, res: Response, next: NextFunction) => {
@@ -131,14 +124,12 @@ const authController = {
         setTimeout(() => {
           res.status(201).json({ message: "User created successfully." });
         }, 4000);
-      } catch (err: any) {
-        const error = new CustomError(500, "Something went wrong.");
-        throw error;
+      } catch (err) {
+        passToErrorHandlerMiddleware(next, 500, "Something went wrong.");
       }
     } else {
-      const err = new CustomError(422, errors.array()[0].msg);
       setTimeout(() => {
-        next(err);
+        passToErrorHandlerMiddleware(next, 422, errors.array()[0].msg);
       }, 4000);
     }
   },
@@ -146,11 +137,11 @@ const authController = {
     try {
       const foundUser = await User.findOne({ email: req.body.email });
       if (!foundUser) {
-        const err = new CustomError(
+        passToErrorHandlerMiddleware(
+          next,
           404,
           "User with such an email was not found."
         );
-        throw err;
       } else {
         if (foundUser.password) {
           const doesMatch = await bcrypt.compare(
@@ -171,26 +162,18 @@ const authController = {
               message: "User logged in successfully.",
             });
           } else {
-            const err = new CustomError(
+            passToErrorHandlerMiddleware(
+              next,
               422,
               "Validation failed. Wrong password."
             );
-            throw err;
           }
         } else {
-          const err = new CustomError(
-            422,
-            "Something went wrong. Please, contact our Customer Service."
-          );
-          throw err;
+          passToErrorHandlerMiddleware(next, 500, "Something went wrong.");
         }
       }
     } catch (err: any) {
-      if (!(err instanceof CustomError)) {
-        const error = new CustomError(500, "Something went wrong.");
-        next(error);
-      }
-      next(err);
+      passToErrorHandlerMiddleware(next, 500, "Something went wrong.");
     }
   },
 };
