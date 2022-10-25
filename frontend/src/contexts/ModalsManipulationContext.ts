@@ -7,6 +7,8 @@ export const ModalsManipulationContext = createContext<{
   setDeletePostVisibility: React.Dispatch<React.SetStateAction<boolean>>;
   reportPostVisibility: boolean;
   setReportPostVisibility: React.Dispatch<React.SetStateAction<boolean>>;
+  editPostVisibility: boolean;
+  setEditPostVisibility: React.Dispatch<React.SetStateAction<boolean>>;
 }>({
   addPostVisibility: false,
   setAddPostVisibility: () => {},
@@ -14,4 +16,6 @@ export const ModalsManipulationContext = createContext<{
   setDeletePostVisibility: () => {},
   reportPostVisibility: false,
   setReportPostVisibility: () => {},
+  editPostVisibility: false,
+  setEditPostVisibility: () => {},
 });

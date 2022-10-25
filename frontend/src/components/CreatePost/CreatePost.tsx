@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Input from "../Input/Input";
 import styles from "./CreatePost.module.scss";
 import TextArea from "../TextArea/TextArea";
@@ -16,12 +16,16 @@ import { ModalsManipulationContext } from "../../contexts/ModalsManipulationCont
 import { PostsContext } from "../../contexts/PostsContext";
 import FormMessage from "../FormMessage/FormMessage";
 import ModalBuilder from "../ModalBuilder/ModalBuilder";
+import { IPost } from "../../types/post";
+import { PostIdContext } from "../../contexts/PostIdContext";
 
 const AddPost: React.FC<{
+  editPost?: boolean;
+  postToEdit?: IPost;
   setClosingConfirmationVisibility: React.Dispatch<
     React.SetStateAction<boolean>
   >;
-}> = ({ setClosingConfirmationVisibility }) => {
+}> = ({ setClosingConfirmationVisibility, editPost, postToEdit }) => {
   const [title, setTitle] = useState("");
   const [isTitleValid, setIsTitleValid] = useState(true);
   const [titleErrorMessage, setTitleErrorMessage] = useState("");
@@ -50,10 +54,36 @@ const AddPost: React.FC<{
   const [isOtherSelected, setIsOtherSelected] = useState(false);
   const [isHighlighted, setIsHighlighted] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const { setAddPostVisibility } = useContext(ModalsManipulationContext);
+  const { setAddPostVisibility, setEditPostVisibility } = useContext(
+    ModalsManipulationContext
+  );
   const { setPosts } = useContext(PostsContext);
   const [isFormError, setIsFormError] = useState(false);
   const [formErrorText, setFormErrorText] = useState("");
+  const { postId } = useContext(PostIdContext);
+  useEffect(() => {
+    if (postToEdit) {
+      setTitle(postToEdit.title);
+      setDescription(postToEdit.description);
+      setUrl(postToEdit.url);
+      setDevRole(postToEdit.devRole);
+      if (postToEdit.platform === "YOUTUBE") {
+        setIsYoutubeSelected(true);
+      } else if (postToEdit.platform === "UDEMY") {
+        setIsUdemySelected(true);
+      } else if (postToEdit.platform === "LINKEDIN") {
+        setIsLinkedinSelected(true);
+      } else if (postToEdit.platform === "STACKOVERFLOW") {
+        setIsStackoverflowSelected(true);
+      } else if (postToEdit.platform === "GITHUB") {
+        setIsGithubSelected(true);
+      } else if (postToEdit.platform === "REDDIT") {
+        setIsRedditSelected(true);
+      } else {
+        setIsOtherSelected(true);
+      }
+    }
+  }, []);
   return (
     <ModalBuilder
       onOverlayClick={() => {
@@ -103,31 +133,57 @@ const AddPost: React.FC<{
             ? "UDEMY"
             : "OTHER";
           try {
-            const res = await fetch("http://localhost:8080/posts/new", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({
-                creator: localStorage.getItem("userId"),
-                title: title,
-                description: description,
-                url: url,
-                devRole: devRole,
-                platform: platform,
-              }),
-            });
-            setIsLoading(false);
-            if (res.status === 200 || res.status === 201) {
-              const response = await fetch("http://localhost:8080/posts", {
-                method: "GET",
-              });
-              const posts = await response.json();
+            if (editPost && postToEdit) {
+              const res = await fetch(
+                `http://localhost:8080/posts/${postToEdit._id}`,
+                {
+                  method: "PATCH",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({
+                    id: postId,
+                    title: title,
+                    description: description,
+                    url: url,
+                    devRole: devRole,
+                    platform: platform,
+                  }),
+                }
+              );
               setIsLoading(false);
-              setAddPostVisibility(false);
-              setPosts(posts);
+              setEditPostVisibility(false);
+              if (res.status === 200) {
+                const resData = await res.json();
+                setPosts(resData.updatedPosts);
+              } else {
+                //todo
+              }
             } else {
-              const resData = await res.json();
-              setFormErrorText(resData.message);
-              setIsFormError(true);
+              const res = await fetch("http://localhost:8080/posts/new", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                  creator: localStorage.getItem("userId"),
+                  title: title,
+                  description: description,
+                  url: url,
+                  devRole: devRole,
+                  platform: platform,
+                }),
+              });
+              setIsLoading(false);
+              if (res.status === 200 || res.status === 201) {
+                const response = await fetch("http://localhost:8080/posts", {
+                  method: "GET",
+                });
+                const posts = await response.json();
+                setIsLoading(false);
+                setAddPostVisibility(false);
+                setPosts(posts);
+              } else {
+                const resData = await res.json();
+                setFormErrorText(resData.message);
+                setIsFormError(true);
+              }
             }
           } catch (err) {
             //todo
@@ -204,7 +260,7 @@ const AddPost: React.FC<{
           }}
         />
         <select
-          defaultValue="choose"
+          defaultValue={postToEdit?.devRole || "choose"}
           name="Dev Role"
           onChange={(event) => {
             const target = event.target as HTMLSelectElement;

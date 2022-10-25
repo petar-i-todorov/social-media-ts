@@ -4,6 +4,7 @@ import CustomError from "../types/Error";
 import { validationResult } from "express-validator";
 import { createTransport } from "nodemailer";
 import { HOTMAIL_PASSWORD, HOTMAIL_USER } from "../dev-vars";
+import user from "../models/user";
 
 const transporter = createTransport({
   service: "hotmail",
@@ -14,6 +15,18 @@ const transporter = createTransport({
 });
 
 export const feedController = {
+  getPost: async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const post = await Post.findById(req.params.postId);
+      if (!post) {
+        const err = new CustomError(404, "Post was not found.");
+        throw err;
+      }
+      res.status(200).json({ post: post });
+    } catch (err) {
+      //todo
+    }
+  },
   createPost: async (req: Request, res: Response, next: NextFunction) => {
     try {
       if (validationResult(req).isEmpty()) {
@@ -188,5 +201,21 @@ export const feedController = {
       message:
         "Post was successfully reported. We'll check and delete it in case we find out that it breaks our rules.",
     });
+  },
+  editPost: async (req: Request, res: Response, next: NextFunction) => {
+    await Post.updateOne(
+      { _id: req.body.id },
+      {
+        title: req.body.title,
+        desc: req.body.description,
+        url: req.body.url,
+        devRole: req.body.devRole,
+        platform: req.body.platform,
+      }
+    );
+    const posts = await Post.find();
+    res
+      .status(200)
+      .json({ updatedPosts: posts, message: "Post was successfully edit." });
   },
 };

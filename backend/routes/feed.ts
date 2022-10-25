@@ -44,5 +44,7 @@ router.patch("/upvote/:postId", feedController.upvotePost);
 router.patch("/downvote/:postId", feedController.downvotePost);
 router.delete("/delete/:postId", feedController.deletePost);
 router.post("/report/:postId", feedController.reportPost);
+router.get("/:postId", feedController.getPost);
+router.patch("/:postId", feedController.editPost);
 
 export default router;

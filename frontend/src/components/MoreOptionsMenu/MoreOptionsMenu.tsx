@@ -4,15 +4,18 @@ import { MdReportProblem } from "react-icons/md";
 import { useContext } from "react";
 import { PostIdContext } from "../../contexts/PostIdContext";
 import { ModalsManipulationContext } from "../../contexts/ModalsManipulationContext";
+import { FiEdit } from "react-icons/fi";
 
 const MoreOptionsMenu: React.FC<{
   isAuthor: boolean;
   postId: string;
 }> = ({ isAuthor, postId }) => {
   const { setPostId } = useContext(PostIdContext);
-  const { setDeletePostVisibility, setReportPostVisibility } = useContext(
-    ModalsManipulationContext
-  );
+  const {
+    setDeletePostVisibility,
+    setReportPostVisibility,
+    setEditPostVisibility,
+  } = useContext(ModalsManipulationContext);
   return (
     <div
       className={styles.moreOptionsMenu}
@@ -44,6 +47,20 @@ const MoreOptionsMenu: React.FC<{
             >
               Delete
               <MdDelete size="20px" color="gray" />
+            </span>
+          </span>
+          <hr />
+          <span className={styles.option}>
+            <span
+              className={styles.option}
+              onClick={(event) => {
+                event.preventDefault();
+                setPostId(postId);
+                setEditPostVisibility(true);
+              }}
+            >
+              Edit
+              <FiEdit size="18px" color="black" />
             </span>
           </span>
         </>

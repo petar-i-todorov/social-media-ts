@@ -16,6 +16,7 @@ const TextArea: React.FC<{
   onChange?: (e: ChangeEvent) => void;
   onBlur?: () => void;
 }> = ({
+  value,
   id,
   label,
   onChange,
@@ -46,6 +47,7 @@ const TextArea: React.FC<{
         }
       >
         <textarea
+          value={value}
           id={id}
           onChange={(event) => {
             if (onChange) {
