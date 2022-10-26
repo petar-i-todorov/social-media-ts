@@ -18,6 +18,7 @@ import FormMessage from "../FormMessage/FormMessage";
 import ModalBuilder from "../ModalBuilder/ModalBuilder";
 import { IPost } from "../../types/post";
 import { PostIdContext } from "../../contexts/PostIdContext";
+import { sortAndSetPosts } from "../../utils/feed";
 
 const AddPost: React.FC<{
   editPost?: boolean;
@@ -57,10 +58,10 @@ const AddPost: React.FC<{
   const { setAddPostVisibility, setEditPostVisibility } = useContext(
     ModalsManipulationContext
   );
-  const { setPosts } = useContext(PostsContext);
   const [isFormError, setIsFormError] = useState(false);
   const [formErrorText, setFormErrorText] = useState("");
   const { postId } = useContext(PostIdContext);
+  const { setPosts, sortBy } = useContext(PostsContext);
   useEffect(() => {
     if (postToEdit) {
       setTitle(postToEdit.title);
@@ -153,7 +154,7 @@ const AddPost: React.FC<{
               setEditPostVisibility(false);
               if (res.status === 200) {
                 const resData = await res.json();
-                setPosts(resData.updatedPosts);
+                sortAndSetPosts(resData.updatedPosts, setPosts, sortBy);
               } else {
                 //todo
               }
@@ -178,7 +179,7 @@ const AddPost: React.FC<{
                 const posts = await response.json();
                 setIsLoading(false);
                 setAddPostVisibility(false);
-                setPosts(posts);
+                sortAndSetPosts(posts, setPosts, sortBy);
               } else {
                 const resData = await res.json();
                 setFormErrorText(resData.message);

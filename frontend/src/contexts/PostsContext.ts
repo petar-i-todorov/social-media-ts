@@ -1,10 +1,14 @@
-import React, { Dispatch } from "react";
+import React, { Dispatch, SetStateAction } from "react";
 import { IPost } from "../types/post";
 
 export const PostsContext = React.createContext<{
   posts: IPost[];
-  setPosts: Dispatch<React.SetStateAction<IPost[]>>;
+  setPosts: Dispatch<SetStateAction<IPost[]>>;
+  sortBy: "RECENCY" | "VOTES";
+  setSortBy: Dispatch<SetStateAction<"RECENCY" | "VOTES">>;
 }>({
   posts: [],
   setPosts: () => {},
+  sortBy: "RECENCY",
+  setSortBy: () => {},
 });

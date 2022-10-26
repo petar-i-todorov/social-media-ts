@@ -4,7 +4,6 @@
   box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
   outline: 1px solid lightgray;
   justify-content: space-between;
-  background-color: rgb(237, 233, 232);
 
   .postInfo {
     display: flex;
@@ -17,6 +16,8 @@
     .postDescritpion {
       height: 100%;
       background-color: rgba(0, 0, 0, 0.1);
+      padding: 10px;
+      border-radius: 2px;
       p {
         .showMore {
           font-weight: 500;

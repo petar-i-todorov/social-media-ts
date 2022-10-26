@@ -15,6 +15,7 @@ import { IPost } from "./types/post";
 import { PostIdContext } from "./contexts/PostIdContext";
 import ConfirmationModal from "./components/ConfirmationModalBuilder/ConfirmationModalBuilder";
 import ReportPost from "./components/ReportPost/ReportPost";
+import { sortAndSetPosts } from "./utils/feed";
 
 function App() {
   const [addPostVisibility, setAddPostVisibility] = useState(false);
@@ -34,6 +35,8 @@ function App() {
   const [reportPostVisibility, setReportPostVisibility] = useState(false);
   const [editPostVisibility, setEditPostVisibility] = useState(false);
   const [postToEdit, setPostToEdit] = useState<IPost | null>(null);
+  const [sortBy, setSortBy] = useState<"RECENCY" | "VOTES">("RECENCY");
+
   useEffect(() => {
     const setEditPost = async () => {
       if (editPostVisibility) {
@@ -61,7 +64,7 @@ function App() {
             setEditPostVisibility,
           }}
         >
-          <PostsContext.Provider value={{ posts, setPosts }}>
+          <PostsContext.Provider value={{ posts, setPosts, sortBy, setSortBy }}>
             <div className={styles.app} id="app">
               <>
                 <Routes>
@@ -107,7 +110,7 @@ function App() {
                             }
                           );
                           const { updatedPosts } = await res.json();
-                          setPosts(updatedPosts);
+                          sortAndSetPosts(updatedPosts, setPosts, sortBy);
                           setDeletePostVisibility(false);
                         } catch (error) {
                           //todo

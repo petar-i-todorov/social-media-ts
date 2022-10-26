@@ -5,9 +5,11 @@ import styles from "./Feed.module.scss";
 import { ModalsManipulationContext } from "../../contexts/ModalsManipulationContext";
 import { PostsContext } from "../../contexts/PostsContext";
 import FormMessage from "../../components/FormMessage/FormMessage";
+import { IPost } from "../../types/post";
+import { sortAndSetPosts } from "../../utils/feed";
 
 const FeedPage = () => {
-  const { posts, setPosts } = useContext(PostsContext);
+  const { posts, setPosts, sortBy, setSortBy } = useContext(PostsContext);
   const { setAddPostVisibility } = useContext(ModalsManipulationContext);
   const [isFlashMessage, setIsFlashMessage] = useState(false);
   const [flashMessageText, setFlashMessageText] = useState("");
@@ -17,10 +19,34 @@ const FeedPage = () => {
         method: "GET",
       });
       const posts = await response.json();
-      setPosts(posts);
+      sortAndSetPosts(posts, setPosts, sortBy);
     }
     fetchData();
-  }, [setPosts]);
+  }, []);
+  useEffect(() => {
+    if (sortBy === "RECENCY") {
+      setPosts((posts) => {
+        const sortedPosts = JSON.parse(JSON.stringify(posts)).sort(
+          (postOne: IPost, postTwo: IPost) => {
+            if (postTwo.createdAt > postOne.createdAt) {
+              return 1;
+            }
+            return -1;
+          }
+        );
+        return sortedPosts;
+      });
+    } else if (sortBy === "VOTES") {
+      setPosts((posts) => {
+        const sortedPosts = JSON.parse(JSON.stringify(posts)).sort(
+          (postOne: IPost, postTwo: IPost) => {
+            return postTwo.upvotes - postOne.upvotes;
+          }
+        );
+        return sortedPosts;
+      });
+    }
+  }, [sortBy]);
   return (
     <main className={styles.feed}>
       <menu className={styles.feedMenu}>
@@ -33,9 +59,19 @@ const FeedPage = () => {
         >
           Add a post
         </Button>
-        <select id="sort" className={styles.sortDropdown}>
-          <option value="date">Most recent</option>
-          <option value="upvotes">Most upvoted</option>
+        <select
+          id="sort"
+          className={styles.sortDropdown}
+          onChange={(event) => {
+            if (
+              event.target.value === "RECENCY" ||
+              event.target.value === "VOTES"
+            )
+              setSortBy(event.target.value);
+          }}
+        >
+          <option value="RECENCY">Most recent</option>
+          <option value="VOTES">Most upvoted</option>
         </select>
       </menu>
       {posts.length ? (

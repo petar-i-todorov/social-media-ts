@@ -12,6 +12,7 @@ import {
 import { SiUdemy } from "react-icons/si";
 import { BsThreeDots } from "react-icons/bs";
 import MoreOptionsMenu from "../MoreOptionsMenu/MoreOptionsMenu";
+import { sortAndSetPosts } from "../../utils/feed";
 
 const Post: React.FC<{
   id: string;
@@ -50,11 +51,11 @@ const Post: React.FC<{
   creatorName,
   createdAt,
 }) => {
-  const { setPosts } = useContext(PostsContext);
   const [isUpvoteLocked, setIsUpvoteLocked] = useState(false);
   const [isDownvoteLocked, setIsDownvoteLocked] = useState(false);
   const [moreOptionsVisibility, setMoreOptionsVisibility] = useState(false);
   const isAuthor = useRef(creatorId === localStorage.getItem("userId"));
+  const { setPosts, sortBy } = useContext(PostsContext);
   useEffect(() => {
     if (upvotedBy.find((userId) => userId === localStorage.getItem("userId"))) {
       setIsUpvoteLocked(true);
@@ -131,7 +132,7 @@ const Post: React.FC<{
               );
               const resData = await response.json();
               if (response.status === 200) {
-                setPosts(resData.updatedPosts);
+                sortAndSetPosts(resData.updatedPosts, setPosts, sortBy);
               } else if (!isFlashMessage) {
                 setFlashMessageText(resData.message);
                 setIsFlashMessage(true);
@@ -166,7 +167,7 @@ const Post: React.FC<{
               );
               const resData = await response.json();
               if (response.status === 200) {
-                setPosts(resData.updatedPosts);
+                sortAndSetPosts(resData.updatedPosts, setPosts, sortBy);
               } else if (!isFlashMessage) {
                 setFlashMessageText(resData.message);
                 setIsFlashMessage(true);
