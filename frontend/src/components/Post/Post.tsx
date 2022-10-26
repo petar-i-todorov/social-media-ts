@@ -10,9 +10,10 @@ import {
   RiYoutubeFill,
 } from "react-icons/ri";
 import { SiUdemy } from "react-icons/si";
-import { BsThreeDots } from "react-icons/bs";
+import { BsFillCircleFill, BsThreeDots } from "react-icons/bs";
 import MoreOptionsMenu from "../MoreOptionsMenu/MoreOptionsMenu";
 import { sortAndSetPosts } from "../../utils/feed";
+import { IoSend } from "react-icons/io5";
 
 const Post: React.FC<{
   id: string;
@@ -216,6 +217,16 @@ const Post: React.FC<{
           )}
         </div>
       </div>
+      <hr />
+      <section className={styles.comment}>
+        <BsFillCircleFill size="35" />
+        <input
+          className={styles.commentInput}
+          type="text"
+          placeholder="Write a comment..."
+        />
+        <IoSend size="35" color="lightblue" />
+      </section>
     </div>
   );
 };
