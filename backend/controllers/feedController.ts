@@ -5,6 +5,7 @@ import { validationResult } from "express-validator";
 import { createTransport } from "nodemailer";
 import { HOTMAIL_PASSWORD, HOTMAIL_USER } from "../dev-vars";
 import { getPosts, passToErrorHandlerMiddleware } from "../utils/feed";
+import Comment from "../models/comment";
 
 const transporter = createTransport({
   service: "hotmail",
@@ -187,7 +188,23 @@ export const feedController = {
     );
     res.status(200).json({
       updatedPosts: await getPosts(),
-      message: "Post was successfully edit.",
+      message: "Post was successfully edited.",
     });
+  },
+  addComment: async (req: Request, res: Response, next: NextFunction) => {
+    const newComment = new Comment({
+      text: req.body.text,
+      postId: req.params.postId,
+      creatorId: req.body.creatorId,
+    });
+    await newComment.save();
+    const foundPost = await Post.findById(req.body.postId);
+    if (foundPost) {
+      foundPost.comments.push(newComment._id as any);
+      await foundPost.save();
+      console.log(foundPost);
+    } else {
+      passToErrorHandlerMiddleware(next, 404, "Such a post was not found.");
+    }
   },
 };

@@ -46,5 +46,6 @@ router.delete("/:postId", feedController.deletePost);
 router.post("/report/:postId", feedController.reportPost);
 router.get("/:postId", feedController.getPost);
 router.patch("/:postId", feedController.editPost);
+router.post("/addComment/:postId", feedController.addComment);
 
 export default router;

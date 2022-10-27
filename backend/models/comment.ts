@@ -1,4 +1,4 @@
-import { Schema, Types, model } from "mongoose";
+import mongoose, { Schema, Types, model } from "mongoose";
 
 const commentSchema = new Schema(
   {
@@ -18,19 +18,21 @@ const commentSchema = new Schema(
     },
     totalVotes: {
       type: Number,
-      required: true,
       default: 0,
     },
-    votes: [
-      {
-        type: Types.ObjectId,
-        required: true,
-        ref: "CommentVote",
-      },
-    ],
+    votes: {
+      type: [
+        {
+          type: Types.ObjectId,
+          required: true,
+          ref: "CommentVote",
+        },
+      ],
+      default: [],
+    },
   },
 
   { timestamps: true }
 );
 
-export default model("Comment", commentSchema);
+export default mongoose.model("Comment", commentSchema);

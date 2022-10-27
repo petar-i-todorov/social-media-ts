@@ -226,10 +226,21 @@ const Post: React.FC<{
           type="text"
           placeholder="Write a comment..."
           value={commentText}
-          onKeyUp={(event) => {
+          onKeyUp={async (event) => {
             if (event.key === "Enter") {
               if (commentText.length > 0) {
-                fetch("http://localhost:8080/");
+                await fetch(`http://localhost:8080/posts/addComment/${id}`, {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                  body: JSON.stringify({
+                    text: commentText,
+                    creatorId: localStorage.getItem("userId"),
+                    postId: id,
+                  }),
+                });
+                setCommentText("");
               }
             }
           }}
