@@ -56,6 +56,7 @@ const Post: React.FC<{
   const [isDownvoteLocked, setIsDownvoteLocked] = useState(false);
   const [moreOptionsVisibility, setMoreOptionsVisibility] = useState(false);
   const isAuthor = useRef(creatorId === localStorage.getItem("userId"));
+  const [commentText, setCommentText] = useState("");
   const { setPosts, sortBy } = useContext(PostsContext);
   useEffect(() => {
     if (upvotedBy.find((userId) => userId === localStorage.getItem("userId"))) {
@@ -224,8 +225,22 @@ const Post: React.FC<{
           className={styles.commentInput}
           type="text"
           placeholder="Write a comment..."
+          value={commentText}
+          onKeyUp={(event) => {
+            if (event.key === "Enter") {
+              if (commentText.length > 0) {
+                fetch("http://localhost:8080/");
+              }
+            }
+          }}
+          onChange={(event) => {
+            const target = event.target as HTMLInputElement;
+            setCommentText(target.value);
+          }}
         />
-        <IoSend size="35" color="lightblue" />
+        <div className={styles.send}>
+          <IoSend size="35" color="lightblue" />
+        </div>
       </section>
     </div>
   );

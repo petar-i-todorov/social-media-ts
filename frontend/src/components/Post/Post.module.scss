@@ -109,5 +109,10 @@
         outline: none;
       }
     }
+    .send {
+      &:hover {
+        cursor: pointer;
+      }
+    }
   }
 }
