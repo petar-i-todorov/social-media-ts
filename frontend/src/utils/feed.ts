@@ -1,4 +1,4 @@
-import { IPost } from "../types/post";
+import { IPost } from "../types/feed";
 
 export const sortAndSetPosts = (
   posts: IPost[],

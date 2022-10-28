@@ -5,7 +5,7 @@ import styles from "./Feed.module.scss";
 import { ModalsManipulationContext } from "../../contexts/ModalsManipulationContext";
 import { PostsContext } from "../../contexts/PostsContext";
 import FormMessage from "../../components/FormMessage/FormMessage";
-import { IPost } from "../../types/post";
+import { IPost } from "../../types/feed";
 import { sortAndSetPosts } from "../../utils/feed";
 
 const FeedPage = () => {
@@ -92,6 +92,28 @@ const FeedPage = () => {
               isFlashMessage={isFlashMessage}
               setIsFlashMessage={setIsFlashMessage}
               setFlashMessageText={setFlashMessageText}
+              comments={post.comments.map((comment) => {
+                return {
+                  _id: comment._id,
+                  likedBy: comment.votes
+                    .filter((vote) => {
+                      return vote.isLike;
+                    })
+                    .map((vote) => {
+                      return vote.userId;
+                    }),
+                  dislikedBy: comment.votes
+                    .filter((vote) => {
+                      return !vote.isLike;
+                    })
+                    .map((vote) => {
+                      return vote.userId;
+                    }),
+                  totalVotes: comment.totalVotes,
+                  creator: { name: "Petar" },
+                  text: comment.text,
+                };
+              })}
             />
           );
         })

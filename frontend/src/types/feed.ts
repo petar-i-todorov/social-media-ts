@@ -21,4 +21,18 @@ export interface IPost {
     name: string;
   };
   _id: string;
+  comments: IComment[];
+}
+
+export interface IComment {
+  _id: string;
+  creator: {
+    name: string;
+  };
+  totalVotes: number;
+  text: string;
+  votes: {
+    userId: string;
+    isLike: boolean;
+  }[];
 }

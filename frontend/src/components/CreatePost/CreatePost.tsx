@@ -16,7 +16,7 @@ import { ModalsManipulationContext } from "../../contexts/ModalsManipulationCont
 import { PostsContext } from "../../contexts/PostsContext";
 import FormMessage from "../FormMessage/FormMessage";
 import ModalBuilder from "../ModalBuilder/ModalBuilder";
-import { IPost } from "../../types/post";
+import { IPost } from "../../types/feed";
 import { PostIdContext } from "../../contexts/PostIdContext";
 import { sortAndSetPosts } from "../../utils/feed";
 

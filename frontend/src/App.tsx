@@ -11,7 +11,7 @@ import ReactDOM from "react-dom";
 import { ModalsManipulationContext } from "./contexts/ModalsManipulationContext";
 import { useEffect, useState } from "react";
 import { PostsContext } from "./contexts/PostsContext";
-import { IPost } from "./types/post";
+import { IPost } from "./types/feed";
 import { PostIdContext } from "./contexts/PostIdContext";
 import ConfirmationModal from "./components/ConfirmationModalBuilder/ConfirmationModalBuilder";
 import ReportPost from "./components/ReportPost/ReportPost";

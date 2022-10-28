@@ -1,4 +1,4 @@
-import { Schema, model, Types } from "mongoose";
+import mongoose, { Schema, Types } from "mongoose";
 
 const postSchema = new Schema(
   {
@@ -62,4 +62,4 @@ const postSchema = new Schema(
   { timestamps: true }
 );
 
-export default model("Post", postSchema);
+export default mongoose.model("Post", postSchema);

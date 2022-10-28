@@ -1,5 +1,5 @@
 import React, { Dispatch, SetStateAction } from "react";
-import { IPost } from "../types/post";
+import { IPost } from "../types/feed";
 
 export const PostsContext = React.createContext<{
   posts: IPost[];

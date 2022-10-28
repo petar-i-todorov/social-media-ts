@@ -152,59 +152,79 @@ export const feedController = {
     }
   },
   deletePost: async (req: Request, res: Response, next: NextFunction) => {
-    await Post.deleteOne({ _id: req.params.postId });
-    res.status(200).json({
-      message: "Post was successfully deleted.",
-      updatedPosts: await getPosts(),
-    });
+    try {
+      await Post.deleteOne({ _id: req.params.postId });
+      res.status(200).json({
+        message: "Post was successfully deleted.",
+        updatedPosts: await getPosts(),
+      });
+    } catch (err) {
+      passToErrorHandlerMiddleware(next, 500, "Something went wrong.");
+    }
   },
   reportPost: async (req: Request, res: Response, next: NextFunction) => {
-    await transporter.sendMail({
-      from: HOTMAIL_USER,
-      to: HOTMAIL_USER,
-      subject: "A post was reported.",
-      html: `<h2>Post with id ${req.params.postId} was reported.</h2>
-      <br/>
-      <hr/>
-      <br/>
-      <p>Report type: ${req.body.reportType}</p>
-      <p>Report description: ${req.body.reportMessage || "None"}</p>`,
-    });
-    res.status(200).json({
-      message:
-        "Post was successfully reported. We'll check and delete it in case we find out that it breaks our rules.",
-    });
+    try {
+      await transporter.sendMail({
+        from: HOTMAIL_USER,
+        to: HOTMAIL_USER,
+        subject: "A post was reported.",
+        html: `<h2>Post with id ${req.params.postId} was reported.</h2>
+        <br/>
+        <hr/>
+        <br/>
+        <p>Report type: ${req.body.reportType}</p>
+        <p>Report description: ${req.body.reportMessage || "None"}</p>`,
+      });
+      res.status(200).json({
+        message:
+          "Post was successfully reported. We'll check and delete it in case we find out that it breaks our rules.",
+      });
+    } catch (err) {
+      passToErrorHandlerMiddleware(next, 500, "Something went wrong.");
+    }
   },
   editPost: async (req: Request, res: Response, next: NextFunction) => {
-    await Post.updateOne(
-      { _id: req.body.id },
-      {
-        title: req.body.title,
-        desc: req.body.description,
-        url: req.body.url,
-        devRole: req.body.devRole,
-        platform: req.body.platform,
-      }
-    );
-    res.status(200).json({
-      updatedPosts: await getPosts(),
-      message: "Post was successfully edited.",
-    });
+    try {
+      await Post.updateOne(
+        { _id: req.body.id },
+        {
+          title: req.body.title,
+          desc: req.body.description,
+          url: req.body.url,
+          devRole: req.body.devRole,
+          platform: req.body.platform,
+        }
+      );
+      res.status(200).json({
+        updatedPosts: await getPosts(),
+        message: "Post was successfully edited.",
+      });
+    } catch (err) {
+      passToErrorHandlerMiddleware(next, 500, "Something went wrong.");
+    }
   },
   addComment: async (req: Request, res: Response, next: NextFunction) => {
-    const newComment = new Comment({
-      text: req.body.text,
-      postId: req.params.postId,
-      creatorId: req.body.creatorId,
-    });
-    await newComment.save();
-    const foundPost = await Post.findById(req.body.postId);
-    if (foundPost) {
-      foundPost.comments.push(newComment._id as any);
-      await foundPost.save();
-      console.log(foundPost);
-    } else {
-      passToErrorHandlerMiddleware(next, 404, "Such a post was not found.");
+    try {
+      const newComment = new Comment({
+        text: req.body.text,
+        post: req.params.postId,
+        creator: req.body.creatorId,
+      });
+      await newComment.save();
+      const foundPost = await Post.findById(req.params.postId);
+      if (foundPost) {
+        foundPost.comments.push(newComment._id as any);
+        await foundPost.save();
+        const posts = await getPosts();
+        res.status(201).json({
+          message: "Comment was successfully added.",
+          updatedPosts: posts,
+        });
+      } else {
+        passToErrorHandlerMiddleware(next, 404, "Such a post was not found.");
+      }
+    } catch (err) {
+      passToErrorHandlerMiddleware(next, 500, "Something went wrong.");
     }
   },
 };

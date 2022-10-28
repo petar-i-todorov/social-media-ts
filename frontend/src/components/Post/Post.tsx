@@ -14,6 +14,7 @@ import { BsFillCircleFill, BsThreeDots } from "react-icons/bs";
 import MoreOptionsMenu from "../MoreOptionsMenu/MoreOptionsMenu";
 import { sortAndSetPosts } from "../../utils/feed";
 import { IoSend } from "react-icons/io5";
+import { IComment } from "../../types/feed";
 
 const Post: React.FC<{
   id: string;
@@ -37,6 +38,14 @@ const Post: React.FC<{
   creatorId: string;
   creatorName: string;
   createdAt: Date;
+  comments: {
+    _id: string;
+    likedBy: string[];
+    dislikedBy: string[];
+    totalVotes: number;
+    creator: { name: string };
+    text: string;
+  }[];
 }> = ({
   title,
   description,
@@ -51,6 +60,7 @@ const Post: React.FC<{
   creatorId,
   creatorName,
   createdAt,
+  comments,
 }) => {
   const [isUpvoteLocked, setIsUpvoteLocked] = useState(false);
   const [isDownvoteLocked, setIsDownvoteLocked] = useState(false);
@@ -229,18 +239,26 @@ const Post: React.FC<{
           onKeyUp={async (event) => {
             if (event.key === "Enter") {
               if (commentText.length > 0) {
-                await fetch(`http://localhost:8080/posts/addComment/${id}`, {
-                  method: "POST",
-                  headers: {
-                    "Content-Type": "application/json",
-                  },
-                  body: JSON.stringify({
-                    text: commentText,
-                    creatorId: localStorage.getItem("userId"),
-                    postId: id,
-                  }),
-                });
+                const res = await fetch(
+                  `http://localhost:8080/posts/addComment/${id}`,
+                  {
+                    method: "POST",
+                    headers: {
+                      "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                      text: commentText,
+                      creatorId: localStorage.getItem("userId"),
+                    }),
+                  }
+                );
                 setCommentText("");
+                if (res.status === 200 || res.status === 201) {
+                  const resData = await res.json();
+                  sortAndSetPosts(resData.updatedPosts, setPosts, sortBy);
+                } else {
+                  //todo
+                }
               }
             }
           }}
@@ -252,6 +270,13 @@ const Post: React.FC<{
         <div className={styles.send}>
           <IoSend size="35" color="lightblue" />
         </div>
+      </section>
+      <section className={styles.comments}>
+        {comments.map((comment) => {
+          return (
+            <div key={comment._id}>{comment.text + " " + comment.likedBy}</div>
+          );
+        })}
       </section>
     </div>
   );

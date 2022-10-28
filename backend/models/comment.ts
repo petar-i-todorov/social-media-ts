@@ -1,13 +1,13 @@
-import mongoose, { Schema, Types, model } from "mongoose";
+import mongoose, { Schema, Types } from "mongoose";
 
 const commentSchema = new Schema(
   {
-    creatorId: {
+    creator: {
       type: Types.ObjectId,
       required: true,
       ref: "User",
     },
-    postId: {
+    post: {
       type: Types.ObjectId,
       required: true,
       ref: "Post",

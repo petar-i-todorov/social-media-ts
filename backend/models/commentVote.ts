@@ -5,12 +5,12 @@ const commentVoteSchema = new Schema({
     type: Boolean,
     required: true,
   },
-  commentId: {
+  comment: {
     type: Types.ObjectId,
     required: true,
     ref: "Comment",
   },
-  userId: {
+  user: {
     type: Types.ObjectId,
     required: true,
     ref: "User",
