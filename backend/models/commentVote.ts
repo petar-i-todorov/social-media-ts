@@ -1,4 +1,4 @@
-import { Schema, model, Types } from "mongoose";
+import mongoose, { Schema, Types } from "mongoose";
 
 const commentVoteSchema = new Schema({
   isLike: {
@@ -17,4 +17,4 @@ const commentVoteSchema = new Schema({
   },
 });
 
-export default model("CommentVote", commentVoteSchema);
+export default mongoose.model("CommentVote", commentVoteSchema);

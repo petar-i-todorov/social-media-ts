@@ -14,7 +14,7 @@ import { BsFillCircleFill, BsThreeDots } from "react-icons/bs";
 import MoreOptionsMenu from "../MoreOptionsMenu/MoreOptionsMenu";
 import { sortAndSetPosts } from "../../utils/feed";
 import { IoSend } from "react-icons/io5";
-import { IComment } from "../../types/feed";
+import { AiFillDislike, AiFillLike } from "react-icons/ai";
 
 const Post: React.FC<{
   id: string;
@@ -62,6 +62,7 @@ const Post: React.FC<{
   createdAt,
   comments,
 }) => {
+  const [areCommentsVisible, setAreCommentsVisible] = useState(false);
   const [isUpvoteLocked, setIsUpvoteLocked] = useState(false);
   const [isDownvoteLocked, setIsDownvoteLocked] = useState(false);
   const [moreOptionsVisibility, setMoreOptionsVisibility] = useState(false);
@@ -229,7 +230,7 @@ const Post: React.FC<{
         </div>
       </div>
       <hr />
-      <section className={styles.comment}>
+      <section className={styles.writeComment}>
         <BsFillCircleFill size="35" />
         <input
           className={styles.commentInput}
@@ -271,13 +272,66 @@ const Post: React.FC<{
           <IoSend size="35" color="lightblue" />
         </div>
       </section>
-      <section className={styles.comments}>
-        {comments.map((comment) => {
-          return (
-            <div key={comment._id}>{comment.text + " " + comment.likedBy}</div>
-          );
-        })}
-      </section>
+      <div className={styles.showComments}>
+        <span
+          onClick={() => {
+            setAreCommentsVisible(!areCommentsVisible);
+          }}
+        >
+          {!areCommentsVisible
+            ? `Show comments (${comments.length})`
+            : "Hide comments"}
+        </span>
+      </div>
+      {areCommentsVisible && (
+        <section className={styles.comments}>
+          {comments.map((comment) => {
+            return (
+              <div key={comment._id} className={styles.comment}>
+                <div className={styles.commentContent}>
+                  <BsFillCircleFill size="30.8" />
+                  <div className={styles.commentInfo}>
+                    <div className={styles.commentAuthor}>
+                      {comment.creator.name}
+                    </div>
+                    <div className={styles.commentText}>{comment.text}</div>
+                  </div>
+                </div>
+                <div className={styles.votesContainer}>
+                  <div className={styles.commentVotes}>
+                    {comment.likedBy.length}{" "}
+                    <AiFillLike
+                      color="lightgray"
+                      className={styles.voteLogo}
+                      onClick={async () => {
+                        await fetch(
+                          `http://localhost:8080/comments/${comment._id}/like`,
+                          {
+                            method: "PATCH",
+                            headers: {
+                              "Content-Type": "application/json",
+                            },
+                            body: JSON.stringify({
+                              userId: localStorage.getItem("userId"),
+                            }),
+                          }
+                        );
+                      }}
+                    />
+                  </div>
+                  <div className={styles.commentVotes}>
+                    {comment.dislikedBy.length}{" "}
+                    <AiFillDislike
+                      color="lightgray"
+                      className={styles.voteLogo}
+                    />
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </section>
+      )}
     </div>
   );
 };

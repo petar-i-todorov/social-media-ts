@@ -5,7 +5,8 @@ import authRouter from "./routes/auth";
 import cors from "cors";
 import { DB_USERNAME, DB_PASSWORD, DB_DEFAULT } from "./dev-vars";
 import CustomError from "./types/Error";
-import feedRouter from "./routes/feed";
+import postsRouter from "./routes/posts";
+import commentsRouter from "./routes/comments";
 
 dotenv.config();
 
@@ -17,7 +18,9 @@ app.use(cors());
 
 app.use("/auth", authRouter);
 
-app.use("/posts", feedRouter);
+app.use("/posts", postsRouter);
+
+app.use("/comments", commentsRouter);
 
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {
   setTimeout(() => {

@@ -13,6 +13,7 @@ const FeedPage = () => {
   const { setAddPostVisibility } = useContext(ModalsManipulationContext);
   const [isFlashMessage, setIsFlashMessage] = useState(false);
   const [flashMessageText, setFlashMessageText] = useState("");
+  console.log(posts);
   useEffect(() => {
     async function fetchData() {
       const response = await fetch("http://localhost:8080/posts", {
@@ -110,7 +111,7 @@ const FeedPage = () => {
                       return vote.userId;
                     }),
                   totalVotes: comment.totalVotes,
-                  creator: { name: "Petar" },
+                  creator: { name: comment.creator.name },
                   text: comment.text,
                 };
               })}

@@ -6,6 +6,7 @@ import { createTransport } from "nodemailer";
 import { HOTMAIL_PASSWORD, HOTMAIL_USER } from "../dev-vars";
 import { getPosts, passToErrorHandlerMiddleware } from "../utils/feed";
 import Comment from "../models/comment";
+import CommentVote from "../models/commentVote";
 
 const transporter = createTransport({
   service: "hotmail",
@@ -224,6 +225,30 @@ export const feedController = {
         passToErrorHandlerMiddleware(next, 404, "Such a post was not found.");
       }
     } catch (err) {
+      passToErrorHandlerMiddleware(next, 500, "Something went wrong.");
+    }
+  },
+  likeComment: async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const foundComment = await Comment.findById(req.params.commentId);
+      if (!foundComment) {
+        passToErrorHandlerMiddleware(
+          next,
+          404,
+          "Such a comment was not found."
+        );
+      } else {
+        const commentVote = new CommentVote({
+          isLike: true,
+          comment: foundComment._id,
+          user: req.body.userId,
+        });
+        await commentVote.save();
+        const populatedComment = await foundComment.populate("votes");
+        console.log(populatedComment.votes);
+      }
+    } catch (err) {
+      console.log(err);
       passToErrorHandlerMiddleware(next, 500, "Something went wrong.");
     }
   },

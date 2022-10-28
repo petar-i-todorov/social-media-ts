@@ -3,7 +3,15 @@ import Post from "../models/post";
 import CustomError from "../types/Error";
 
 export const getPosts = async () => {
-  return await Post.find().populate("creator").populate("comments");
+  return await Post.find()
+    .populate("creator")
+    .populate({
+      path: "comments",
+      populate: {
+        path: "creator",
+        model: "User",
+      },
+    });
 };
 
 export const passToErrorHandlerMiddleware = (
