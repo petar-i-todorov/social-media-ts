@@ -11,6 +11,13 @@ export const getPosts = async () => {
         path: "creator",
         model: "User",
       },
+    })
+    .populate({
+      path: "comments",
+      populate: {
+        path: "votes",
+        model: "CommentVote",
+      },
     });
 };
 

@@ -238,14 +238,54 @@ export const feedController = {
           "Such a comment was not found."
         );
       } else {
-        const commentVote = new CommentVote({
-          isLike: true,
-          comment: foundComment._id,
-          user: req.body.userId,
-        });
-        await commentVote.save();
         const populatedComment = await foundComment.populate("votes");
-        console.log(populatedComment.votes);
+        const prevVoteByUser: any = populatedComment.votes.find((vote: any) => {
+          if (vote.user.toString() === req.body.userId) {
+            return true;
+          }
+          return false;
+        });
+        if (!prevVoteByUser) {
+          const commentVote = new CommentVote({
+            isLike: true,
+            comment: foundComment._id,
+            user: req.body.userId,
+          });
+          await commentVote.save();
+          populatedComment.votes.push(commentVote._id as any);
+          await populatedComment.save();
+          res.status(200).json({
+            message: "Comment was successfully liked.",
+            updatedPosts: await getPosts(),
+          });
+        } else if (!prevVoteByUser.isLike) {
+          const commentVote = new CommentVote({
+            isLike: true,
+            comment: foundComment._id,
+            user: req.body.userId,
+          });
+          await commentVote.save();
+          populatedComment.votes.push(commentVote._id as any);
+          populatedComment.votes = populatedComment.votes.filter(
+            (vote: any) => vote._id !== prevVoteByUser._id
+          );
+          await populatedComment.save();
+          await CommentVote.findByIdAndDelete(prevVoteByUser._id);
+          res.status(200).json({
+            message: "Comment was successfully liked.",
+            updatedPosts: getPosts(),
+          });
+        } else {
+          await CommentVote.findByIdAndDelete(prevVoteByUser._id);
+          populatedComment.votes.filter(
+            (vote: any) => vote._id !== prevVoteByUser._id
+          );
+          await populatedComment.save();
+          res.status(200).json({
+            message: "Like was successfully removed.",
+            updatedPosts: getPosts(),
+          });
+        }
       }
     } catch (err) {
       console.log(err);

@@ -304,7 +304,7 @@ const Post: React.FC<{
                       color="lightgray"
                       className={styles.voteLogo}
                       onClick={async () => {
-                        await fetch(
+                        const res = await fetch(
                           `http://localhost:8080/comments/${comment._id}/like`,
                           {
                             method: "PATCH",
@@ -316,6 +316,17 @@ const Post: React.FC<{
                             }),
                           }
                         );
+                        if (res.status === 200) {
+                          const resData = await res.json();
+                          console.log(resData.updatedPosts);
+                          sortAndSetPosts(
+                            resData.updatedPosts,
+                            setPosts,
+                            sortBy
+                          );
+                        } else {
+                          //todo
+                        }
                       }}
                     />
                   </div>
