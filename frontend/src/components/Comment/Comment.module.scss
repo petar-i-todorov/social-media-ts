@@ -13,8 +13,13 @@
       background-color: rgba(0, 0, 0, 0.1);
       padding: 10px;
       border-radius: 2px;
-      .commentAuthor {
-        font-weight: bold;
+      .commentHeader {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        .commentAuthor {
+          font-weight: bold;
+        }
       }
     }
   }
@@ -22,7 +27,10 @@
     display: flex;
     justify-content: space-between;
     padding: 0 15px;
-    div {
+    .commentVotes {
+      display: flex;
+      align-items: center;
+      gap: 5px;
       .voteLogo {
         cursor: pointer;
       }

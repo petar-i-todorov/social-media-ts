@@ -112,6 +112,7 @@ const FeedPage = () => {
                   totalVotes: comment.totalVotes,
                   creator: { name: comment.creator.name },
                   text: comment.text,
+                  createdAt: comment.createdAt,
                 };
               })}
             />

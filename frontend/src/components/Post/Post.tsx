@@ -15,6 +15,7 @@ import MoreOptionsMenu from "../MoreOptionsMenu/MoreOptionsMenu";
 import { sortAndSetPosts } from "../../utils/feed";
 import { IoSend } from "react-icons/io5";
 import Comment from "../Comment/Comment";
+import ReactTimeAgo from "react-time-ago";
 
 const Post: React.FC<{
   id: string;
@@ -45,6 +46,7 @@ const Post: React.FC<{
     totalVotes: number;
     creator: { name: string };
     text: string;
+    createdAt: Date;
   }[];
 }> = ({
   title,
@@ -92,15 +94,10 @@ const Post: React.FC<{
       onClick={() => setMoreOptionsVisibility(false)}
     >
       <div className={styles.postHeader}>
-        <p>{`Created by ${creatorName} on ${new Intl.DateTimeFormat("en", {
-          day: "numeric",
-          month: "numeric",
-          year: "2-digit",
-          hour: "2-digit",
-          hour12: true,
-          minute: "2-digit",
-          second: "2-digit",
-        }).format(new Date(createdAt))}`}</p>
+        <p>
+          {`Created by ${creatorName}`}{" "}
+          <ReactTimeAgo date={new Date(createdAt)} locale="en-US" />
+        </p>
         <div className={styles.moreOptionsContainer}>
           <BsThreeDots
             size="30"
@@ -278,9 +275,11 @@ const Post: React.FC<{
             setAreCommentsVisible(!areCommentsVisible);
           }}
         >
-          {!areCommentsVisible
-            ? `Show comments (${comments.length})`
-            : "Hide comments"}
+          {comments.length
+            ? !areCommentsVisible
+              ? `Show comments (${comments.length})`
+              : "Hide comments"
+            : ""}
         </span>
       </div>
       {areCommentsVisible && (

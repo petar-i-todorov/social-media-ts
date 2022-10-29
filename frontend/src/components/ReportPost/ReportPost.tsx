@@ -5,6 +5,7 @@ import styles from "./ReportPost.module.scss";
 import { TiTick } from "react-icons/ti";
 import TextArea from "../TextArea/TextArea";
 import { PostIdContext } from "../../contexts/PostIdContext";
+import { ModalsManipulationContext } from "../../contexts/ModalsManipulationContext";
 
 const ReportPost: React.FC<{
   setClosingConfirmationVisibility: React.Dispatch<
@@ -19,6 +20,7 @@ const ReportPost: React.FC<{
   const [otherChosen, setOtherChosen] = useState(false);
   const [isError, setIsError] = useState(false);
   const [reportMessage, setReportMessage] = useState("");
+  const { setReportPostVisibility } = useContext(ModalsManipulationContext);
   const canProceed = useMemo(() => {
     if (
       !inappropriateLanguageChosen &&
@@ -76,6 +78,7 @@ const ReportPost: React.FC<{
           } else {
             const resData = await res.json();
             //todo
+            setReportPostVisibility(false);
           }
         }
       }}

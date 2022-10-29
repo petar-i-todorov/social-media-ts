@@ -16,8 +16,13 @@ import { PostIdContext } from "./contexts/PostIdContext";
 import ConfirmationModal from "./components/ConfirmationModalBuilder/ConfirmationModalBuilder";
 import ReportPost from "./components/ReportPost/ReportPost";
 import { sortAndSetPosts } from "./utils/feed";
+import TimeAgo from "javascript-time-ago";
+import en from "javascript-time-ago/locale/en.json";
 
 function App() {
+  useEffect(() => {
+    TimeAgo.addDefaultLocale(en);
+  }, []);
   const [addPostVisibility, setAddPostVisibility] = useState(false);
   const [deletePostVisibility, setDeletePostVisibility] = useState(false);
   const [posts, setPosts] = useState<IPost[]>([]);

@@ -4,6 +4,7 @@ import { BsFillCircleFill } from "react-icons/bs";
 import { PostsContext } from "../../contexts/PostsContext";
 import { sortAndSetPosts } from "../../utils/feed";
 import styles from "./Comment.module.scss";
+import ReactTimeAgo from "react-time-ago";
 
 const Comment: React.FC<{
   comment: {
@@ -13,6 +14,7 @@ const Comment: React.FC<{
     totalVotes: number;
     creator: { name: string };
     text: string;
+    createdAt: Date;
   };
 }> = ({ comment }) => {
   const { setPosts, sortBy } = useContext(PostsContext);
@@ -21,7 +23,11 @@ const Comment: React.FC<{
       <div className={styles.commentContent}>
         <BsFillCircleFill size="30.8" />
         <div className={styles.commentInfo}>
-          <div className={styles.commentAuthor}>{comment.creator.name}</div>
+          <div className={styles.commentHeader}>
+            <span className={styles.commentAuthor}>{comment.creator.name}</span>
+            <BsFillCircleFill size="5" color="gray" />{" "}
+            <ReactTimeAgo date={new Date(comment.createdAt)} />
+          </div>
           <div className={styles.commentText}>{comment.text}</div>
         </div>
       </div>

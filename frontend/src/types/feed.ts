@@ -35,4 +35,5 @@ export interface IComment {
     user: string;
     isLike: boolean;
   }[];
+  createdAt: Date;
 }
