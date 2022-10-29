@@ -20,7 +20,7 @@ const Comment: React.FC<{
   };
 }> = ({ comment }) => {
   const { setPosts, sortBy } = useContext(PostsContext);
-  const { setFeedFlashMessageText, setIsFeedFlashMessage } =
+  const { setFeedFlashMessageConfiguration, setIsFeedFlashMessage } =
     useContext(FlashMessageContext);
   return (
     <div className={styles.comment}>
@@ -66,9 +66,10 @@ const Comment: React.FC<{
                 sortAndSetPosts(resData.updatedPosts, setPosts, sortBy);
               } else {
                 setIsFeedFlashMessage(true);
-                setFeedFlashMessageText(
-                  "Something went wrong. Please, try again later."
-                );
+                setFeedFlashMessageConfiguration({
+                  text: "Something went wrong. Please, try again later.",
+                  color: "red",
+                });
                 setTimeout(() => {
                   setIsFeedFlashMessage(false);
                 }, 5000);
@@ -106,9 +107,10 @@ const Comment: React.FC<{
                 sortAndSetPosts(resData.updatedPosts, setPosts, sortBy);
               } else {
                 setIsFeedFlashMessage(true);
-                setFeedFlashMessageText(
-                  "Something went wrong. Please, try again later."
-                );
+                setFeedFlashMessageConfiguration({
+                  text: "Something went wrong. Please, try again later.",
+                  color: "red",
+                });
                 setTimeout(() => {
                   setIsFeedFlashMessage(false);
                 }, 5000);

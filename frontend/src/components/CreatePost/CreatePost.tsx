@@ -28,7 +28,7 @@ const AddPost: React.FC<{
     React.SetStateAction<boolean>
   >;
 }> = ({ setClosingConfirmationVisibility, editPost, postToEdit }) => {
-  const { setFeedFlashMessageText, setIsFeedFlashMessage } =
+  const { setFeedFlashMessageConfiguration, setIsFeedFlashMessage } =
     useContext(FlashMessageContext);
   const [title, setTitle] = useState("");
   const [isTitleValid, setIsTitleValid] = useState(true);
@@ -160,9 +160,10 @@ const AddPost: React.FC<{
                 sortAndSetPosts(resData.updatedPosts, setPosts, sortBy);
               } else {
                 setIsFeedFlashMessage(true);
-                setFeedFlashMessageText(
-                  "Something went wrong. Please, try again later."
-                );
+                setFeedFlashMessageConfiguration({
+                  text: "Something went wrong. Please, try again later.",
+                  color: "red",
+                });
                 setTimeout(() => {
                   setIsFeedFlashMessage(false);
                 }, 5000);
@@ -197,9 +198,10 @@ const AddPost: React.FC<{
             }
           } catch (err) {
             setIsFeedFlashMessage(true);
-            setFeedFlashMessageText(
-              "Something went wrong. Please, try again later."
-            );
+            setFeedFlashMessageConfiguration({
+              text: "Something went wrong. Please, try again later.",
+              color: "red",
+            });
             setTimeout(() => {
               setIsFeedFlashMessage(false);
             }, 5000);

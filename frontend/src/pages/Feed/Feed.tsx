@@ -13,8 +13,8 @@ const FeedPage = () => {
   const { posts, setPosts, sortBy, setSortBy } = useContext(PostsContext);
   const { setAddPostVisibility } = useContext(ModalsManipulationContext);
   const {
-    feedFlashMessageText,
-    setFeedFlashMessageText,
+    feedFlashMessageConfiguration,
+    setFeedFlashMessageConfiguration,
     isFeedFlashMessage,
     setIsFeedFlashMessage,
   } = useContext(FlashMessageContext);
@@ -94,9 +94,6 @@ const FeedPage = () => {
               upvotes={post.upvotes}
               upvotedBy={post.upvotedBy}
               downvotedBy={post.downvotedBy}
-              isFlashMessage={isFeedFlashMessage}
-              setIsFlashMessage={setIsFeedFlashMessage}
-              setFlashMessageText={setFeedFlashMessageText}
               comments={post.comments.map((comment) => {
                 return {
                   _id: comment._id,

@@ -35,9 +35,6 @@ const Post: React.FC<{
   upvotes: number;
   upvotedBy: string[];
   downvotedBy: string[];
-  isFlashMessage: boolean;
-  setIsFlashMessage: React.Dispatch<React.SetStateAction<boolean>>;
-  setFlashMessageText: React.Dispatch<React.SetStateAction<string>>;
   creatorId: string;
   creatorName: string;
   createdAt: Date;
@@ -58,16 +55,17 @@ const Post: React.FC<{
   id,
   upvotedBy,
   downvotedBy,
-  isFlashMessage,
-  setIsFlashMessage,
-  setFlashMessageText,
   creatorId,
   creatorName,
   createdAt,
   comments,
 }) => {
-  const { setIsFeedFlashMessage, setFeedFlashMessageText } =
-    useContext(FlashMessageContext);
+  const {
+    setIsFeedFlashMessage,
+    setFeedFlashMessageConfiguration,
+    isFeedFlashMessage,
+    feedFlashMessageConfiguration,
+  } = useContext(FlashMessageContext);
   const [areCommentsVisible, setAreCommentsVisible] = useState(false);
   const [isUpvoteLocked, setIsUpvoteLocked] = useState(false);
   const [isDownvoteLocked, setIsDownvoteLocked] = useState(false);
@@ -147,11 +145,14 @@ const Post: React.FC<{
               const resData = await response.json();
               if (response.status === 200) {
                 sortAndSetPosts(resData.updatedPosts, setPosts, sortBy);
-              } else if (!isFlashMessage) {
-                setFlashMessageText(resData.message);
-                setIsFlashMessage(true);
+              } else if (!isFeedFlashMessage) {
+                setFeedFlashMessageConfiguration({
+                  text: resData.message,
+                  color: "red",
+                });
+                setIsFeedFlashMessage(true);
                 setTimeout(() => {
-                  setIsFlashMessage(false);
+                  setIsFeedFlashMessage(false);
                 }, 5000);
               }
             }}
@@ -182,11 +183,14 @@ const Post: React.FC<{
               const resData = await response.json();
               if (response.status === 200) {
                 sortAndSetPosts(resData.updatedPosts, setPosts, sortBy);
-              } else if (!isFlashMessage) {
-                setFlashMessageText(resData.message);
-                setIsFlashMessage(true);
+              } else if (!isFeedFlashMessage) {
+                setFeedFlashMessageConfiguration({
+                  text: resData.message,
+                  color: "red",
+                });
+                setIsFeedFlashMessage(true);
                 setTimeout(() => {
-                  setIsFlashMessage(false);
+                  setIsFeedFlashMessage(false);
                 }, 5000);
               }
             }}
@@ -260,9 +264,10 @@ const Post: React.FC<{
                   sortAndSetPosts(resData.updatedPosts, setPosts, sortBy);
                 } else {
                   setIsFeedFlashMessage(true);
-                  setFeedFlashMessageText(
-                    "Something went wrong. Please, try again later."
-                  );
+                  setFeedFlashMessageConfiguration({
+                    text: "Something went wrong. Please, try again later.",
+                    color: "red",
+                  });
                   setTimeout(() => {
                     setIsFeedFlashMessage(false);
                   }, 5000);

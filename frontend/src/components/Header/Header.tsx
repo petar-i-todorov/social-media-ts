@@ -7,7 +7,7 @@ import { useContext } from "react";
 import { FlashMessageContext } from "../../contexts/FlashMessageFeedContext";
 
 const NavBar = () => {
-  const { isFeedFlashMessage, feedFlashMessageText } =
+  const { isFeedFlashMessage, feedFlashMessageConfiguration } =
     useContext(FlashMessageContext);
   return (
     <>
@@ -28,7 +28,11 @@ const NavBar = () => {
           </li>
         </ul>
         {isFeedFlashMessage && (
-          <FormMessage children={feedFlashMessageText} color="red" flash />
+          <FormMessage
+            children={feedFlashMessageConfiguration.text}
+            color={feedFlashMessageConfiguration.color}
+            flash
+          />
         )}
       </header>
       <Outlet />

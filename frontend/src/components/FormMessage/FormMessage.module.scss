@@ -7,6 +7,7 @@
   border-radius: 3px;
   text-shadow: 2px 2px 5px black;
   color: white;
+  text-align: center;
 }
 
 .red {
@@ -18,7 +19,7 @@
 }
 
 .flash {
-  width: 30%;
+  width: 400px;
   position: absolute;
   top: 50px;
   transform: translateY(-200px);

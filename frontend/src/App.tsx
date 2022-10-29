@@ -43,7 +43,11 @@ function App() {
   const [postToEdit, setPostToEdit] = useState<IPost | null>(null);
   const [sortBy, setSortBy] = useState<"RECENCY" | "VOTES">("RECENCY");
   const [isFeedFlashMessage, setIsFeedFlashMessage] = useState(false);
-  const [feedFlashMessageText, setFeedFlashMessageText] = useState("");
+  const [feedFlashMessageConfiguration, setFeedFlashMessageConfiguration] =
+    useState<{ text: string; color: "red" | "green" }>({
+      text: "",
+      color: "red",
+    });
   useEffect(() => {
     const setEditPost = async () => {
       if (editPostVisibility) {
@@ -60,9 +64,9 @@ function App() {
     <BrowserRouter>
       <FlashMessageContext.Provider
         value={{
-          feedFlashMessageText,
+          feedFlashMessageConfiguration,
           isFeedFlashMessage,
-          setFeedFlashMessageText,
+          setFeedFlashMessageConfiguration,
           setIsFeedFlashMessage,
         }}
       >
