@@ -2,8 +2,13 @@ import styles from "./Header.module.scss";
 import { AiOutlineSearch } from "react-icons/ai";
 import { Outlet } from "react-router-dom";
 import ThemeSwitcher from "../ThemeSwitcher/ThemeSwitcher";
+import FormMessage from "../FormMessage/FormMessage";
+import { useContext } from "react";
+import { FlashMessageContext } from "../../contexts/FlashMessageFeedContext";
 
 const NavBar = () => {
+  const { isFeedFlashMessage, feedFlashMessageText } =
+    useContext(FlashMessageContext);
   return (
     <>
       <header className={styles.header}>
@@ -22,6 +27,9 @@ const NavBar = () => {
             <ThemeSwitcher />
           </li>
         </ul>
+        {isFeedFlashMessage && (
+          <FormMessage children={feedFlashMessageText} color="red" flash />
+        )}
       </header>
       <Outlet />
     </>

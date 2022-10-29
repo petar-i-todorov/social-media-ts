@@ -9,9 +9,7 @@ router.post(
   "/new",
   body("title")
     .isLength({ min: 5, max: 50 })
-    .withMessage("Invalid title. Allowed length is between 5 and 50 symbols.")
-    .isAlphanumeric()
-    .withMessage("Invalid title. Only alphanumeric symbols are allowed."),
+    .withMessage("Invalid title. Allowed length is between 5 and 50 symbols."),
   body("description")
     .isLength({ min: 20, max: 1000 })
     .withMessage(

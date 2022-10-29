@@ -7,12 +7,17 @@ import { PostsContext } from "../../contexts/PostsContext";
 import FormMessage from "../../components/FormMessage/FormMessage";
 import { IPost } from "../../types/feed";
 import { sortAndSetPosts } from "../../utils/feed";
+import { FlashMessageContext } from "../../contexts/FlashMessageFeedContext";
 
 const FeedPage = () => {
   const { posts, setPosts, sortBy, setSortBy } = useContext(PostsContext);
   const { setAddPostVisibility } = useContext(ModalsManipulationContext);
-  const [isFlashMessage, setIsFlashMessage] = useState(false);
-  const [flashMessageText, setFlashMessageText] = useState("");
+  const {
+    feedFlashMessageText,
+    setFeedFlashMessageText,
+    isFeedFlashMessage,
+    setIsFeedFlashMessage,
+  } = useContext(FlashMessageContext);
   useEffect(() => {
     async function fetchData() {
       const response = await fetch("http://localhost:8080/posts", {
@@ -89,9 +94,9 @@ const FeedPage = () => {
               upvotes={post.upvotes}
               upvotedBy={post.upvotedBy}
               downvotedBy={post.downvotedBy}
-              isFlashMessage={isFlashMessage}
-              setIsFlashMessage={setIsFlashMessage}
-              setFlashMessageText={setFlashMessageText}
+              isFlashMessage={isFeedFlashMessage}
+              setIsFlashMessage={setIsFeedFlashMessage}
+              setFlashMessageText={setFeedFlashMessageText}
               comments={post.comments.map((comment) => {
                 return {
                   _id: comment._id,
@@ -120,9 +125,6 @@ const FeedPage = () => {
         })
       ) : (
         <h1 className={styles.text}>No posts were found...</h1>
-      )}
-      {isFlashMessage && (
-        <FormMessage children={flashMessageText} color="red" flash />
       )}
     </main>
   );

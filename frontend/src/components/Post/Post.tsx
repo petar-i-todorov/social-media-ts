@@ -10,12 +10,14 @@ import {
   RiYoutubeFill,
 } from "react-icons/ri";
 import { SiUdemy } from "react-icons/si";
-import { BsFillCircleFill, BsThreeDots } from "react-icons/bs";
+import { BsThreeDots } from "react-icons/bs";
 import MoreOptionsMenu from "../MoreOptionsMenu/MoreOptionsMenu";
 import { sortAndSetPosts } from "../../utils/feed";
 import { IoSend } from "react-icons/io5";
 import Comment from "../Comment/Comment";
 import ReactTimeAgo from "react-time-ago";
+import { FaUserCircle } from "react-icons/fa";
+import { FlashMessageContext } from "../../contexts/FlashMessageFeedContext";
 
 const Post: React.FC<{
   id: string;
@@ -64,6 +66,8 @@ const Post: React.FC<{
   createdAt,
   comments,
 }) => {
+  const { setIsFeedFlashMessage, setFeedFlashMessageText } =
+    useContext(FlashMessageContext);
   const [areCommentsVisible, setAreCommentsVisible] = useState(false);
   const [isUpvoteLocked, setIsUpvoteLocked] = useState(false);
   const [isDownvoteLocked, setIsDownvoteLocked] = useState(false);
@@ -95,7 +99,7 @@ const Post: React.FC<{
     >
       <div className={styles.postHeader}>
         <p>
-          {`Created by ${creatorName}`}{" "}
+          {`Posted by ${creatorName}`}{" "}
           <ReactTimeAgo date={new Date(createdAt)} locale="en-US" />
         </p>
         <div className={styles.moreOptionsContainer}>
@@ -228,7 +232,7 @@ const Post: React.FC<{
       </div>
       <hr />
       <section className={styles.writeComment}>
-        <BsFillCircleFill size="35" />
+        <FaUserCircle size="35" />
         <input
           className={styles.commentInput}
           type="text"
@@ -255,7 +259,13 @@ const Post: React.FC<{
                   const resData = await res.json();
                   sortAndSetPosts(resData.updatedPosts, setPosts, sortBy);
                 } else {
-                  //todo
+                  setIsFeedFlashMessage(true);
+                  setFeedFlashMessageText(
+                    "Something went wrong. Please, try again later."
+                  );
+                  setTimeout(() => {
+                    setIsFeedFlashMessage(false);
+                  }, 5000);
                 }
               }
             }

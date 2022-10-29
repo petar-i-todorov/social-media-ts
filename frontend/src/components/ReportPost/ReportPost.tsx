@@ -6,12 +6,15 @@ import { TiTick } from "react-icons/ti";
 import TextArea from "../TextArea/TextArea";
 import { PostIdContext } from "../../contexts/PostIdContext";
 import { ModalsManipulationContext } from "../../contexts/ModalsManipulationContext";
+import { FlashMessageContext } from "../../contexts/FlashMessageFeedContext";
 
 const ReportPost: React.FC<{
   setClosingConfirmationVisibility: React.Dispatch<
     React.SetStateAction<boolean>
   >;
 }> = ({ setClosingConfirmationVisibility }) => {
+  const { setIsFeedFlashMessage, setFeedFlashMessageText } =
+    useContext(FlashMessageContext);
   const { postId } = useContext(PostIdContext);
   const [inappropriateLanguageChosen, setInappropriateLanguageChosen] =
     useState(false);
@@ -74,10 +77,16 @@ const ReportPost: React.FC<{
             }
           );
           if (res.status !== 200) {
-            //todo
+            setIsFeedFlashMessage(true);
+            setFeedFlashMessageText(
+              "Something went wrong. Please, try again later."
+            );
+            setTimeout(() => {
+              setIsFeedFlashMessage(false);
+            }, 5000);
           } else {
             const resData = await res.json();
-            //todo
+            // todo
             setReportPostVisibility(false);
           }
         }

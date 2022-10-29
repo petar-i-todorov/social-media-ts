@@ -19,6 +19,7 @@ import ModalBuilder from "../ModalBuilder/ModalBuilder";
 import { IPost } from "../../types/feed";
 import { PostIdContext } from "../../contexts/PostIdContext";
 import { sortAndSetPosts } from "../../utils/feed";
+import { FlashMessageContext } from "../../contexts/FlashMessageFeedContext";
 
 const AddPost: React.FC<{
   editPost?: boolean;
@@ -27,6 +28,8 @@ const AddPost: React.FC<{
     React.SetStateAction<boolean>
   >;
 }> = ({ setClosingConfirmationVisibility, editPost, postToEdit }) => {
+  const { setFeedFlashMessageText, setIsFeedFlashMessage } =
+    useContext(FlashMessageContext);
   const [title, setTitle] = useState("");
   const [isTitleValid, setIsTitleValid] = useState(true);
   const [titleErrorMessage, setTitleErrorMessage] = useState("");
@@ -156,7 +159,13 @@ const AddPost: React.FC<{
                 const resData = await res.json();
                 sortAndSetPosts(resData.updatedPosts, setPosts, sortBy);
               } else {
-                //todo
+                setIsFeedFlashMessage(true);
+                setFeedFlashMessageText(
+                  "Something went wrong. Please, try again later."
+                );
+                setTimeout(() => {
+                  setIsFeedFlashMessage(false);
+                }, 5000);
               }
             } else {
               const res = await fetch("http://localhost:8080/posts/new", {
@@ -187,7 +196,13 @@ const AddPost: React.FC<{
               }
             }
           } catch (err) {
-            //todo
+            setIsFeedFlashMessage(true);
+            setFeedFlashMessageText(
+              "Something went wrong. Please, try again later."
+            );
+            setTimeout(() => {
+              setIsFeedFlashMessage(false);
+            }, 5000);
           }
         }
       }}

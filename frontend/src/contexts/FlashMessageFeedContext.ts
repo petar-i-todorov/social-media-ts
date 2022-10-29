@@ -1,6 +1,6 @@
 import { createContext } from "react";
 
-export const flashMessage = createContext<{
+export const FlashMessageContext = createContext<{
   isFeedFlashMessage: boolean;
   setIsFeedFlashMessage: React.Dispatch<React.SetStateAction<boolean>>;
   feedFlashMessageText: string;

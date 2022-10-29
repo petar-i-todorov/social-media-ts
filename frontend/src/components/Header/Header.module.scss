@@ -4,7 +4,9 @@
   display: flex;
   align-items: center;
   background-color: darkblue;
-
+  position: fixed;
+  z-index: 5;
+  justify-content: center;
   .nav {
     display: flex;
     list-style: none;

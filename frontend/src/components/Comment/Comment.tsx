@@ -5,6 +5,8 @@ import { PostsContext } from "../../contexts/PostsContext";
 import { sortAndSetPosts } from "../../utils/feed";
 import styles from "./Comment.module.scss";
 import ReactTimeAgo from "react-time-ago";
+import { FaUserCircle } from "react-icons/fa";
+import { FlashMessageContext } from "../../contexts/FlashMessageFeedContext";
 
 const Comment: React.FC<{
   comment: {
@@ -18,10 +20,12 @@ const Comment: React.FC<{
   };
 }> = ({ comment }) => {
   const { setPosts, sortBy } = useContext(PostsContext);
+  const { setFeedFlashMessageText, setIsFeedFlashMessage } =
+    useContext(FlashMessageContext);
   return (
     <div className={styles.comment}>
       <div className={styles.commentContent}>
-        <BsFillCircleFill size="30.8" />
+        <FaUserCircle size="30.8" />
         <div className={styles.commentInfo}>
           <div className={styles.commentHeader}>
             <span className={styles.commentAuthor}>{comment.creator.name}</span>
@@ -35,14 +39,15 @@ const Comment: React.FC<{
         <div className={styles.commentVotes}>
           {comment.likedBy.length}{" "}
           <AiFillLike
-            color={
-              comment.likedBy.find((userId) => {
+            className={
+              styles.voteLogo +
+              " " +
+              (comment.likedBy.find((userId) => {
                 return userId === localStorage.getItem("userId");
               })
-                ? "black"
-                : "lightgray"
+                ? styles.pressed
+                : styles.nonPressed)
             }
-            className={styles.voteLogo}
             onClick={async () => {
               const res = await fetch(
                 `http://localhost:8080/comments/${comment._id}/like`,
@@ -60,7 +65,13 @@ const Comment: React.FC<{
                 const resData = await res.json();
                 sortAndSetPosts(resData.updatedPosts, setPosts, sortBy);
               } else {
-                //todo
+                setIsFeedFlashMessage(true);
+                setFeedFlashMessageText(
+                  "Something went wrong. Please, try again later."
+                );
+                setTimeout(() => {
+                  setIsFeedFlashMessage(false);
+                }, 5000);
               }
             }}
           />
@@ -68,14 +79,15 @@ const Comment: React.FC<{
         <div className={styles.commentVotes}>
           {comment.dislikedBy.length}{" "}
           <AiFillDislike
-            color={
-              comment.dislikedBy.find((userId) => {
+            className={
+              styles.voteLogo +
+              " " +
+              (comment.dislikedBy.find((userId) => {
                 return userId === localStorage.getItem("userId");
               })
-                ? "black"
-                : "lightgray"
+                ? styles.pressed
+                : styles.nonPressed)
             }
-            className={styles.voteLogo}
             onClick={async () => {
               const res = await fetch(
                 `http://localhost:8080/comments/${comment._id}/dislike`,
@@ -93,7 +105,13 @@ const Comment: React.FC<{
                 const resData = await res.json();
                 sortAndSetPosts(resData.updatedPosts, setPosts, sortBy);
               } else {
-                //todo
+                setIsFeedFlashMessage(true);
+                setFeedFlashMessageText(
+                  "Something went wrong. Please, try again later."
+                );
+                setTimeout(() => {
+                  setIsFeedFlashMessage(false);
+                }, 5000);
               }
             }}
           />
