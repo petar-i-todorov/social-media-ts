@@ -61,7 +61,36 @@ const Comment: React.FC<{
         </div>
         <div className={styles.commentVotes}>
           {comment.dislikedBy.length}{" "}
-          <AiFillDislike color="lightgray" className={styles.voteLogo} />
+          <AiFillDislike
+            color={
+              comment.dislikedBy.find((userId) => {
+                return userId === localStorage.getItem("userId");
+              })
+                ? "black"
+                : "lightgray"
+            }
+            className={styles.voteLogo}
+            onClick={async () => {
+              const res = await fetch(
+                `http://localhost:8080/comments/${comment._id}/dislike`,
+                {
+                  method: "PATCH",
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                  body: JSON.stringify({
+                    userId: localStorage.getItem("userId"),
+                  }),
+                }
+              );
+              if (res.status === 200) {
+                const resData = await res.json();
+                sortAndSetPosts(resData.updatedPosts, setPosts, sortBy);
+              } else {
+                //todo
+              }
+            }}
+          />
         </div>
       </div>
     </div>
