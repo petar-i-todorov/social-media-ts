@@ -100,14 +100,14 @@ const FeedPage = () => {
                       return vote.isLike;
                     })
                     .map((vote) => {
-                      return vote.userId;
+                      return vote.user;
                     }),
                   dislikedBy: comment.votes
                     .filter((vote) => {
                       return !vote.isLike;
                     })
                     .map((vote) => {
-                      return vote.userId;
+                      return vote.user;
                     }),
                   totalVotes: comment.totalVotes,
                   creator: { name: comment.creator.name },

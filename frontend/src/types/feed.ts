@@ -32,7 +32,7 @@ export interface IComment {
   totalVotes: number;
   text: string;
   votes: {
-    userId: string;
+    user: string;
     isLike: boolean;
   }[];
 }

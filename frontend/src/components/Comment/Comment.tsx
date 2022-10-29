@@ -29,7 +29,13 @@ const Comment: React.FC<{
         <div className={styles.commentVotes}>
           {comment.likedBy.length}{" "}
           <AiFillLike
-            color="lightgray"
+            color={
+              comment.likedBy.find((userId) => {
+                return userId === localStorage.getItem("userId");
+              })
+                ? "black"
+                : "lightgray"
+            }
             className={styles.voteLogo}
             onClick={async () => {
               const res = await fetch(

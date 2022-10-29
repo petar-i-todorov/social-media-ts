@@ -124,12 +124,12 @@
   }
 
   .showComments {
-    cursor: pointer;
     padding: 0 10px;
     text-align: end;
     font-weight: 500;
     span {
       border-bottom: 2px dotted lightgray;
+      cursor: pointer;
     }
   }
 }
