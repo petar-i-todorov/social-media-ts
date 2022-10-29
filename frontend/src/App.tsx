@@ -133,11 +133,37 @@ function App() {
                                 method: "DELETE",
                               }
                             );
-                            const { updatedPosts } = await res.json();
-                            sortAndSetPosts(updatedPosts, setPosts, sortBy);
-                            setDeletePostVisibility(false);
+                            if (res.status === 200) {
+                              const { updatedPosts } = await res.json();
+                              sortAndSetPosts(updatedPosts, setPosts, sortBy);
+                              setDeletePostVisibility(false);
+                              setIsFeedFlashMessage(true);
+                              setFeedFlashMessageConfiguration({
+                                text: "Post was successfully deleted.",
+                                color: "green",
+                              });
+                              setTimeout(() => {
+                                setIsFeedFlashMessage(false);
+                              }, 5000);
+                            } else {
+                              setIsFeedFlashMessage(true);
+                              setFeedFlashMessageConfiguration({
+                                text: "Something went wrong. Please, try again later.",
+                                color: "red",
+                              });
+                              setTimeout(() => {
+                                setIsFeedFlashMessage(false);
+                              }, 5000);
+                            }
                           } catch (error) {
-                            //todo
+                            setIsFeedFlashMessage(true);
+                            setFeedFlashMessageConfiguration({
+                              text: "Something went wrong. Please, try again later.",
+                              color: "red",
+                            });
+                            setTimeout(() => {
+                              setIsFeedFlashMessage(false);
+                            }, 5000);
                           }
                         }}
                         setVisibility={setDeletePostVisibility}

@@ -4,20 +4,12 @@ import Post from "../../components/Post/Post";
 import styles from "./Feed.module.scss";
 import { ModalsManipulationContext } from "../../contexts/ModalsManipulationContext";
 import { PostsContext } from "../../contexts/PostsContext";
-import FormMessage from "../../components/FormMessage/FormMessage";
 import { IPost } from "../../types/feed";
 import { sortAndSetPosts } from "../../utils/feed";
-import { FlashMessageContext } from "../../contexts/FlashMessageFeedContext";
 
 const FeedPage = () => {
   const { posts, setPosts, sortBy, setSortBy } = useContext(PostsContext);
   const { setAddPostVisibility } = useContext(ModalsManipulationContext);
-  const {
-    feedFlashMessageConfiguration,
-    setFeedFlashMessageConfiguration,
-    isFeedFlashMessage,
-    setIsFeedFlashMessage,
-  } = useContext(FlashMessageContext);
   useEffect(() => {
     async function fetchData() {
       const response = await fetch("http://localhost:8080/posts", {

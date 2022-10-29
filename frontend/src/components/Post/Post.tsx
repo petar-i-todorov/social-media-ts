@@ -284,19 +284,21 @@ const Post: React.FC<{
           <IoSend size="35" color="lightblue" />
         </div>
       </section>
-      <div className={styles.showComments}>
-        <span
-          onClick={() => {
-            setAreCommentsVisible(!areCommentsVisible);
-          }}
-        >
-          {comments.length
-            ? !areCommentsVisible
+      {comments.length ? (
+        <div className={styles.showComments}>
+          <span
+            onClick={() => {
+              setAreCommentsVisible(!areCommentsVisible);
+            }}
+          >
+            {!areCommentsVisible
               ? `Show comments (${comments.length})`
-              : "Hide comments"
-            : ""}
-        </span>
-      </div>
+              : "Hide comments"}
+          </span>
+        </div>
+      ) : (
+        ""
+      )}
       {areCommentsVisible && (
         <section className={styles.comments}>
           {comments.map((comment) => {

@@ -158,6 +158,14 @@ const AddPost: React.FC<{
               if (res.status === 200) {
                 const resData = await res.json();
                 sortAndSetPosts(resData.updatedPosts, setPosts, sortBy);
+                setIsFeedFlashMessage(true);
+                setFeedFlashMessageConfiguration({
+                  text: resData.message,
+                  color: "green",
+                });
+                setTimeout(() => {
+                  setIsFeedFlashMessage(false);
+                }, 5000);
               } else {
                 setIsFeedFlashMessage(true);
                 setFeedFlashMessageConfiguration({
@@ -187,9 +195,16 @@ const AddPost: React.FC<{
                   method: "GET",
                 });
                 const posts = await response.json();
-                setIsLoading(false);
                 setAddPostVisibility(false);
                 sortAndSetPosts(posts, setPosts, sortBy);
+                setIsFeedFlashMessage(true);
+                setFeedFlashMessageConfiguration({
+                  text: "Post was successfully created.",
+                  color: "green",
+                });
+                setTimeout(() => {
+                  setIsFeedFlashMessage(false);
+                }, 5000);
               } else {
                 const resData = await res.json();
                 setFormErrorText(resData.message);
