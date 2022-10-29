@@ -1,0 +1,31 @@
+.comment {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  .commentContent {
+    display: flex;
+    gap: 10px;
+    .commentInfo {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      width: 100%;
+      background-color: rgba(0, 0, 0, 0.1);
+      padding: 10px;
+      border-radius: 2px;
+      .commentAuthor {
+        font-weight: bold;
+      }
+    }
+  }
+  .votesContainer {
+    display: flex;
+    justify-content: space-between;
+    padding: 0 15px;
+    div {
+      .voteLogo {
+        cursor: pointer;
+      }
+    }
+  }
+}

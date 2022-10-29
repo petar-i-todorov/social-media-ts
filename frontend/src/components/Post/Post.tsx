@@ -14,7 +14,7 @@ import { BsFillCircleFill, BsThreeDots } from "react-icons/bs";
 import MoreOptionsMenu from "../MoreOptionsMenu/MoreOptionsMenu";
 import { sortAndSetPosts } from "../../utils/feed";
 import { IoSend } from "react-icons/io5";
-import { AiFillDislike, AiFillLike } from "react-icons/ai";
+import Comment from "../Comment/Comment";
 
 const Post: React.FC<{
   id: string;
@@ -286,60 +286,7 @@ const Post: React.FC<{
       {areCommentsVisible && (
         <section className={styles.comments}>
           {comments.map((comment) => {
-            return (
-              <div key={comment._id} className={styles.comment}>
-                <div className={styles.commentContent}>
-                  <BsFillCircleFill size="30.8" />
-                  <div className={styles.commentInfo}>
-                    <div className={styles.commentAuthor}>
-                      {comment.creator.name}
-                    </div>
-                    <div className={styles.commentText}>{comment.text}</div>
-                  </div>
-                </div>
-                <div className={styles.votesContainer}>
-                  <div className={styles.commentVotes}>
-                    {comment.likedBy.length}{" "}
-                    <AiFillLike
-                      color="lightgray"
-                      className={styles.voteLogo}
-                      onClick={async () => {
-                        const res = await fetch(
-                          `http://localhost:8080/comments/${comment._id}/like`,
-                          {
-                            method: "PATCH",
-                            headers: {
-                              "Content-Type": "application/json",
-                            },
-                            body: JSON.stringify({
-                              userId: localStorage.getItem("userId"),
-                            }),
-                          }
-                        );
-                        if (res.status === 200) {
-                          const resData = await res.json();
-                          console.log(resData.updatedPosts);
-                          sortAndSetPosts(
-                            resData.updatedPosts,
-                            setPosts,
-                            sortBy
-                          );
-                        } else {
-                          //todo
-                        }
-                      }}
-                    />
-                  </div>
-                  <div className={styles.commentVotes}>
-                    {comment.dislikedBy.length}{" "}
-                    <AiFillDislike
-                      color="lightgray"
-                      className={styles.voteLogo}
-                    />
-                  </div>
-                </div>
-              </div>
-            );
+            return <Comment comment={comment} key={comment._id} />;
           })}
         </section>
       )}

@@ -240,7 +240,7 @@ export const feedController = {
       } else {
         const populatedComment = await foundComment.populate("votes");
         const prevVoteByUser: any = populatedComment.votes.find((vote: any) => {
-          if (vote.user.toString() === req.body.userId) {
+          if (vote.user._id.toString() === req.body.userId) {
             return true;
           }
           return false;
@@ -273,7 +273,7 @@ export const feedController = {
           await CommentVote.findByIdAndDelete(prevVoteByUser._id);
           res.status(200).json({
             message: "Comment was successfully liked.",
-            updatedPosts: getPosts(),
+            updatedPosts: await getPosts(),
           });
         } else {
           await CommentVote.findByIdAndDelete(prevVoteByUser._id);
@@ -283,7 +283,7 @@ export const feedController = {
           await populatedComment.save();
           res.status(200).json({
             message: "Like was successfully removed.",
-            updatedPosts: getPosts(),
+            updatedPosts: await getPosts(),
           });
         }
       }
