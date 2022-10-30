@@ -19,6 +19,7 @@ import ReactTimeAgo from "react-time-ago";
 import { FaUserCircle } from "react-icons/fa";
 import { FlashMessageContext } from "../../contexts/FlashMessageFeedContext";
 import PostSkeleton from "./PostSkeleton";
+import { Link } from "react-router-dom";
 
 const Post: React.FC<{
   id: string;
@@ -98,7 +99,8 @@ const Post: React.FC<{
     >
       <div className={styles.postHeader}>
         <p>
-          {`Posted by ${creatorName}`}{" "}
+          <span>Posted by </span>
+          <Link to={"user/" + creatorId}>{creatorName} </Link>
           <ReactTimeAgo date={new Date(createdAt)} locale="en-US" />
         </p>
         <div className={styles.moreOptionsContainer}>

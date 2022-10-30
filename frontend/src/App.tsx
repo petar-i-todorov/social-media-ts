@@ -19,6 +19,7 @@ import { sortAndSetPosts } from "./utils/feed";
 import TimeAgo from "javascript-time-ago";
 import en from "javascript-time-ago/locale/en.json";
 import { FlashMessageContext } from "./contexts/FlashMessageFeedContext";
+import User from "./pages/User/User";
 
 function App() {
   useEffect(() => {
@@ -101,6 +102,7 @@ function App() {
                     />
                     <Route path="" element={<Header />}>
                       <Route path="" element={<FeedPage />} />
+                      <Route path="user/:userId" element={<User />} />
                     </Route>
                   </Routes>
                   {reportPostVisibility &&

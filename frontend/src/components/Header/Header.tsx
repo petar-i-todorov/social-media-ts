@@ -5,6 +5,7 @@ import ThemeSwitcher from "../ThemeSwitcher/ThemeSwitcher";
 import FormMessage from "../FormMessage/FormMessage";
 import { useContext } from "react";
 import { FlashMessageContext } from "../../contexts/FlashMessageFeedContext";
+import { FaUserCircle } from "react-icons/fa";
 
 const NavBar = () => {
   const { isFeedFlashMessage, feedFlashMessageConfiguration } =
@@ -13,7 +14,9 @@ const NavBar = () => {
     <>
       <header className={styles.header}>
         <ul className={styles.nav}>
-          <li>Avatar</li>
+          <li>
+            <FaUserCircle size="35" />
+          </li>
           <li className={styles.searchContainer}>
             <AiOutlineSearch size="30" color="black" />
             <input
@@ -21,7 +24,6 @@ const NavBar = () => {
               className={styles.searchBar}
             />
           </li>
-          <li>Messages</li>
           <li>Dev Role</li>
           <li>
             <ThemeSwitcher />
