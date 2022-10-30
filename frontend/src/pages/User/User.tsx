@@ -3,12 +3,14 @@ import { FaCircle } from "react-icons/fa";
 import { useParams } from "react-router-dom";
 import Post from "../../components/Post/Post";
 import { FlashMessageContext } from "../../contexts/FlashMessageFeedContext";
+import { PostsContext } from "../../contexts/PostsContext";
 import { IComment, IPost } from "../../types/feed";
 import styles from "./User.module.scss";
 
 const User = () => {
   const [user, setUser] = useState<any>();
   const params = useParams();
+  const { posts } = useContext(PostsContext);
   const { setFeedFlashMessageConfiguration, setIsFeedFlashMessage } =
     useContext(FlashMessageContext);
   useEffect(() => {
@@ -31,7 +33,7 @@ const User = () => {
       }
     };
     fetchUser();
-  }, []);
+  }, [posts]);
   return (
     <div className={styles.userPage}>
       {user ? (

@@ -65,7 +65,6 @@ const Post: React.FC<{
     setIsFeedFlashMessage,
     setFeedFlashMessageConfiguration,
     isFeedFlashMessage,
-    feedFlashMessageConfiguration,
   } = useContext(FlashMessageContext);
   const [areCommentsVisible, setAreCommentsVisible] = useState(false);
   const [isUpvoteLocked, setIsUpvoteLocked] = useState(false);

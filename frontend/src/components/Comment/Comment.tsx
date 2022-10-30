@@ -19,7 +19,6 @@ const Comment: React.FC<{
     createdAt: Date;
   };
 }> = ({ comment }) => {
-  console.log(comment);
   const { setPosts, sortBy } = useContext(PostsContext);
   const { setFeedFlashMessageConfiguration, setIsFeedFlashMessage } =
     useContext(FlashMessageContext);

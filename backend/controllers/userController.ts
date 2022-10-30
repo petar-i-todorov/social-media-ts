@@ -27,10 +27,6 @@ export const userController = {
             populate: {
               path: "votes",
               model: "CommentVote",
-              populate: {
-                path: "user",
-                model: "User",
-              },
             },
           },
         });
