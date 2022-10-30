@@ -48,3 +48,13 @@
 .text {
   text-align: center;
 }
+
+.skeletonsContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  .skeleton {
+    box-shadow: 2px 2px 5px rgb(0 0 0 / 10%);
+    outline: 1px solid lightgray;
+  }
+}

@@ -18,6 +18,7 @@ import Comment from "../Comment/Comment";
 import ReactTimeAgo from "react-time-ago";
 import { FaUserCircle } from "react-icons/fa";
 import { FlashMessageContext } from "../../contexts/FlashMessageFeedContext";
+import PostSkeleton from "./PostSkeleton";
 
 const Post: React.FC<{
   id: string;

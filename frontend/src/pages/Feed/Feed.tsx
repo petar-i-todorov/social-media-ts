@@ -6,16 +6,20 @@ import { ModalsManipulationContext } from "../../contexts/ModalsManipulationCont
 import { PostsContext } from "../../contexts/PostsContext";
 import { IPost } from "../../types/feed";
 import { sortAndSetPosts } from "../../utils/feed";
+import PostSkeleton from "../../components/Post/PostSkeleton";
 
 const FeedPage = () => {
   const { posts, setPosts, sortBy, setSortBy } = useContext(PostsContext);
   const { setAddPostVisibility } = useContext(ModalsManipulationContext);
+  const [isLoading, setIsLoading] = useState(false);
   useEffect(() => {
     async function fetchData() {
+      setIsLoading(true);
       const response = await fetch("http://localhost:8080/posts", {
         method: "GET",
       });
       const posts = await response.json();
+      setIsLoading(false);
       sortAndSetPosts(posts, setPosts, sortBy);
     }
     fetchData();
@@ -112,6 +116,18 @@ const FeedPage = () => {
             />
           );
         })
+      ) : isLoading ? (
+        <div className={styles.skeletonsContainer}>
+          <div className={styles.skeleton}>
+            <PostSkeleton />
+          </div>
+          <div className={styles.skeleton}>
+            <PostSkeleton />
+          </div>
+          <div className={styles.skeleton}>
+            <PostSkeleton />
+          </div>
+        </div>
       ) : (
         <h1 className={styles.text}>No posts were found...</h1>
       )}
