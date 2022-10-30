@@ -7,6 +7,7 @@ import { DB_USERNAME, DB_PASSWORD, DB_DEFAULT } from "./dev-vars";
 import CustomError from "./types/Error";
 import postsRouter from "./routes/posts";
 import commentsRouter from "./routes/comments";
+import usersRouter from "./routes/users";
 
 dotenv.config();
 
@@ -21,6 +22,8 @@ app.use("/auth", authRouter);
 app.use("/posts", postsRouter);
 
 app.use("/comments", commentsRouter);
+
+app.use("/users", usersRouter);
 
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {
   setTimeout(() => {

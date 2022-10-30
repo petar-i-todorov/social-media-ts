@@ -1,7 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import User from "../models/user";
 import { validationResult } from "express-validator";
-import CustomError from "../types/Error";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { HOTMAIL_PASSWORD, HOTMAIL_USER, JWT_SECRET } from "../dev-vars";
