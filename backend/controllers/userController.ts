@@ -37,7 +37,6 @@ export const userController = {
       if (!foundUser) {
         passToErrorHandlerMiddleware(next, 404, "Such a user was not found.");
       } else {
-        console.log(foundUser);
         res.status(200).json({
           message: "User was successfully found and returned.",
           user: foundUser,

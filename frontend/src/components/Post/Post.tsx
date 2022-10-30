@@ -18,7 +18,6 @@ import Comment from "../Comment/Comment";
 import ReactTimeAgo from "react-time-ago";
 import { FaUserCircle } from "react-icons/fa";
 import { FlashMessageContext } from "../../contexts/FlashMessageFeedContext";
-import PostSkeleton from "./PostSkeleton";
 import { Link } from "react-router-dom";
 
 const Post: React.FC<{

@@ -7,6 +7,7 @@ import { HOTMAIL_PASSWORD, HOTMAIL_USER } from "../dev-vars";
 import { getPosts, passToErrorHandlerMiddleware } from "../utils/feed";
 import Comment from "../models/comment";
 import CommentVote from "../models/commentVote";
+import user from "../models/user";
 
 const transporter = createTransport({
   service: "hotmail",
@@ -31,18 +32,25 @@ export const feedController = {
   createPost: async (req: Request, res: Response, next: NextFunction) => {
     try {
       if (validationResult(req).isEmpty()) {
-        const createdPost = new Post({
-          creator: req.body.creator,
-          title: req.body.title,
-          description: req.body.description,
-          url: req.body.url,
-          devRole: req.body.devRole,
-          platform: req.body.platform,
-        });
-        await createdPost.save();
-        setTimeout(() => {
-          res.json({ message: "Post was created successfully." });
-        }, 2000);
+        const creator = await user.findById(req.body.creator);
+        if (!creator) {
+          passToErrorHandlerMiddleware(next, 404, "Something went wrong.");
+        } else {
+          const createdPost = new Post({
+            creator: creator._id,
+            title: req.body.title,
+            description: req.body.description,
+            url: req.body.url,
+            devRole: req.body.devRole,
+            platform: req.body.platform,
+          });
+          await createdPost.save();
+          creator.posts.push(createdPost._id as any);
+          await creator.save();
+          setTimeout(() => {
+            res.json({ message: "Post was created successfully." });
+          }, 2000);
+        }
       } else {
         passToErrorHandlerMiddleware(
           next,
