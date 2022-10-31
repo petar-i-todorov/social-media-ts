@@ -85,7 +85,7 @@ const User = () => {
               size="25"
               onClick={(event) => {
                 event.stopPropagation();
-                setUpdateQuoteMode(true);
+                setUpdateQuoteMode((state) => !state);
               }}
             />
             <FaCircle size="150" color="gray" className={styles.userAvatar} />
@@ -93,6 +93,7 @@ const User = () => {
               {updateQuoteMode ? (
                 <>
                   <TextArea
+                    className={styles.editArea}
                     label=""
                     isValid={true}
                     value={quote}
@@ -104,7 +105,7 @@ const User = () => {
                     }}
                   />
                   <Button
-                    color="green"
+                    color="blue"
                     children={
                       isUpdating ? (
                         <BouncingDotsLoader text="Updating" />

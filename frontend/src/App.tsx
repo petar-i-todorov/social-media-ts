@@ -61,6 +61,9 @@ function App() {
     };
     setEditPost();
   }, [editPostVisibility]);
+  const [devRole, setDevRole] = useState<"FRONTEND" | "BACKEND" | "DEVOPS">(
+    "FRONTEND"
+  );
   return (
     <BrowserRouter>
       <FlashMessageContext.Provider
@@ -85,7 +88,14 @@ function App() {
             }}
           >
             <PostsContext.Provider
-              value={{ posts, setPosts, sortBy, setSortBy }}
+              value={{
+                posts,
+                setPosts,
+                sortBy,
+                setSortBy,
+                devRole,
+                setDevRole,
+              }}
             >
               <div className={styles.app} id="app">
                 <>

@@ -3,13 +3,19 @@ import { AiOutlineSearch } from "react-icons/ai";
 import { Link, Outlet } from "react-router-dom";
 import ThemeSwitcher from "../ThemeSwitcher/ThemeSwitcher";
 import FormMessage from "../FormMessage/FormMessage";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { FlashMessageContext } from "../../contexts/FlashMessageFeedContext";
 import { FaUserCircle } from "react-icons/fa";
+import { VscTriangleDown } from "react-icons/vsc";
+import { PostsContext } from "../../contexts/PostsContext";
+import { DevRole } from "../../types/feed";
+import { devRoles } from "../../constants/feed";
 
 const NavBar = () => {
   const { isFeedFlashMessage, feedFlashMessageConfiguration } =
     useContext(FlashMessageContext);
+  const { devRole, setDevRole } = useContext(PostsContext);
+  const [dropdownVisibility, setDropdownVisibility] = useState(false);
   return (
     <>
       <header className={styles.header}>
@@ -31,7 +37,42 @@ const NavBar = () => {
               <FaUserCircle size="35" color="white" />
             </Link>
           </li>
-          <li>Dev Role</li>
+          <li>
+            <div
+              className={styles.dropdownContainer}
+              onClick={() => {
+                setDropdownVisibility((state) => !state);
+              }}
+            >
+              {devRole}{" "}
+              <VscTriangleDown
+                className={
+                  styles.triangle + " " + (dropdownVisibility && styles.active)
+                }
+              />
+              <div
+                className={
+                  styles.dropdown + " " + (dropdownVisibility && styles.active)
+                }
+              >
+                {(devRoles as DevRole[])
+                  .filter((role) => role !== devRole)
+                  .map((role) => {
+                    return (
+                      <div
+                        key={role}
+                        className={styles.role}
+                        onClick={() => {
+                          setDevRole(role);
+                        }}
+                      >
+                        {role}
+                      </div>
+                    );
+                  })}
+              </div>
+            </div>
+          </li>
           <li>
             <ThemeSwitcher />
           </li>

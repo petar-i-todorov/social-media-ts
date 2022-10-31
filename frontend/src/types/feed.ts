@@ -37,3 +37,5 @@ export interface IComment {
   }[];
   createdAt: Date;
 }
+
+export type DevRole = "FRONTEND" | "BACKEND" | "DEVOPS";

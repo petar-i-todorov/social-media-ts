@@ -24,7 +24,42 @@
       font-family: "Handlee", cursive;
       font-size: 25px;
     }
-
+    .dropdownContainer {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      width: 110px;
+      cursor: pointer;
+      .dropdown.active {
+        opacity: 1;
+        transform: scaleY(1);
+      }
+      .dropdown {
+        position: absolute;
+        width: 100%;
+        border: 1px solid black;
+        background-color: white;
+        color: black;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        top: 34px;
+        transform: scaleY(0);
+        opacity: 0;
+        transition: all 0.2s ease-in-out;
+        .role {
+          text-align: center;
+          cursor: pointer;
+          padding: 5px 0;
+          &:not(:last-child) {
+            border-bottom: 1px solid black;
+          }
+        }
+      }
+    }
     .searchContainer {
       width: 50%;
       height: 80%;
@@ -34,7 +69,6 @@
       background-color: white;
       padding: 0 10px;
       border-radius: 8px;
-
       .searchBar {
         width: 100%;
         height: 100%;

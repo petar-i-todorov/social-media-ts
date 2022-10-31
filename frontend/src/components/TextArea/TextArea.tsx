@@ -16,6 +16,7 @@ const TextArea: React.FC<{
   onChange?: (e: ChangeEvent) => void;
   onBlur?: () => void;
   onClick?: MouseEventHandler;
+  className?: string;
 }> = ({
   value,
   id,
@@ -29,6 +30,7 @@ const TextArea: React.FC<{
   isValid, //css invalid input responsible
   setIsValid,
   onClick,
+  className,
 }) => {
   const [isFocused, setIsFocused] = useState(false);
   useEffect(() => {
@@ -65,7 +67,7 @@ const TextArea: React.FC<{
               }
             }
           }}
-          className={styles.textarea}
+          className={styles.textarea + " " + className}
           onBlur={() => {
             if (onBlur) {
               onBlur();
