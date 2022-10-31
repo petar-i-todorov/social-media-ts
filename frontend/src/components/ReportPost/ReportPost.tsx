@@ -73,6 +73,7 @@ const ReportPost: React.FC<{
               }),
               headers: {
                 "Content-Type": "application/json",
+                Authorization: "Bearer " + localStorage.getItem("token"),
               },
             }
           );

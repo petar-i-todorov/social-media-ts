@@ -30,15 +30,17 @@ const FeedPage = () => {
   return (
     <main className={styles.feed}>
       <menu className={styles.feedMenu}>
-        <Button
-          color="blue"
-          className={styles.addBtn}
-          onClick={() => {
-            setAddPostVisibility(true);
-          }}
-        >
-          Add a post
-        </Button>
+        {localStorage.getItem("userId") && (
+          <Button
+            color="blue"
+            className={styles.addBtn}
+            onClick={() => {
+              setAddPostVisibility(true);
+            }}
+          >
+            Add a post
+          </Button>
+        )}
         <select
           id="sort"
           className={styles.sortDropdown}

@@ -55,6 +55,7 @@ const Comment: React.FC<{
                   method: "PATCH",
                   headers: {
                     "Content-Type": "application/json",
+                    Authorization: "Bearer " + localStorage.getItem("token"),
                   },
                   body: JSON.stringify({
                     userId: localStorage.getItem("userId"),
@@ -101,6 +102,7 @@ const Comment: React.FC<{
                   method: "PATCH",
                   headers: {
                     "Content-Type": "application/json",
+                    Authorization: "Bearer " + localStorage.getItem("token"),
                   },
                   body: JSON.stringify({
                     userId: localStorage.getItem("userId"),

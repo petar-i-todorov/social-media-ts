@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { feedController } from "../controllers/feedController";
 import { body } from "express-validator";
+import { isAuth } from "../middlewares/is-auth";
 
 const router = Router();
 
@@ -38,12 +39,12 @@ router.post(
   body("url").isURL().withMessage("Invalid URL."),
   feedController.createPost
 );
-router.patch("/upvote/:postId", feedController.upvotePost);
-router.patch("/downvote/:postId", feedController.downvotePost);
-router.delete("/:postId", feedController.deletePost);
-router.post("/report/:postId", feedController.reportPost);
+router.patch("/upvote/:postId", isAuth, feedController.upvotePost);
+router.patch("/downvote/:postId", isAuth, feedController.downvotePost);
+router.delete("/:postId", isAuth, feedController.deletePost);
+router.post("/report/:postId", isAuth, feedController.reportPost);
 router.get("/:postId", feedController.getPost);
-router.patch("/:postId", feedController.editPost);
-router.post("/addComment/:postId", feedController.addComment);
+router.patch("/:postId", isAuth, feedController.editPost);
+router.post("/addComment/:postId", isAuth, feedController.addComment);
 
 export default router;

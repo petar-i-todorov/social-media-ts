@@ -142,7 +142,10 @@ const AddPost: React.FC<{
                 `http://localhost:8080/posts/${postToEdit._id}`,
                 {
                   method: "PATCH",
-                  headers: { "Content-Type": "application/json" },
+                  headers: {
+                    "Content-Type": "application/json",
+                    Authorization: "Bearer " + localStorage.getItem("token"),
+                  },
                   body: JSON.stringify({
                     id: postId,
                     title: title,
@@ -184,7 +187,10 @@ const AddPost: React.FC<{
             } else {
               const res = await fetch("http://localhost:8080/posts/new", {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
+                headers: {
+                  "Content-Type": "application/json",
+                  Authorization: "Bearer " + localStorage.getItem("token"),
+                },
                 body: JSON.stringify({
                   creator: localStorage.getItem("userId"),
                   title: title,

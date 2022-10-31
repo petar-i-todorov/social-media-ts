@@ -1,6 +1,5 @@
 import { NextFunction, Request, Response } from "express";
 import Post from "../models/post";
-import CustomError from "../types/Error";
 import { validationResult } from "express-validator";
 import { createTransport } from "nodemailer";
 import { HOTMAIL_PASSWORD, HOTMAIL_USER } from "../dev-vars";
@@ -161,11 +160,24 @@ export const feedController = {
   },
   deletePost: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      await Post.deleteOne({ _id: req.params.postId });
-      res.status(200).json({
-        message: "Post was successfully deleted.",
-        updatedPosts: await getPosts(),
-      });
+      const postToDelete = await Post.findById(req.params.postId);
+      if (postToDelete) {
+        if (postToDelete.creator.toString() === req.body.userId) {
+          await Post.deleteOne({ _id: req.params.postId });
+          res.status(200).json({
+            message: "Post was successfully deleted.",
+            updatedPosts: await getPosts(),
+          });
+        } else {
+          passToErrorHandlerMiddleware(
+            next,
+            401,
+            "You are not authorized to delete other people's posts."
+          );
+        }
+      } else {
+        passToErrorHandlerMiddleware(next, 404, "Such a post was not found.");
+      }
     } catch (err) {
       passToErrorHandlerMiddleware(next, 500, "Something went wrong.");
     }
@@ -193,20 +205,33 @@ export const feedController = {
   },
   editPost: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      await Post.updateOne(
-        { _id: req.body.id },
-        {
-          title: req.body.title,
-          desc: req.body.description,
-          url: req.body.url,
-          devRole: req.body.devRole,
-          platform: req.body.platform,
+      const foundPost = await Post.findById(req.params.postId);
+      if (!foundPost) {
+        passToErrorHandlerMiddleware(next, 404, "Such a post was not found.");
+      } else {
+        if (req.body.userId === foundPost.creator.toString()) {
+          await Post.updateOne(
+            { _id: req.params.postId },
+            {
+              title: req.body.title,
+              description: req.body.description,
+              url: req.body.url,
+              devRole: req.body.devRole,
+              platform: req.body.platform,
+            }
+          );
+          res.status(200).json({
+            updatedPosts: await getPosts(),
+            message: "Post was successfully edited.",
+          });
+        } else {
+          passToErrorHandlerMiddleware(
+            next,
+            401,
+            "You are not authorized to edit other people's posts."
+          );
         }
-      );
-      res.status(200).json({
-        updatedPosts: await getPosts(),
-        message: "Post was successfully edited.",
-      });
+      }
     } catch (err) {
       passToErrorHandlerMiddleware(next, 500, "Something went wrong.");
     }

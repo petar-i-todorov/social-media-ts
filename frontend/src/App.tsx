@@ -143,6 +143,10 @@ function App() {
                               `http://localhost:8080/posts/${postId}`,
                               {
                                 method: "DELETE",
+                                headers: {
+                                  Authorization:
+                                    "Bearer " + localStorage.getItem("token"),
+                                },
                               }
                             );
                             if (res.status === 200) {
@@ -163,9 +167,10 @@ function App() {
                                 setIsFeedFlashMessage(false);
                               }, 5000);
                             } else {
+                              const resData = await res.json();
                               setIsFeedFlashMessage(true);
                               setFeedFlashMessageConfiguration({
-                                text: "Something went wrong. Please, try again later.",
+                                text: resData.message,
                                 color: "red",
                               });
                               setTimeout(() => {
