@@ -56,12 +56,7 @@ const User = () => {
       }
     };
     fetchUser();
-  }, [
-    posts,
-    params.userId,
-    setFeedFlashMessageConfiguration,
-    setIsFeedFlashMessage,
-  ]); //w skeleton - first render
+  }, [posts]); //w skeleton - first render
   return (
     <div className={styles.userPage}>
       {isLoading ? (

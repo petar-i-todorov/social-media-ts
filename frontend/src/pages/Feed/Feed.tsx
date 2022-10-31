@@ -23,10 +23,10 @@ const FeedPage = () => {
       sortAndSetPosts(posts, setPosts, sortBy, devRole);
     }
     fetchData();
-  }, [devRole, setPosts, sortBy]);
+  }, [devRole]);
   useEffect(() => {
     sortAndSetPosts(posts, setPosts, sortBy, devRole);
-  }, [sortBy, devRole, posts, setPosts]);
+  }, [sortBy]);
   return (
     <main className={styles.feed}>
       <menu className={styles.feedMenu}>

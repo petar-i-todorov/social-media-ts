@@ -37,7 +37,7 @@ const TextArea: React.FC<{
     if (isFocused && setIsValid) {
       setIsValid(true);
     }
-  }, [isFocused, setIsValid]);
+  }, [isFocused]);
   return (
     <div className={styles.textAreaContainer}>
       <label htmlFor={id}>{label}</label>
