@@ -98,7 +98,7 @@ const Post: React.FC<{
       <div className={styles.postHeader}>
         <p>
           <span>Posted by </span>
-          <Link to={"user/" + creatorId}>{creatorName} </Link>
+          <Link to={"/user/" + creatorId}>{creatorName} </Link>
           <ReactTimeAgo date={new Date(createdAt)} locale="en-US" />
         </p>
         <div className={styles.moreOptionsContainer}>

@@ -1,6 +1,7 @@
 import { NextFunction } from "express";
 import Post from "../models/post";
 import CustomError from "../types/Error";
+import User from "../models/user";
 
 export const getPosts = async () => {
   return await Post.find()
@@ -17,6 +18,34 @@ export const getPosts = async () => {
       populate: {
         path: "votes",
         model: "CommentVote",
+      },
+    });
+};
+
+export const getUser = async (userId: string) => {
+  return await User.findById(userId)
+    .populate({
+      path: "posts",
+      model: "Post",
+      populate: {
+        path: "comments",
+        model: "Comment",
+        populate: {
+          path: "creator",
+          model: "User",
+        },
+      },
+    })
+    .populate({
+      path: "posts",
+      model: "Post",
+      populate: {
+        path: "comments",
+        model: "Comment",
+        populate: {
+          path: "votes",
+          model: "CommentVote",
+        },
       },
     });
 };
