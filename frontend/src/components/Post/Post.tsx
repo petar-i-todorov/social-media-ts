@@ -72,7 +72,7 @@ const Post: React.FC<{
   const [moreOptionsVisibility, setMoreOptionsVisibility] = useState(false);
   const isAuthor = useRef(creatorId === localStorage.getItem("userId"));
   const [commentText, setCommentText] = useState("");
-  const { setPosts, sortBy } = useContext(PostsContext);
+  const { setPosts, sortBy, devRole } = useContext(PostsContext);
   useEffect(() => {
     if (upvotedBy.find((userId) => userId === localStorage.getItem("userId"))) {
       setIsUpvoteLocked(true);
@@ -145,7 +145,12 @@ const Post: React.FC<{
               );
               const resData = await response.json();
               if (response.status === 200) {
-                sortAndSetPosts(resData.updatedPosts, setPosts, sortBy);
+                sortAndSetPosts(
+                  resData.updatedPosts,
+                  setPosts,
+                  sortBy,
+                  devRole
+                );
               } else if (!isFeedFlashMessage) {
                 setFeedFlashMessageConfiguration({
                   text: resData.message,
@@ -183,7 +188,12 @@ const Post: React.FC<{
               );
               const resData = await response.json();
               if (response.status === 200) {
-                sortAndSetPosts(resData.updatedPosts, setPosts, sortBy);
+                sortAndSetPosts(
+                  resData.updatedPosts,
+                  setPosts,
+                  sortBy,
+                  devRole
+                );
               } else if (!isFeedFlashMessage) {
                 setFeedFlashMessageConfiguration({
                   text: resData.message,
@@ -262,7 +272,12 @@ const Post: React.FC<{
                 setCommentText("");
                 if (res.status === 200 || res.status === 201) {
                   const resData = await res.json();
-                  sortAndSetPosts(resData.updatedPosts, setPosts, sortBy);
+                  sortAndSetPosts(
+                    resData.updatedPosts,
+                    setPosts,
+                    sortBy,
+                    devRole
+                  );
                 } else {
                   setIsFeedFlashMessage(true);
                   setFeedFlashMessageConfiguration({
@@ -297,9 +312,7 @@ const Post: React.FC<{
               : "Hide comments"}
           </span>
         </div>
-      ) : (
-        ""
-      )}
+      ) : null}
       {areCommentsVisible && (
         <section className={styles.comments}>
           {comments.map((comment) => {

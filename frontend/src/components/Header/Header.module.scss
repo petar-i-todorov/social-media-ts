@@ -23,6 +23,9 @@
       color: white;
       font-family: "Handlee", cursive;
       font-size: 25px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
     .dropdownContainer {
       position: relative;
@@ -40,13 +43,14 @@
         position: absolute;
         width: 100%;
         border: 1px solid black;
+        border-top: none;
         background-color: white;
         color: black;
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        top: 34px;
+        top: 35px;
         transform: scaleY(0);
         opacity: 0;
         transition: all 0.2s ease-in-out;
@@ -54,6 +58,7 @@
           text-align: center;
           cursor: pointer;
           padding: 5px 0;
+          width: 100%;
           &:not(:last-child) {
             border-bottom: 1px solid black;
           }

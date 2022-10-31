@@ -47,7 +47,7 @@ const AddPost: React.FC<{
   const [urlErrorMessage, setUrlErrorMessage] = useState("");
   const [isUrlErrorMessageVisible, setIsUrlErrorMessageVisible] =
     useState(false);
-  const [devRole, setDevRole] = useState("");
+  const [chosenDevRole, setChosenDevRole] = useState("");
   const [isDevRoleValid, setIsDevRoleValid] = useState(true);
   const [isYoutubeSelected, setIsYoutubeSelected] = useState(false);
   const [isStackoverflowSelected, setIsStackoverflowSelected] = useState(false);
@@ -64,13 +64,13 @@ const AddPost: React.FC<{
   const [isFormError, setIsFormError] = useState(false);
   const [formErrorText, setFormErrorText] = useState("");
   const { postId } = useContext(PostIdContext);
-  const { setPosts, sortBy } = useContext(PostsContext);
+  const { setPosts, sortBy, devRole } = useContext(PostsContext);
   useEffect(() => {
     if (postToEdit) {
       setTitle(postToEdit.title);
       setDescription(postToEdit.description);
       setUrl(postToEdit.url);
-      setDevRole(postToEdit.devRole);
+      setChosenDevRole(postToEdit.devRole);
       if (postToEdit.platform === "YOUTUBE") {
         setIsYoutubeSelected(true);
       } else if (postToEdit.platform === "UDEMY") {
@@ -109,7 +109,7 @@ const AddPost: React.FC<{
           setUrlErrorMessage("Invalid Url.");
           setIsUrlValid(false);
           setIsUrlErrorMessageVisible(true);
-        } else if (!devRole) {
+        } else if (!chosenDevRole) {
           setIsDevRoleValid(false);
         } else if (
           !isYoutubeSelected &&
@@ -148,7 +148,7 @@ const AddPost: React.FC<{
                     title: title,
                     description: description,
                     url: url,
-                    devRole: devRole,
+                    devRole: chosenDevRole,
                     platform: platform,
                   }),
                 }
@@ -157,7 +157,12 @@ const AddPost: React.FC<{
               setEditPostVisibility(false);
               if (res.status === 200) {
                 const resData = await res.json();
-                sortAndSetPosts(resData.updatedPosts, setPosts, sortBy);
+                sortAndSetPosts(
+                  resData.updatedPosts,
+                  setPosts,
+                  sortBy,
+                  devRole
+                );
                 setIsFeedFlashMessage(true);
                 setFeedFlashMessageConfiguration({
                   text: resData.message,
@@ -185,7 +190,7 @@ const AddPost: React.FC<{
                   title: title,
                   description: description,
                   url: url,
-                  devRole: devRole,
+                  devRole: chosenDevRole,
                   platform: platform,
                 }),
               });
@@ -196,7 +201,7 @@ const AddPost: React.FC<{
                 });
                 const posts = await response.json();
                 setAddPostVisibility(false);
-                sortAndSetPosts(posts, setPosts, sortBy);
+                sortAndSetPosts(posts, setPosts, sortBy, devRole);
                 setIsFeedFlashMessage(true);
                 setFeedFlashMessageConfiguration({
                   text: "Post was successfully created.",
@@ -302,7 +307,7 @@ const AddPost: React.FC<{
               target.value === "Backend" ||
               target.value === "DevOps"
             ) {
-              setDevRole(target.value);
+              setChosenDevRole(target.value);
             }
           }}
           className={!isDevRoleValid ? styles.invalidSelect : ""}

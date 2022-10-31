@@ -10,6 +10,7 @@ import { VscTriangleDown } from "react-icons/vsc";
 import { PostsContext } from "../../contexts/PostsContext";
 import { DevRole } from "../../types/feed";
 import { devRoles } from "../../constants/feed";
+import { GiRoundStar } from "react-icons/gi";
 
 const NavBar = () => {
   const { isFeedFlashMessage, feedFlashMessageConfiguration } =
@@ -22,7 +23,10 @@ const NavBar = () => {
         <ul className={styles.nav}>
           <li>
             <Link to="">
-              <span className={styles.appLogo}>social-media-ts</span>
+              <span className={styles.appLogo}>
+                <GiRoundStar size="30" />
+                -the-source
+              </span>
             </Link>
           </li>
           <li className={styles.searchContainer}>

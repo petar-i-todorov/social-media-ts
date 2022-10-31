@@ -147,7 +147,12 @@ function App() {
                             );
                             if (res.status === 200) {
                               const { updatedPosts } = await res.json();
-                              sortAndSetPosts(updatedPosts, setPosts, sortBy);
+                              sortAndSetPosts(
+                                updatedPosts,
+                                setPosts,
+                                sortBy,
+                                devRole
+                              );
                               setDeletePostVisibility(false);
                               setIsFeedFlashMessage(true);
                               setFeedFlashMessageConfiguration({

@@ -19,7 +19,7 @@ const Comment: React.FC<{
     createdAt: Date;
   };
 }> = ({ comment }) => {
-  const { setPosts, sortBy } = useContext(PostsContext);
+  const { setPosts, sortBy, devRole } = useContext(PostsContext);
   const { setFeedFlashMessageConfiguration, setIsFeedFlashMessage } =
     useContext(FlashMessageContext);
   return (
@@ -63,7 +63,12 @@ const Comment: React.FC<{
               );
               if (res.status === 200) {
                 const resData = await res.json();
-                sortAndSetPosts(resData.updatedPosts, setPosts, sortBy);
+                sortAndSetPosts(
+                  resData.updatedPosts,
+                  setPosts,
+                  sortBy,
+                  devRole
+                );
               } else {
                 setIsFeedFlashMessage(true);
                 setFeedFlashMessageConfiguration({
@@ -104,7 +109,12 @@ const Comment: React.FC<{
               );
               if (res.status === 200) {
                 const resData = await res.json();
-                sortAndSetPosts(resData.updatedPosts, setPosts, sortBy);
+                sortAndSetPosts(
+                  resData.updatedPosts,
+                  setPosts,
+                  sortBy,
+                  devRole
+                );
               } else {
                 setIsFeedFlashMessage(true);
                 setFeedFlashMessageConfiguration({

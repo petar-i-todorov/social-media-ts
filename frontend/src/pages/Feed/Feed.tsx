@@ -9,7 +9,8 @@ import { sortAndSetPosts } from "../../utils/feed";
 import PostSkeleton from "../../components/Post/PostSkeleton";
 
 const FeedPage = () => {
-  const { posts, setPosts, sortBy, setSortBy } = useContext(PostsContext);
+  const { posts, setPosts, sortBy, setSortBy, devRole } =
+    useContext(PostsContext);
   const { setAddPostVisibility } = useContext(ModalsManipulationContext);
   const [isLoading, setIsLoading] = useState(false);
   useEffect(() => {
@@ -20,33 +21,12 @@ const FeedPage = () => {
       });
       const posts = await response.json();
       setIsLoading(false);
-      sortAndSetPosts(posts, setPosts, sortBy);
+      sortAndSetPosts(posts, setPosts, sortBy, devRole);
     }
     fetchData();
-  }, []);
+  }, [devRole]);
   useEffect(() => {
-    if (sortBy === "RECENCY") {
-      setPosts((posts) => {
-        const sortedPosts = JSON.parse(JSON.stringify(posts)).sort(
-          (postOne: IPost, postTwo: IPost) => {
-            if (postTwo.createdAt > postOne.createdAt) {
-              return 1;
-            }
-            return -1;
-          }
-        );
-        return sortedPosts;
-      });
-    } else if (sortBy === "VOTES") {
-      setPosts((posts) => {
-        const sortedPosts = JSON.parse(JSON.stringify(posts)).sort(
-          (postOne: IPost, postTwo: IPost) => {
-            return postTwo.upvotes - postOne.upvotes;
-          }
-        );
-        return sortedPosts;
-      });
-    }
+    sortAndSetPosts(posts, setPosts, sortBy, devRole);
   }, [sortBy]);
   return (
     <main className={styles.feed}>
