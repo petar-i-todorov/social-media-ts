@@ -60,7 +60,7 @@ function App() {
       }
     };
     setEditPost();
-  }, [editPostVisibility]);
+  }, [editPostVisibility, postId]);
   const [devRole, setDevRole] = useState<"FRONTEND" | "BACKEND" | "DEVOPS">(
     "FRONTEND"
   );

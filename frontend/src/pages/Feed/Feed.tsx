@@ -4,7 +4,6 @@ import Post from "../../components/Post/Post";
 import styles from "./Feed.module.scss";
 import { ModalsManipulationContext } from "../../contexts/ModalsManipulationContext";
 import { PostsContext } from "../../contexts/PostsContext";
-import { IPost } from "../../types/feed";
 import { sortAndSetPosts } from "../../utils/feed";
 import PostSkeleton from "../../components/Post/PostSkeleton";
 
@@ -24,10 +23,10 @@ const FeedPage = () => {
       sortAndSetPosts(posts, setPosts, sortBy, devRole);
     }
     fetchData();
-  }, [devRole]);
+  }, [devRole, setPosts, sortBy]);
   useEffect(() => {
     sortAndSetPosts(posts, setPosts, sortBy, devRole);
-  }, [sortBy]);
+  }, [sortBy, devRole, posts, setPosts]);
   return (
     <main className={styles.feed}>
       <menu className={styles.feedMenu}>

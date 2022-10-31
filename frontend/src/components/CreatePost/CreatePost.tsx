@@ -87,7 +87,7 @@ const AddPost: React.FC<{
         setIsOtherSelected(true);
       }
     }
-  }, []);
+  }, [postToEdit]);
   return (
     <ModalBuilder
       onOverlayClick={() => {

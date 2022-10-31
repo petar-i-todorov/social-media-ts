@@ -10,7 +10,7 @@ import { VscTriangleDown } from "react-icons/vsc";
 import { PostsContext } from "../../contexts/PostsContext";
 import { DevRole } from "../../types/feed";
 import { devRoles } from "../../constants/feed";
-import { GiRoundStar } from "react-icons/gi";
+import { BsStarHalf } from "react-icons/bs";
 
 const NavBar = () => {
   const { isFeedFlashMessage, feedFlashMessageConfiguration } =
@@ -24,7 +24,7 @@ const NavBar = () => {
           <li>
             <Link to="">
               <span className={styles.appLogo}>
-                <GiRoundStar size="30" />
+                <BsStarHalf size="30" />
                 -the-source
               </span>
             </Link>

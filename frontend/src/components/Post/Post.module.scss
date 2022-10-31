@@ -7,6 +7,14 @@
   padding: 10px;
   gap: 10px;
 
+  .authorName {
+    color: black;
+    font-weight: 500;
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
   .postInfo {
     display: flex;
     flex-direction: column;
