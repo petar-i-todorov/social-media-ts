@@ -1,4 +1,4 @@
-import { ChangeEvent, useContext, useEffect, useState } from "react";
+import { ChangeEvent, useContext, useEffect, useRef, useState } from "react";
 import { FaCircle } from "react-icons/fa";
 import { useParams } from "react-router-dom";
 import Post from "../../components/Post/Post";
@@ -14,6 +14,7 @@ import UserSkeleton from "./UserSkeleton";
 import PostSkeleton from "../../components/Post/PostSkeleton";
 
 const User = () => {
+  const firstFetching = useRef(true);
   const [quote, setQuote] = useState("");
   const [user, setUser] = useState<any>();
   const params = useParams();
@@ -25,17 +26,25 @@ const User = () => {
   const [isLoading, setIsLoading] = useState(false);
   useEffect(() => {
     const fetchUser = async () => {
-      setIsLoading(true);
+      firstFetching.current && setIsLoading(true);
       const response = await fetch(
         `http://localhost:8080/users/${params.userId}`
       );
       if (response.status === 200) {
         const resData = await response.json();
-        setIsLoading(false);
+        firstFetching.current &&
+          (() => {
+            setIsLoading(false);
+            firstFetching.current = false;
+          })();
         setUser(resData.user);
         setQuote(resData.user.quote);
       } else {
-        setIsLoading(false);
+        firstFetching.current &&
+          (() => {
+            setIsLoading(false);
+            firstFetching.current = false;
+          })();
         setFeedFlashMessageConfiguration({
           text: "Something went wrong. Please, try again later.",
           color: "red",
@@ -47,29 +56,7 @@ const User = () => {
       }
     };
     fetchUser();
-  }, []); //w skeleton - first render
-  useEffect(() => {
-    const fetchUser = async () => {
-      const response = await fetch(
-        `http://localhost:8080/users/${params.userId}`
-      );
-      if (response.status === 200) {
-        const resData = await response.json();
-        setUser(resData.user);
-        setQuote(resData.user.quote);
-      } else {
-        setFeedFlashMessageConfiguration({
-          text: "Something went wrong. Please, try again later.",
-          color: "red",
-        });
-        setIsFeedFlashMessage(true);
-        setTimeout(() => {
-          setIsFeedFlashMessage(false);
-        }, 5000);
-      }
-    };
-    fetchUser();
-  }, [posts]); //w/o skeleton - on posts updates
+  }, [posts]); //w skeleton - first render
   return (
     <div className={styles.userPage}>
       {isLoading ? (
