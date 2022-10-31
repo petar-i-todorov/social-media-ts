@@ -110,8 +110,7 @@ export const feedController = {
           });
         }
       } else {
-        const err = new CustomError(404, "Such a post was not found.");
-        throw err;
+        passToErrorHandlerMiddleware(next, 404, "Such a post was not found.");
       }
     } catch (err) {
       passToErrorHandlerMiddleware(next, 500, "Something went wrong.");

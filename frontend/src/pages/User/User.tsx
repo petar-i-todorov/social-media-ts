@@ -9,6 +9,9 @@ import styles from "./User.module.scss";
 import { TbEdit } from "react-icons/tb";
 import TextArea from "../../components/TextArea/TextArea";
 import Button from "../../components/Button/Button";
+import BouncingDotsLoader from "../../components/BouncingDotsLoader/BouncingDotsLoader";
+import UserSkeleton from "./UserSkeleton";
+import PostSkeleton from "../../components/Post/PostSkeleton";
 
 const User = () => {
   const [quote, setQuote] = useState("");
@@ -18,6 +21,33 @@ const User = () => {
   const { setFeedFlashMessageConfiguration, setIsFeedFlashMessage } =
     useContext(FlashMessageContext);
   const [updateQuoteMode, setUpdateQuoteMode] = useState(false);
+  const [isUpdating, setIsUpdating] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  useEffect(() => {
+    const fetchUser = async () => {
+      setIsLoading(true);
+      const response = await fetch(
+        `http://localhost:8080/users/${params.userId}`
+      );
+      if (response.status === 200) {
+        const resData = await response.json();
+        setIsLoading(false);
+        setUser(resData.user);
+        setQuote(resData.user.quote);
+      } else {
+        setIsLoading(false);
+        setFeedFlashMessageConfiguration({
+          text: "Something went wrong. Please, try again later.",
+          color: "red",
+        });
+        setIsFeedFlashMessage(true);
+        setTimeout(() => {
+          setIsFeedFlashMessage(false);
+        }, 5000);
+      }
+    };
+    fetchUser();
+  }, []); //w skeleton - first render
   useEffect(() => {
     const fetchUser = async () => {
       const response = await fetch(
@@ -39,19 +69,35 @@ const User = () => {
       }
     };
     fetchUser();
-  }, [posts]);
+  }, [posts]); //w/o skeleton - on posts updates
   return (
     <div className={styles.userPage}>
-      {user ? (
+      {isLoading ? (
+        <>
+          <UserSkeleton />
+          <div className={styles.skeletonsContainer}>
+            Recent Activity
+            <PostSkeleton />
+            <PostSkeleton />
+            <PostSkeleton />
+          </div>
+        </>
+      ) : user ? (
         <>
           <header className={styles.pageHeader}>
             <span className={styles.userName}>{user.name}</span>
           </header>
-          <section className={styles.userInfo}>
+          <section
+            className={styles.userInfo}
+            onClick={() => {
+              setUpdateQuoteMode(false);
+            }}
+          >
             <TbEdit
               className={styles.editIcon}
               size="25"
-              onClick={() => {
+              onClick={(event) => {
+                event.stopPropagation();
                 setUpdateQuoteMode(true);
               }}
             />
@@ -66,11 +112,22 @@ const User = () => {
                     onChange={(event: ChangeEvent) => {
                       setQuote((event.target as HTMLTextAreaElement).value);
                     }}
+                    onClick={(event) => {
+                      event.stopPropagation();
+                    }}
                   />
                   <Button
                     color="green"
-                    children="Update"
-                    onClick={async () => {
+                    children={
+                      isUpdating ? (
+                        <BouncingDotsLoader text="Updating" />
+                      ) : (
+                        "Update"
+                      )
+                    }
+                    onClick={async (event) => {
+                      event.stopPropagation();
+                      setIsUpdating(true);
                       const res = await fetch(
                         `http://localhost:8080/users/${user._id}/updateQuote`,
                         {
@@ -82,6 +139,8 @@ const User = () => {
                         }
                       );
                       if (res.status !== 200) {
+                        setUpdateQuoteMode(false);
+                        setIsUpdating(false);
                         setFeedFlashMessageConfiguration({
                           text: "Something went wrong. Please, try again later.",
                           color: "red",
@@ -94,6 +153,7 @@ const User = () => {
                         const resData = await res.json();
                         setUser(resData.updatedUser);
                         setUpdateQuoteMode(false);
+                        setIsUpdating(false);
                         setFeedFlashMessageConfiguration({
                           text: "Quote was successfully updated.",
                           color: "green",

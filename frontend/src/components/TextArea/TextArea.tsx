@@ -1,6 +1,6 @@
 import styles from "./TextArea.module.scss";
 import { RiErrorWarningLine } from "react-icons/ri";
-import { ChangeEvent, useEffect, useState } from "react";
+import { ChangeEvent, MouseEventHandler, useEffect, useState } from "react";
 import InputError from "../InputError/InputError";
 
 const TextArea: React.FC<{
@@ -15,6 +15,7 @@ const TextArea: React.FC<{
   setIsErrorMessageVisible?: (arg: boolean) => void;
   onChange?: (e: ChangeEvent) => void;
   onBlur?: () => void;
+  onClick?: MouseEventHandler;
 }> = ({
   value,
   id,
@@ -27,6 +28,7 @@ const TextArea: React.FC<{
   setErrorMessage,
   isValid, //css invalid input responsible
   setIsValid,
+  onClick,
 }) => {
   const [isFocused, setIsFocused] = useState(false);
   useEffect(() => {
@@ -47,6 +49,7 @@ const TextArea: React.FC<{
         }
       >
         <textarea
+          onClick={onClick}
           value={value}
           id={id}
           onChange={(event) => {

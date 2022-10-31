@@ -1,6 +1,6 @@
 import styles from "./Header.module.scss";
 import { AiOutlineSearch } from "react-icons/ai";
-import { Outlet } from "react-router-dom";
+import { Link, Outlet } from "react-router-dom";
 import ThemeSwitcher from "../ThemeSwitcher/ThemeSwitcher";
 import FormMessage from "../FormMessage/FormMessage";
 import { useContext } from "react";
@@ -15,7 +15,9 @@ const NavBar = () => {
       <header className={styles.header}>
         <ul className={styles.nav}>
           <li>
-            <FaUserCircle size="35" />
+            <Link to="">
+              <span className={styles.appLogo}>social-media-ts</span>
+            </Link>
           </li>
           <li className={styles.searchContainer}>
             <AiOutlineSearch size="30" color="black" />
@@ -23,6 +25,11 @@ const NavBar = () => {
               placeholder="Search for posts"
               className={styles.searchBar}
             />
+          </li>
+          <li>
+            <Link to={`/user/${localStorage.getItem("userId")}`}>
+              <FaUserCircle size="35" color="white" />
+            </Link>
           </li>
           <li>Dev Role</li>
           <li>
