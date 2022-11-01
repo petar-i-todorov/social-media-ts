@@ -52,8 +52,11 @@ export const feedController = {
           await createdPost.save();
           creator.posts.push(createdPost._id as any);
           await creator.save();
-          setTimeout(() => {
-            res.json({ message: "Post was created successfully." });
+          setTimeout(async () => {
+            res.json({
+              message: "Post was created successfully.",
+              createdPost: await getPost(createdPost._id.toString()),
+            });
           }, 2000);
         }
       } else {
@@ -264,29 +267,10 @@ export const feedController = {
               platform: req.body.platform,
             }
           );
-          if (
-            !(
-              req.query.devRole === FRONTEND ||
-              req.query.devRole === BACKEND ||
-              req.query.devRole === DEVOPS ||
-              req.query.devRole === undefined
-            ) ||
-            !(
-              req.query.sortBy === RECENCY ||
-              req.query.sortBy === VOTES ||
-              req.query.sortBy === undefined
-            )
-          ) {
-            passToErrorHandlerMiddleware(next, 500, "Invalid query params.");
-          } else {
-            res.status(200).json({
-              updatedPosts: await getPosts({
-                devRole: req.query.devRole,
-                sortBy: req.query.sortBy,
-              }),
-              message: "Post was successfully edited.",
-            });
-          }
+          res.status(200).json({
+            updatedPost: await getPost(req.params.postId),
+            message: "Post was successfully edited.",
+          });
         } else {
           passToErrorHandlerMiddleware(
             next,

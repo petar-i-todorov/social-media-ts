@@ -64,7 +64,7 @@ const AddPost: React.FC<{
   const [isFormError, setIsFormError] = useState(false);
   const [formErrorText, setFormErrorText] = useState("");
   const { postId } = useContext(PostIdContext);
-  const { setPosts, sortBy, devRole } = useContext(PostsContext);
+  const { setPosts, sortBy, devRole, posts } = useContext(PostsContext);
   useEffect(() => {
     if (postToEdit) {
       setTitle(postToEdit.title);
@@ -160,12 +160,14 @@ const AddPost: React.FC<{
               setEditPostVisibility(false);
               if (res.status === 200) {
                 const resData = await res.json();
-                sortAndSetPosts(
-                  resData.updatedPosts,
-                  setPosts,
-                  sortBy,
-                  devRole
-                );
+                const indexOfUpdatedPost = posts
+                  .map((post) => post._id)
+                  .indexOf(resData.updatedPost._id.toString());
+                const updatedPosts = JSON.parse(JSON.stringify(posts));
+                updatedPosts[indexOfUpdatedPost] = resData.updatedPost;
+                console.log(Array.isArray(updatedPosts));
+                console.log(Array.isArray(posts));
+                setPosts([updatedPosts[0], updatedPosts[1]]);
                 setIsFeedFlashMessage(true);
                 setFeedFlashMessageConfiguration({
                   text: resData.message,
@@ -202,12 +204,9 @@ const AddPost: React.FC<{
               });
               setIsLoading(false);
               if (res.status === 200 || res.status === 201) {
-                const response = await fetch("http://localhost:8080/posts", {
-                  method: "GET",
-                });
-                const posts = await response.json();
+                const resData = await res.json();
+                setPosts((posts) => [resData.createdPost, ...posts]);
                 setAddPostVisibility(false);
-                sortAndSetPosts(posts, setPosts, sortBy, devRole);
                 setIsFeedFlashMessage(true);
                 setFeedFlashMessageConfiguration({
                   text: "Post was successfully created.",

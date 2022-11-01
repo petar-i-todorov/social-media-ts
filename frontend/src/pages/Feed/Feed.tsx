@@ -4,7 +4,6 @@ import Post from "../../components/Post/Post";
 import styles from "./Feed.module.scss";
 import { ModalsManipulationContext } from "../../contexts/ModalsManipulationContext";
 import { PostsContext } from "../../contexts/PostsContext";
-import { sortAndSetPosts } from "../../utils/feed";
 import PostSkeleton from "../../components/Post/PostSkeleton";
 
 const FeedPage = () => {

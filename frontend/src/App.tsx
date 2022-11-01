@@ -150,12 +150,8 @@ function App() {
                               }
                             );
                             if (res.status === 200) {
-                              const { updatedPosts } = await res.json();
-                              sortAndSetPosts(
-                                updatedPosts,
-                                setPosts,
-                                sortBy,
-                                devRole
+                              setPosts((posts) =>
+                                posts.filter((post) => post._id !== postId)
                               );
                               setDeletePostVisibility(false);
                               setIsFeedFlashMessage(true);

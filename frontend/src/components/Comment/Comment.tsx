@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { AiFillDislike, AiFillLike } from "react-icons/ai";
 import { BsFillCircleFill } from "react-icons/bs";
 import { PostsContext } from "../../contexts/PostsContext";
@@ -13,9 +13,11 @@ const Comment: React.FC<{
   comment: IComment;
 }> = ({ comment }) => {
   const [commentObj, setCommentObj] = useState<IComment>(comment);
-  const { setPosts, sortBy, devRole } = useContext(PostsContext);
   const { setFeedFlashMessageConfiguration, setIsFeedFlashMessage } =
     useContext(FlashMessageContext);
+  useEffect(() => {
+    setCommentObj(comment);
+  }, [comment]);
   return (
     <div className={styles.comment}>
       <div className={styles.commentContent}>
@@ -75,7 +77,6 @@ const Comment: React.FC<{
               );
               if (res.status === 200) {
                 const resData = await res.json();
-                console.log(resData.updatedComment);
                 setCommentObj(resData.updatedComment);
               } else {
                 setIsFeedFlashMessage(true);

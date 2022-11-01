@@ -77,6 +77,14 @@ export const getUser = async (userId: string) => {
       path: "posts",
       model: "Post",
       populate: {
+        path: "creator",
+        model: "User",
+      },
+    })
+    .populate({
+      path: "posts",
+      model: "Post",
+      populate: {
         path: "comments",
         model: "Comment",
         populate: {

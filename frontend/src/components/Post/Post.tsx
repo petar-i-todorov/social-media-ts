@@ -12,7 +12,6 @@ import {
 import { SiUdemy } from "react-icons/si";
 import { BsThreeDots } from "react-icons/bs";
 import MoreOptionsMenu from "../MoreOptionsMenu/MoreOptionsMenu";
-import { sortAndSetPosts } from "../../utils/feed";
 import { IoSend } from "react-icons/io5";
 import Comment from "../Comment/Comment";
 import ReactTimeAgo from "react-time-ago";
@@ -21,46 +20,13 @@ import { FlashMessageContext } from "../../contexts/FlashMessageFeedContext";
 import { Link } from "react-router-dom";
 import { IPost } from "../../types/feed";
 
-// {
-//   createdAt: post.createdAt,
-//   creatorId: post.creator._id,
-//   creatorName: post.creator.name,
-//   id: post._id,
-//   title: post.title,
-//   description: post.description,
-//   platform: post.platform,
-//   upvotes: post.upvotes,
-//   upvotedBy: post.upvotedBy,
-//   downvotedBy: post.downvotedBy,
-//   comments: post.comments.map((comment) => {
-//     return {
-//       _id: comment._id,
-//       likedBy: comment.votes
-//         .filter((vote) => {
-//           return vote.isLike;
-//         })
-//         .map((vote) => {
-//           return vote.user;
-//         }),
-//       dislikedBy: comment.votes
-//         .filter((vote) => {
-//           return !vote.isLike;
-//         })
-//         .map((vote) => {
-//           return vote.user;
-//         }),
-//       totalVotes: comment.totalVotes,
-//       creator: { name: comment.creator.name },
-//       text: comment.text,
-//       createdAt: comment.createdAt,
-//     };
-//   }),
-// }
-
 const Post: React.FC<{
   post: IPost;
 }> = ({ post }) => {
   const [postObj, setPostObj] = useState<IPost>(post);
+  useEffect(() => {
+    setPostObj(post);
+  }, [post]);
   const {
     setIsFeedFlashMessage,
     setFeedFlashMessageConfiguration,
@@ -74,7 +40,6 @@ const Post: React.FC<{
     postObj.creator._id === localStorage.getItem("userId")
   );
   const [commentText, setCommentText] = useState("");
-  const { setPosts, sortBy, devRole } = useContext(PostsContext);
   useEffect(() => {
     if (
       postObj.upvotedBy.find(
