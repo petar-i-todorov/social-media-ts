@@ -1,6 +1,6 @@
-export type devRole = "Backend" | "Frontend" | "DevOps";
+export type DevRole = "BACKEND" | "FRONTEND" | "DEVOPS" | undefined;
 
-export type platform =
+export type Platform =
   | "GITHUB"
   | "STACKOVERFLOW"
   | "FACEBOOK"
@@ -8,3 +8,5 @@ export type platform =
   | "LINKEDIN"
   | "REDDIT"
   | "OTHER";
+
+export type SortBy = "RECENCY" | "VOTES" | undefined;

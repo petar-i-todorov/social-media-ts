@@ -15,18 +15,18 @@ const FeedPage = () => {
   useEffect(() => {
     async function fetchData() {
       setIsLoading(true);
-      const response = await fetch("http://localhost:8080/posts", {
-        method: "GET",
-      });
+      const response = await fetch(
+        `http://localhost:8080/posts?sortBy=${sortBy}&devRole=${devRole}`,
+        {
+          method: "GET",
+        }
+      );
       const posts = await response.json();
       setIsLoading(false);
-      sortAndSetPosts(posts, setPosts, sortBy, devRole);
+      setPosts(posts);
     }
     fetchData();
-  }, [devRole]);
-  useEffect(() => {
-    sortAndSetPosts(posts, setPosts, sortBy, devRole);
-  }, [sortBy]);
+  }, [devRole, sortBy]);
   return (
     <main className={styles.feed}>
       <menu className={styles.feedMenu}>
@@ -58,44 +58,7 @@ const FeedPage = () => {
       </menu>
       {posts.length ? (
         posts.map((post) => {
-          return (
-            <Post
-              createdAt={post.createdAt}
-              creatorId={post.creator._id}
-              creatorName={post.creator.name}
-              key={post._id}
-              id={post._id}
-              title={post.title}
-              description={post.description}
-              platform={post.platform}
-              upvotes={post.upvotes}
-              upvotedBy={post.upvotedBy}
-              downvotedBy={post.downvotedBy}
-              comments={post.comments.map((comment) => {
-                return {
-                  _id: comment._id,
-                  likedBy: comment.votes
-                    .filter((vote) => {
-                      return vote.isLike;
-                    })
-                    .map((vote) => {
-                      return vote.user;
-                    }),
-                  dislikedBy: comment.votes
-                    .filter((vote) => {
-                      return !vote.isLike;
-                    })
-                    .map((vote) => {
-                      return vote.user;
-                    }),
-                  totalVotes: comment.totalVotes,
-                  creator: { name: comment.creator.name },
-                  text: comment.text,
-                  createdAt: comment.createdAt,
-                };
-              })}
-            />
-          );
+          return <Post key={post._id} post={post} />;
         })
       ) : isLoading ? (
         <div className={styles.skeletonsContainer}>

@@ -3,10 +3,16 @@ import Post from "../models/post";
 import { validationResult } from "express-validator";
 import { createTransport } from "nodemailer";
 import { HOTMAIL_PASSWORD, HOTMAIL_USER } from "../dev-vars";
-import { getPosts, passToErrorHandlerMiddleware } from "../utils/feed";
+import {
+  getComment,
+  getPost,
+  getPosts,
+  passToErrorHandlerMiddleware,
+} from "../utils/feed";
 import Comment from "../models/comment";
 import CommentVote from "../models/commentVote";
 import user from "../models/user";
+import { BACKEND, DEVOPS, FRONTEND, RECENCY, VOTES } from "../constants/feed";
 
 const transporter = createTransport({
   service: "hotmail",
@@ -63,18 +69,37 @@ export const feedController = {
   },
   getPosts: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const posts = await getPosts();
-      if (!posts) {
-        passToErrorHandlerMiddleware(next, 404, "Such a post was not found.");
+      if (
+        !(
+          req.query.devRole === FRONTEND ||
+          req.query.devRole === BACKEND ||
+          req.query.devRole === DEVOPS ||
+          req.query.devRole === undefined
+        ) ||
+        !(
+          req.query.sortBy === RECENCY ||
+          req.query.sortBy === VOTES ||
+          req.query.sortBy === undefined
+        )
+      ) {
+        passToErrorHandlerMiddleware(next, 500, "Invalid query params.");
+      } else {
+        const posts = await getPosts({
+          devRole: req.query.devRole,
+          sortBy: req.query.sortBy,
+        });
+        if (!posts) {
+          passToErrorHandlerMiddleware(next, 404, "Such a post was not found.");
+        }
+        res.status(200).json(posts);
       }
-      res.status(200).json(posts);
     } catch (err) {
       passToErrorHandlerMiddleware(next, 500, "Something went wrong.");
     }
   },
   upvotePost: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const foundPost = await Post.findOne({ _id: req.body.postId });
+      const foundPost = await getPost(req.body.postId);
       if (foundPost) {
         if (
           foundPost.upvotedBy.find(
@@ -96,7 +121,7 @@ export const feedController = {
           );
           await foundPost.save();
           res.status(200).json({
-            updatedPosts: await getPosts(),
+            updatedPost: foundPost,
             message: "Post was successfully updated.",
           });
         } else {
@@ -104,7 +129,7 @@ export const feedController = {
           foundPost.upvotedBy.push(req.body.userId);
           await foundPost.save();
           res.status(200).json({
-            updatedPosts: await getPosts(),
+            updatedPost: foundPost,
             message: "Post was successfully updated.",
           });
         }
@@ -117,7 +142,7 @@ export const feedController = {
   },
   downvotePost: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const foundPost = await Post.findOne({ _id: req.body.postId });
+      const foundPost = await getPost(req.body.postId);
       if (foundPost) {
         if (
           foundPost.downvotedBy.find(
@@ -139,7 +164,7 @@ export const feedController = {
           );
           await foundPost.save();
           res.status(200).json({
-            updatedPosts: await getPosts(),
+            updatedPost: foundPost,
             message: "Post was successfully updated.",
           });
         } else {
@@ -147,7 +172,7 @@ export const feedController = {
           foundPost.downvotedBy.push(req.body.userId);
           await foundPost.save();
           res.status(200).json({
-            updatedPosts: await getPosts(),
+            updatedPost: foundPost,
             message: "Post was successfully updated.",
           });
         }
@@ -164,10 +189,29 @@ export const feedController = {
       if (postToDelete) {
         if (postToDelete.creator.toString() === req.body.userId) {
           await Post.deleteOne({ _id: req.params.postId });
-          res.status(200).json({
-            message: "Post was successfully deleted.",
-            updatedPosts: await getPosts(),
-          });
+          if (
+            !(
+              req.query.devRole === FRONTEND ||
+              req.query.devRole === BACKEND ||
+              req.query.devRole === DEVOPS ||
+              req.query.devRole === undefined
+            ) ||
+            !(
+              req.query.sortBy === RECENCY ||
+              req.query.sortBy === VOTES ||
+              req.query.sortBy === undefined
+            )
+          ) {
+            passToErrorHandlerMiddleware(next, 500, "Invalid query params.");
+          } else {
+            res.status(200).json({
+              message: "Post was successfully deleted.",
+              updatedPosts: await getPosts({
+                devRole: req.query.devRole,
+                sortBy: req.query.sortBy,
+              }),
+            });
+          }
         } else {
           passToErrorHandlerMiddleware(
             next,
@@ -220,10 +264,29 @@ export const feedController = {
               platform: req.body.platform,
             }
           );
-          res.status(200).json({
-            updatedPosts: await getPosts(),
-            message: "Post was successfully edited.",
-          });
+          if (
+            !(
+              req.query.devRole === FRONTEND ||
+              req.query.devRole === BACKEND ||
+              req.query.devRole === DEVOPS ||
+              req.query.devRole === undefined
+            ) ||
+            !(
+              req.query.sortBy === RECENCY ||
+              req.query.sortBy === VOTES ||
+              req.query.sortBy === undefined
+            )
+          ) {
+            passToErrorHandlerMiddleware(next, 500, "Invalid query params.");
+          } else {
+            res.status(200).json({
+              updatedPosts: await getPosts({
+                devRole: req.query.devRole,
+                sortBy: req.query.sortBy,
+              }),
+              message: "Post was successfully edited.",
+            });
+          }
         } else {
           passToErrorHandlerMiddleware(
             next,
@@ -248,10 +311,10 @@ export const feedController = {
       if (foundPost) {
         foundPost.comments.push(newComment._id as any);
         await foundPost.save();
-        const posts = await getPosts();
+        const post = await getPost(req.params.postId);
         res.status(201).json({
           message: "Comment was successfully added.",
-          updatedPosts: posts,
+          updatedPost: post,
         });
       } else {
         passToErrorHandlerMiddleware(next, 404, "Such a post was not found.");
@@ -262,7 +325,7 @@ export const feedController = {
   },
   likeComment: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const foundComment = await Comment.findById(req.params.commentId);
+      const foundComment = await getComment(req.params.commentId);
       if (!foundComment) {
         passToErrorHandlerMiddleware(
           next,
@@ -270,8 +333,7 @@ export const feedController = {
           "Such a comment was not found."
         );
       } else {
-        const populatedComment = await foundComment.populate("votes");
-        const prevVoteByUser: any = populatedComment.votes.find((vote: any) => {
+        const prevVoteByUser: any = foundComment.votes.find((vote: any) => {
           if (vote.user._id.toString() === req.body.userId) {
             return true;
           }
@@ -284,11 +346,11 @@ export const feedController = {
             user: req.body.userId,
           });
           await commentVote.save();
-          populatedComment.votes.push(commentVote._id as any);
-          await populatedComment.save();
+          foundComment.votes.push(commentVote._id as any);
+          await foundComment.save();
           res.status(200).json({
             message: "Comment was successfully liked.",
-            updatedPosts: await getPosts(),
+            updatedComment: await getComment(foundComment._id.toString()),
           });
         } else if (!prevVoteByUser.isLike) {
           const commentVote = new CommentVote({
@@ -297,36 +359,35 @@ export const feedController = {
             user: req.body.userId,
           });
           await commentVote.save();
-          populatedComment.votes.push(commentVote._id as any);
-          populatedComment.votes = populatedComment.votes.filter(
+          foundComment.votes.push(commentVote._id as any);
+          foundComment.votes = foundComment.votes.filter(
             (vote: any) => vote._id !== prevVoteByUser._id
           );
-          await populatedComment.save();
+          await foundComment.save();
           await CommentVote.findByIdAndDelete(prevVoteByUser._id);
           res.status(200).json({
             message: "Comment was successfully liked.",
-            updatedPosts: await getPosts(),
+            updatedComment: await getComment(foundComment._id.toString()),
           });
         } else {
           await CommentVote.findByIdAndDelete(prevVoteByUser._id);
-          populatedComment.votes.filter(
+          foundComment.votes = foundComment.votes.filter(
             (vote: any) => vote._id !== prevVoteByUser._id
           );
-          await populatedComment.save();
+          await foundComment.save();
           res.status(200).json({
             message: "Like was successfully removed.",
-            updatedPosts: await getPosts(),
+            updatedComment: foundComment,
           });
         }
       }
     } catch (err) {
-      console.log(err);
       passToErrorHandlerMiddleware(next, 500, "Something went wrong.");
     }
   },
   dislikeComment: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const foundComment = await Comment.findById(req.params.commentId);
+      const foundComment = await getComment(req.params.commentId);
       if (!foundComment) {
         passToErrorHandlerMiddleware(
           next,
@@ -334,8 +395,7 @@ export const feedController = {
           "Such a comment was not found."
         );
       } else {
-        const populatedComment = await foundComment.populate("votes");
-        const prevVoteByUser: any = populatedComment.votes.find((vote: any) => {
+        const prevVoteByUser: any = foundComment.votes.find((vote: any) => {
           if (vote.user._id.toString() === req.body.userId) {
             return true;
           }
@@ -348,11 +408,11 @@ export const feedController = {
             user: req.body.userId,
           });
           await commentVote.save();
-          populatedComment.votes.push(commentVote._id as any);
-          await populatedComment.save();
+          foundComment.votes.push(commentVote._id as any);
+          await foundComment.save();
           res.status(200).json({
             message: "Comment was successfully liked.",
-            updatedPosts: await getPosts(),
+            updatedComment: await foundComment.populate("votes"),
           });
         } else if (prevVoteByUser.isLike) {
           const commentVote = new CommentVote({
@@ -361,30 +421,29 @@ export const feedController = {
             user: req.body.userId,
           });
           await commentVote.save();
-          populatedComment.votes.push(commentVote._id as any);
-          populatedComment.votes = populatedComment.votes.filter(
+          foundComment.votes.push(commentVote._id as any);
+          foundComment.votes = foundComment.votes.filter(
             (vote: any) => vote._id !== prevVoteByUser._id
           );
-          await populatedComment.save();
+          await foundComment.save();
           await CommentVote.findByIdAndDelete(prevVoteByUser._id);
           res.status(200).json({
             message: "Comment was successfully liked.",
-            updatedPosts: await getPosts(),
+            updatedComment: await foundComment.populate("votes"),
           });
         } else {
           await CommentVote.findByIdAndDelete(prevVoteByUser._id);
-          populatedComment.votes.filter(
+          foundComment.votes = foundComment.votes.filter(
             (vote: any) => vote._id !== prevVoteByUser._id
           );
-          await populatedComment.save();
+          await foundComment.save();
           res.status(200).json({
             message: "Like was successfully removed.",
-            updatedPosts: await getPosts(),
+            updatedComment: foundComment,
           });
         }
       }
     } catch (err) {
-      console.log(err);
       passToErrorHandlerMiddleware(next, 500, "Something went wrong.");
     }
   },

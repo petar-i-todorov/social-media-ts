@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { AiFillDislike, AiFillLike } from "react-icons/ai";
 import { BsFillCircleFill } from "react-icons/bs";
 import { PostsContext } from "../../contexts/PostsContext";
@@ -7,18 +7,12 @@ import styles from "./Comment.module.scss";
 import ReactTimeAgo from "react-time-ago";
 import { FaUserCircle } from "react-icons/fa";
 import { FlashMessageContext } from "../../contexts/FlashMessageFeedContext";
+import { IComment } from "../../types/feed";
 
 const Comment: React.FC<{
-  comment: {
-    _id: string;
-    likedBy: string[];
-    dislikedBy: string[];
-    totalVotes: number;
-    creator: { name: string };
-    text: string;
-    createdAt: Date;
-  };
+  comment: IComment;
 }> = ({ comment }) => {
+  const [commentObj, setCommentObj] = useState<IComment>(comment);
   const { setPosts, sortBy, devRole } = useContext(PostsContext);
   const { setFeedFlashMessageConfiguration, setIsFeedFlashMessage } =
     useContext(FlashMessageContext);
@@ -28,29 +22,46 @@ const Comment: React.FC<{
         <FaUserCircle size="30.8" />
         <div className={styles.commentInfo}>
           <div className={styles.commentHeader}>
-            <span className={styles.commentAuthor}>{comment.creator.name}</span>
+            <span className={styles.commentAuthor}>
+              {commentObj.creator.name}
+            </span>
             <BsFillCircleFill size="5" color="gray" />{" "}
-            <ReactTimeAgo date={new Date(comment.createdAt)} />
+            <ReactTimeAgo date={new Date(commentObj.createdAt)} />
           </div>
-          <div className={styles.commentText}>{comment.text}</div>
+          <div className={styles.commentText}>{commentObj.text}</div>
         </div>
       </div>
       <div className={styles.votesContainer}>
         <div className={styles.commentVotes}>
-          {comment.likedBy.length}{" "}
+          {
+            commentObj.votes
+              .filter((vote) => {
+                return vote.isLike;
+              })
+              .map((vote) => {
+                return vote.user;
+              }).length
+          }{" "}
           <AiFillLike
             className={
               styles.voteLogo +
               " " +
-              (comment.likedBy.find((userId) => {
-                return userId === localStorage.getItem("userId");
-              })
+              (commentObj.votes
+                .filter((vote) => {
+                  return vote.isLike;
+                })
+                .map((vote) => {
+                  return vote.user;
+                })
+                .find((userId) => {
+                  return userId === localStorage.getItem("userId");
+                })
                 ? styles.pressed
                 : styles.nonPressed)
             }
             onClick={async () => {
               const res = await fetch(
-                `http://localhost:8080/comments/${comment._id}/like`,
+                `http://localhost:8080/comments/${commentObj._id}/like`,
                 {
                   method: "PATCH",
                   headers: {
@@ -64,12 +75,8 @@ const Comment: React.FC<{
               );
               if (res.status === 200) {
                 const resData = await res.json();
-                sortAndSetPosts(
-                  resData.updatedPosts,
-                  setPosts,
-                  sortBy,
-                  devRole
-                );
+                console.log(resData.updatedComment);
+                setCommentObj(resData.updatedComment);
               } else {
                 setIsFeedFlashMessage(true);
                 setFeedFlashMessageConfiguration({
@@ -84,20 +91,35 @@ const Comment: React.FC<{
           />
         </div>
         <div className={styles.commentVotes}>
-          {comment.dislikedBy.length}{" "}
+          {
+            commentObj.votes
+              .filter((vote) => {
+                return !vote.isLike;
+              })
+              .map((vote) => {
+                return vote.user;
+              }).length
+          }{" "}
           <AiFillDislike
             className={
               styles.voteLogo +
               " " +
-              (comment.dislikedBy.find((userId) => {
-                return userId === localStorage.getItem("userId");
-              })
+              (commentObj.votes
+                .filter((vote) => {
+                  return !vote.isLike;
+                })
+                .map((vote) => {
+                  return vote.user;
+                })
+                .find((userId) => {
+                  return userId === localStorage.getItem("userId");
+                })
                 ? styles.pressed
                 : styles.nonPressed)
             }
             onClick={async () => {
               const res = await fetch(
-                `http://localhost:8080/comments/${comment._id}/dislike`,
+                `http://localhost:8080/comments/${commentObj._id}/dislike`,
                 {
                   method: "PATCH",
                   headers: {
@@ -111,12 +133,7 @@ const Comment: React.FC<{
               );
               if (res.status === 200) {
                 const resData = await res.json();
-                sortAndSetPosts(
-                  resData.updatedPosts,
-                  setPosts,
-                  sortBy,
-                  devRole
-                );
+                setCommentObj(resData.updatedComment);
               } else {
                 setIsFeedFlashMessage(true);
                 setFeedFlashMessageConfiguration({

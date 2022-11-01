@@ -37,7 +37,13 @@ const NavBar = () => {
             />
           </li>
           <li>
-            <Link to={`/user/${localStorage.getItem("userId")}`}>
+            <Link
+              to={
+                localStorage.getItem("userId")
+                  ? `/user/${localStorage.getItem("userId")}`
+                  : "/login"
+              }
+            >
               <FaUserCircle size="35" color="white" />
             </Link>
           </li>

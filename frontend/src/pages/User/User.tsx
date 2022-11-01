@@ -121,6 +121,8 @@ const User = () => {
                         {
                           method: "PATCH",
                           headers: {
+                            Authorization:
+                              "Bearer " + localStorage.getItem("token"),
                             "Content-Type": "application/json",
                           },
                           body: JSON.stringify({ quote: quote }),
@@ -162,44 +164,7 @@ const User = () => {
           <main className={styles.posts}>
             <span>Recent activity</span>
             {user.posts.map((post: IPost) => {
-              return (
-                <Post
-                  key={post._id}
-                  id={post._id}
-                  title={post.title}
-                  description={post.description}
-                  platform={post.platform}
-                  upvotes={post.upvotes}
-                  upvotedBy={post.upvotedBy}
-                  downvotedBy={post.downvotedBy}
-                  creatorId={user._id}
-                  creatorName={user.name}
-                  createdAt={post.createdAt}
-                  comments={post.comments.map((comment: IComment) => {
-                    return {
-                      _id: comment._id,
-                      totalVotes: comment.totalVotes,
-                      creator: { name: comment.creator.name },
-                      text: comment.text,
-                      createdAt: comment.createdAt,
-                      likedBy: comment.votes
-                        .filter((vote) => {
-                          return vote.isLike;
-                        })
-                        .map((vote) => {
-                          return vote.user;
-                        }),
-                      dislikedBy: comment.votes
-                        .filter((vote) => {
-                          return !vote.isLike;
-                        })
-                        .map((vote) => {
-                          return vote.user;
-                        }),
-                    };
-                  })}
-                />
-              );
+              return <Post key={post._id} post={post} />;
             })}
           </main>
         </>

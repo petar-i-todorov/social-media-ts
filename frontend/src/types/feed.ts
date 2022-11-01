@@ -1,9 +1,13 @@
+export interface IUser {
+  _id: string;
+  name: string;
+}
+
 export interface IPost {
-  upvotedBy: string[];
-  downvotedBy: string[];
+  _id: string;
   title: string;
+  devRole: "Frontend" | "Backend" | "DevOps";
   description: string;
-  createdAt: Date;
   platform:
     | "YOUTUBE"
     | "FACEBOOK"
@@ -13,29 +17,28 @@ export interface IPost {
     | "REDDIT"
     | "LINKEDIN"
     | "OTHER";
-  upvotes: number;
   url: string;
-  devRole: "Frontend" | "Backend" | "DevOps";
-  creator: {
-    _id: string;
-    name: string;
-  };
-  _id: string;
+  upvotes: number;
+  upvotedBy: string[];
+  downvotedBy: string[];
+  creator: IUser;
   comments: IComment[];
+  createdAt: Date;
 }
 
 export interface IComment {
   _id: string;
-  creator: {
-    name: string;
-  };
-  totalVotes: number;
+  creator: IUser;
   text: string;
-  votes: {
-    user: string;
-    isLike: boolean;
-  }[];
+  totalVotes: number;
+  votes: ICommentVote[];
   createdAt: Date;
+}
+
+export interface ICommentVote {
+  _id: string;
+  isLike: boolean;
+  user: string;
 }
 
 export type DevRole = "FRONTEND" | "BACKEND" | "DEVOPS";

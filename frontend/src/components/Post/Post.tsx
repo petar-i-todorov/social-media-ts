@@ -19,48 +19,48 @@ import ReactTimeAgo from "react-time-ago";
 import { FaUserCircle } from "react-icons/fa";
 import { FlashMessageContext } from "../../contexts/FlashMessageFeedContext";
 import { Link } from "react-router-dom";
+import { IPost } from "../../types/feed";
+
+// {
+//   createdAt: post.createdAt,
+//   creatorId: post.creator._id,
+//   creatorName: post.creator.name,
+//   id: post._id,
+//   title: post.title,
+//   description: post.description,
+//   platform: post.platform,
+//   upvotes: post.upvotes,
+//   upvotedBy: post.upvotedBy,
+//   downvotedBy: post.downvotedBy,
+//   comments: post.comments.map((comment) => {
+//     return {
+//       _id: comment._id,
+//       likedBy: comment.votes
+//         .filter((vote) => {
+//           return vote.isLike;
+//         })
+//         .map((vote) => {
+//           return vote.user;
+//         }),
+//       dislikedBy: comment.votes
+//         .filter((vote) => {
+//           return !vote.isLike;
+//         })
+//         .map((vote) => {
+//           return vote.user;
+//         }),
+//       totalVotes: comment.totalVotes,
+//       creator: { name: comment.creator.name },
+//       text: comment.text,
+//       createdAt: comment.createdAt,
+//     };
+//   }),
+// }
 
 const Post: React.FC<{
-  id: string;
-  title: string;
-  description: string;
-  platform:
-    | "YOUTUBE"
-    | "STACKOVERFLOW"
-    | "UDEMY"
-    | "GITHUB"
-    | "LINKEDIN"
-    | "REDDIT"
-    | "FACEBOOK"
-    | "OTHER";
-  upvotes: number;
-  upvotedBy: string[];
-  downvotedBy: string[];
-  creatorId: string;
-  creatorName: string;
-  createdAt: Date;
-  comments: {
-    _id: string;
-    likedBy: string[];
-    dislikedBy: string[];
-    totalVotes: number;
-    creator: { name: string };
-    text: string;
-    createdAt: Date;
-  }[];
-}> = ({
-  title,
-  description,
-  platform,
-  upvotes,
-  id,
-  upvotedBy,
-  downvotedBy,
-  creatorId,
-  creatorName,
-  createdAt,
-  comments,
-}) => {
+  post: IPost;
+}> = ({ post }) => {
+  const [postObj, setPostObj] = useState<IPost>(post);
   const {
     setIsFeedFlashMessage,
     setFeedFlashMessageConfiguration,
@@ -70,25 +70,33 @@ const Post: React.FC<{
   const [isUpvoteLocked, setIsUpvoteLocked] = useState(false);
   const [isDownvoteLocked, setIsDownvoteLocked] = useState(false);
   const [moreOptionsVisibility, setMoreOptionsVisibility] = useState(false);
-  const isAuthor = useRef(creatorId === localStorage.getItem("userId"));
+  const isAuthor = useRef(
+    postObj.creator._id === localStorage.getItem("userId")
+  );
   const [commentText, setCommentText] = useState("");
   const { setPosts, sortBy, devRole } = useContext(PostsContext);
   useEffect(() => {
-    if (upvotedBy.find((userId) => userId === localStorage.getItem("userId"))) {
+    if (
+      postObj.upvotedBy.find(
+        (userId) => userId === localStorage.getItem("userId")
+      )
+    ) {
       setIsUpvoteLocked(true);
     } else {
       setIsUpvoteLocked(false);
     }
     if (
-      downvotedBy.find((userId) => userId === localStorage.getItem("userId"))
+      postObj.downvotedBy.find(
+        (userId) => userId === localStorage.getItem("userId")
+      )
     ) {
       setIsDownvoteLocked(true);
     } else {
       setIsDownvoteLocked(false);
     }
-  }, [upvotedBy, downvotedBy]);
+  }, [postObj.upvotedBy, postObj.downvotedBy]);
   const [showMoreVisibility, setShowMoreVisibility] = useState(
-    description.length > 250
+    postObj.description.length > 250
   );
   return (
     <div
@@ -98,8 +106,10 @@ const Post: React.FC<{
       <div className={styles.postHeader}>
         <p>
           <span>Posted by </span>
-          <Link to={"/user/" + creatorId}>{creatorName} </Link>
-          <ReactTimeAgo date={new Date(createdAt)} locale="en-US" />
+          <Link to={"/user/" + postObj.creator._id}>
+            {postObj.creator.name}{" "}
+          </Link>
+          <ReactTimeAgo date={new Date(postObj.createdAt)} locale="en-US" />
         </p>
         <div className={styles.moreOptionsContainer}>
           <BsThreeDots
@@ -116,7 +126,7 @@ const Post: React.FC<{
             }}
           />
           {moreOptionsVisibility && (
-            <MoreOptionsMenu isAuthor={isAuthor.current} postId={id} />
+            <MoreOptionsMenu isAuthor={isAuthor.current} postId={postObj._id} />
           )}
         </div>
       </div>
@@ -131,7 +141,7 @@ const Post: React.FC<{
             isLocked={isUpvoteLocked}
             onClick={async () => {
               const response = await fetch(
-                `http://localhost:8080/posts/upvote/${id}`,
+                `http://localhost:8080/posts/upvote/${postObj._id}`,
                 {
                   method: "PATCH",
                   headers: {
@@ -139,19 +149,14 @@ const Post: React.FC<{
                     Authorization: "Bearer " + localStorage.getItem("token"),
                   },
                   body: JSON.stringify({
-                    postId: id,
+                    postId: postObj._id,
                     userId: localStorage.getItem("userId"),
                   }),
                 }
               );
               const resData = await response.json();
               if (response.status === 200) {
-                sortAndSetPosts(
-                  resData.updatedPosts,
-                  setPosts,
-                  sortBy,
-                  devRole
-                );
+                setPostObj(resData.updatedPost);
               } else if (!isFeedFlashMessage) {
                 setFeedFlashMessageConfiguration({
                   text: resData.message,
@@ -166,7 +171,7 @@ const Post: React.FC<{
           >
             +
           </Button>
-          <span className={styles.votesQty}>{upvotes}</span>
+          <span className={styles.votesQty}>{postObj.upvotes}</span>
           <Button
             isLocked={isDownvoteLocked}
             color="red"
@@ -175,7 +180,7 @@ const Post: React.FC<{
             }
             onClick={async () => {
               const response = await fetch(
-                `http://localhost:8080/posts/downvote/${id}`,
+                `http://localhost:8080/posts/downvote/${postObj._id}`,
                 {
                   method: "PATCH",
                   headers: {
@@ -183,19 +188,14 @@ const Post: React.FC<{
                     Authorization: "Bearer " + localStorage.getItem("token"),
                   },
                   body: JSON.stringify({
-                    postId: id,
+                    postId: postObj._id,
                     userId: localStorage.getItem("userId"),
                   }),
                 }
               );
               const resData = await response.json();
               if (response.status === 200) {
-                sortAndSetPosts(
-                  resData.updatedPosts,
-                  setPosts,
-                  sortBy,
-                  devRole
-                );
+                setPostObj(resData.updatedPost);
               } else if (!isFeedFlashMessage) {
                 setFeedFlashMessageConfiguration({
                   text: resData.message,
@@ -212,10 +212,12 @@ const Post: React.FC<{
           </Button>
         </div>
         <div className={styles.postInfo}>
-          <h2>{title}</h2>
+          <h2>{postObj.title}</h2>
           <div className={styles.postDescritpion}>
             <p>
-              {showMoreVisibility ? description.substring(0, 250) : description}{" "}
+              {showMoreVisibility
+                ? postObj.description.substring(0, 250)
+                : postObj.description}{" "}
               {showMoreVisibility && (
                 <span
                   className={styles.showMore}
@@ -230,17 +232,17 @@ const Post: React.FC<{
           </div>
         </div>
         <div className={styles.postSidebar}>
-          {platform === "UDEMY" ? (
+          {postObj.platform === "UDEMY" ? (
             <SiUdemy size="60" color="purple" />
-          ) : platform === "STACKOVERFLOW" ? (
+          ) : postObj.platform === "STACKOVERFLOW" ? (
             <RiStackOverflowFill size="60" color="orange" />
-          ) : platform === "GITHUB" ? (
+          ) : postObj.platform === "GITHUB" ? (
             <RiGithubFill size="60" color="black" />
-          ) : platform === "YOUTUBE" ? (
+          ) : postObj.platform === "YOUTUBE" ? (
             <RiYoutubeFill size="60" color="red" />
-          ) : platform === "REDDIT" ? (
+          ) : postObj.platform === "REDDIT" ? (
             <RiRedditFill size="60" color="red" />
-          ) : platform === "LINKEDIN" ? (
+          ) : postObj.platform === "LINKEDIN" ? (
             <RiLinkedinBoxFill size="60" color="blue" />
           ) : (
             <span className={styles.other}>OTHER</span>
@@ -259,7 +261,7 @@ const Post: React.FC<{
             if (event.key === "Enter") {
               if (commentText.length > 0) {
                 const res = await fetch(
-                  `http://localhost:8080/posts/addComment/${id}`,
+                  `http://localhost:8080/posts/addComment/${postObj._id}`,
                   {
                     method: "POST",
                     headers: {
@@ -275,12 +277,7 @@ const Post: React.FC<{
                 setCommentText("");
                 if (res.status === 200 || res.status === 201) {
                   const resData = await res.json();
-                  sortAndSetPosts(
-                    resData.updatedPosts,
-                    setPosts,
-                    sortBy,
-                    devRole
-                  );
+                  setPostObj(resData.updatedPost);
                 } else {
                   setIsFeedFlashMessage(true);
                   setFeedFlashMessageConfiguration({
@@ -303,7 +300,7 @@ const Post: React.FC<{
           <IoSend size="35" color="lightblue" />
         </div>
       </section>
-      {comments.length ? (
+      {postObj.comments.length ? (
         <div className={styles.showComments}>
           <span
             onClick={() => {
@@ -311,14 +308,14 @@ const Post: React.FC<{
             }}
           >
             {!areCommentsVisible
-              ? `Show comments (${comments.length})`
+              ? `Show comments (${postObj.comments.length})`
               : "Hide comments"}
           </span>
         </div>
       ) : null}
       {areCommentsVisible && (
         <section className={styles.comments}>
-          {comments.map((comment) => {
+          {postObj.comments.map((comment) => {
             return <Comment comment={comment} key={comment._id} />;
           })}
         </section>
