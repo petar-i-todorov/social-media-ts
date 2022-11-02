@@ -22,9 +22,14 @@ import { IPost } from "../../types/feed";
 
 const Post: React.FC<{
   post: IPost;
-}> = ({ post }) => {
+  observer?: IntersectionObserver;
+}> = ({ post, observer }) => {
   const [postObj, setPostObj] = useState<IPost>(post);
+  const postRef = useRef(null);
   useEffect(() => {
+    if (observer && postRef.current) {
+      observer.observe(postRef.current);
+    }
     setPostObj(post);
   }, [post]);
   const {
@@ -65,6 +70,7 @@ const Post: React.FC<{
   );
   return (
     <div
+      ref={postRef}
       className={styles.post}
       onClick={() => setMoreOptionsVisibility(false)}
     >

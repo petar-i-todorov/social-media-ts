@@ -1,4 +1,4 @@
-export type DevRole = "BACKEND" | "FRONTEND" | "DEVOPS" | undefined;
+export type DevRole = "BACKEND" | "FRONTEND" | "DEVOPS";
 
 export type Platform =
   | "GITHUB"
@@ -9,4 +9,4 @@ export type Platform =
   | "REDDIT"
   | "OTHER";
 
-export type SortBy = "RECENCY" | "VOTES" | undefined;
+export type SortBy = "RECENCY" | "VOTES";

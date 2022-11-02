@@ -7,25 +7,62 @@ import { PostsContext } from "../../contexts/PostsContext";
 import PostSkeleton from "../../components/Post/PostSkeleton";
 
 const FeedPage = () => {
+  const [isIntersecting, setIsIntersecting] = useState(false);
   const { posts, setPosts, sortBy, setSortBy, devRole } =
     useContext(PostsContext);
   const { setAddPostVisibility } = useContext(ModalsManipulationContext);
   const [isLoading, setIsLoading] = useState(false);
+  const [lastPostDate, setLastPostDate] = useState<null | string>(null);
+  const [lastPostVotes, setLastPostVotes] = useState<null | number>(null);
+  const infiniteObserver = new IntersectionObserver(
+    ([entry], observer) => {
+      if (entry.isIntersecting) {
+        observer.unobserve(entry.target);
+        setIsIntersecting(true);
+      }
+    },
+    { threshold: 0.5 }
+  );
   useEffect(() => {
     async function fetchData() {
       setIsLoading(true);
       const response = await fetch(
-        `http://localhost:8080/posts?sortBy=${sortBy}&devRole=${devRole}`,
+        `http://localhost:8080/posts?sortBy=${sortBy}&devRole=${devRole}&lastPostDate=null&lastPostVotes=null`,
         {
           method: "GET",
         }
       );
       const posts = await response.json();
+      setLastPostDate(posts[posts.length - 1].createdAt);
+      setLastPostVotes(posts[posts.length - 1].upvotes);
       setIsLoading(false);
       setPosts(posts);
     }
     fetchData();
   }, [devRole, sortBy]);
+  useEffect(() => {
+    async function fetchData() {
+      if (isIntersecting) {
+        setIsLoading(true);
+        const response = await fetch(
+          `http://localhost:8080/posts?sortBy=${sortBy}&devRole=${devRole}&lastPostDate=${lastPostDate}&lastPostVotes=${lastPostVotes}`,
+          {
+            method: "GET",
+          }
+        );
+        const fetchedPosts = await response.json();
+        console.log(fetchedPosts);
+        if (posts.length) {
+          setLastPostDate(fetchedPosts[fetchedPosts.length - 1].createdAt);
+          setLastPostVotes(fetchedPosts[fetchedPosts.length - 1].upvotes);
+        }
+        setIsLoading(false);
+        setPosts((posts) => [...posts, ...fetchedPosts]);
+        setIsIntersecting(false);
+      }
+    }
+    fetchData();
+  }, [isIntersecting]);
   return (
     <main className={styles.feed}>
       <menu className={styles.feedMenu}>
@@ -56,7 +93,12 @@ const FeedPage = () => {
         </select>
       </menu>
       {posts.length ? (
-        posts.map((post) => {
+        posts.map((post, index) => {
+          if (index === posts.length - 1) {
+            return (
+              <Post key={post._id} post={post} observer={infiniteObserver} />
+            );
+          }
           return <Post key={post._id} post={post} />;
         })
       ) : isLoading ? (

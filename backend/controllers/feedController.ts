@@ -76,13 +76,16 @@ export const feedController = {
         !(
           req.query.devRole === FRONTEND ||
           req.query.devRole === BACKEND ||
-          req.query.devRole === DEVOPS ||
-          req.query.devRole === undefined
+          req.query.devRole === DEVOPS
+        ) ||
+        !(req.query.sortBy === RECENCY || req.query.sortBy === VOTES) ||
+        !(
+          typeof req.query.lastPostDate === "string" ||
+          req.query.lastPostDate === undefined
         ) ||
         !(
-          req.query.sortBy === RECENCY ||
-          req.query.sortBy === VOTES ||
-          req.query.sortBy === undefined
+          typeof req.query.lastPostVotes === "string" ||
+          req.query.lastPostVotes === undefined
         )
       ) {
         passToErrorHandlerMiddleware(next, 500, "Invalid query params.");
@@ -90,6 +93,8 @@ export const feedController = {
         const posts = await getPosts({
           devRole: req.query.devRole,
           sortBy: req.query.sortBy,
+          lastPostDate: req.query.lastPostDate,
+          lastPostVotes: req.query.lastPostVotes,
         });
         if (!posts) {
           passToErrorHandlerMiddleware(next, 404, "Such a post was not found.");
@@ -192,29 +197,9 @@ export const feedController = {
       if (postToDelete) {
         if (postToDelete.creator.toString() === req.body.userId) {
           await Post.deleteOne({ _id: req.params.postId });
-          if (
-            !(
-              req.query.devRole === FRONTEND ||
-              req.query.devRole === BACKEND ||
-              req.query.devRole === DEVOPS ||
-              req.query.devRole === undefined
-            ) ||
-            !(
-              req.query.sortBy === RECENCY ||
-              req.query.sortBy === VOTES ||
-              req.query.sortBy === undefined
-            )
-          ) {
-            passToErrorHandlerMiddleware(next, 500, "Invalid query params.");
-          } else {
-            res.status(200).json({
-              message: "Post was successfully deleted.",
-              updatedPosts: await getPosts({
-                devRole: req.query.devRole,
-                sortBy: req.query.sortBy,
-              }),
-            });
-          }
+          res.status(200).json({
+            message: "Post was successfully deleted.",
+          });
         } else {
           passToErrorHandlerMiddleware(
             next,

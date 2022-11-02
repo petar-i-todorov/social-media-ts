@@ -39,19 +39,28 @@ export const getPost = async (id: string) => {
 
 export const getPosts = async (getConfig: {
   devRole: DevRole;
-  sortBy: SortBy;
+  sortBy: string | undefined;
+  lastPostDate: string | undefined;
+  lastPostVotes: string | undefined;
 }) => {
-  const { devRole, sortBy } = getConfig;
+  const { devRole, sortBy, lastPostDate, lastPostVotes } = getConfig;
   let posts;
-  if (devRole) {
-    posts = Post.find({ devRole: devRole });
-  } else {
-    posts = Post.find();
-  }
   if (sortBy === RECENCY) {
-    posts = posts.sort({ createdAt: -1 });
-  } else if (sortBy === VOTES) {
-    posts = posts.sort({ upvotes: -1 });
+    if (lastPostDate !== "null") {
+      posts = Post.find({ devRole: devRole, createdAt: { $lt: lastPostDate } })
+        .sort({ createdAt: -1 })
+        .limit(10);
+    } else {
+      posts = Post.find({ devRole: devRole }).sort({ createdAt: -1 }).limit(10);
+    }
+  } else if (lastPostVotes !== "null" && lastPostDate !== "null") {
+    posts = Post.find({ devRole: devRole, votes: { $lt: lastPostVotes } })
+      .sort({ upvotes: -1, createdAt: -1 })
+      .limit(10);
+  } else {
+    posts = Post.find({ devRole: devRole })
+      .sort({ upvotes: -1, createdAt: -1 })
+      .limit(10);
   }
   return posts
     .populate("creator")
