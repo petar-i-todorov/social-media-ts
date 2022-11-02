@@ -39,7 +39,7 @@ export const getPost = async (id: string) => {
 
 export const getPosts = async (getConfig: {
   devRole: DevRole;
-  sortBy: string | undefined;
+  sortBy: SortBy;
   lastPostDate: string | undefined;
   lastPostVotes: string | undefined;
 }) => {
@@ -54,7 +54,10 @@ export const getPosts = async (getConfig: {
       posts = Post.find({ devRole: devRole }).sort({ createdAt: -1 }).limit(10);
     }
   } else if (lastPostVotes !== "null" && lastPostDate !== "null") {
-    posts = Post.find({ devRole: devRole, votes: { $lt: lastPostVotes } })
+    posts = Post.find({
+      devRole: devRole,
+      upvotes: { $lt: Number(lastPostVotes) },
+    })
       .sort({ upvotes: -1, createdAt: -1 })
       .limit(10);
   } else {

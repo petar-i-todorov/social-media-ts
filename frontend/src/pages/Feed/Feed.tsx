@@ -14,15 +14,12 @@ const FeedPage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [lastPostDate, setLastPostDate] = useState<null | string>(null);
   const [lastPostVotes, setLastPostVotes] = useState<null | number>(null);
-  const infiniteObserver = new IntersectionObserver(
-    ([entry], observer) => {
-      if (entry.isIntersecting) {
-        observer.unobserve(entry.target);
-        setIsIntersecting(true);
-      }
-    },
-    { threshold: 0.5 }
-  );
+  const infiniteObserver = new IntersectionObserver((entries, observer) => {
+    if (entries[0].isIntersecting) {
+      observer.unobserve(entries[0].target);
+      setIsIntersecting(true);
+    }
+  });
   useEffect(() => {
     async function fetchData() {
       setIsLoading(true);
@@ -52,7 +49,7 @@ const FeedPage = () => {
         );
         const fetchedPosts = await response.json();
         console.log(fetchedPosts);
-        if (posts.length) {
+        if (fetchedPosts.length) {
           setLastPostDate(fetchedPosts[fetchedPosts.length - 1].createdAt);
           setLastPostVotes(fetchedPosts[fetchedPosts.length - 1].upvotes);
         }
