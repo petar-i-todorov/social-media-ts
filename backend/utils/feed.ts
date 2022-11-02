@@ -55,8 +55,17 @@ export const getPosts = async (getConfig: {
     }
   } else if (lastPostVotes !== "null" && lastPostDate !== "null") {
     posts = Post.find({
-      devRole: devRole,
-      upvotes: { $lt: Number(lastPostVotes) },
+      $or: [
+        {
+          devRole: devRole,
+          upvotes: { $eq: Number(lastPostVotes) },
+          createdAt: { $lt: lastPostDate },
+        },
+        {
+          devRole: devRole,
+          upvotes: { $lt: Number(lastPostVotes) },
+        },
+      ],
     })
       .sort({ upvotes: -1, createdAt: -1 })
       .limit(10);
