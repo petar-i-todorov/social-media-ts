@@ -5,6 +5,7 @@ import { isAuth } from "../middlewares/is-auth";
 const router = Router();
 
 router.get("/:userId", userController.getUser);
+router.get("/:userId/posts", userController.getUserPosts);
 router.patch("/:userId/updateQuote", isAuth, userController.updateQuote);
 
 export default router;

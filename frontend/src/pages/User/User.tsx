@@ -4,7 +4,7 @@ import { useParams } from "react-router-dom";
 import Post from "../../components/Post/Post";
 import { FlashMessageContext } from "../../contexts/FlashMessageFeedContext";
 import { PostsContext } from "../../contexts/PostsContext";
-import { IComment, IPost } from "../../types/feed";
+import { IPost } from "../../types/feed";
 import styles from "./User.module.scss";
 import { TbEdit } from "react-icons/tb";
 import TextArea from "../../components/TextArea/TextArea";
@@ -12,6 +12,8 @@ import Button from "../../components/Button/Button";
 import BouncingDotsLoader from "../../components/BouncingDotsLoader/BouncingDotsLoader";
 import UserSkeleton from "./UserSkeleton";
 import PostSkeleton from "../../components/Post/PostSkeleton";
+import { AiOutlineLeft } from "react-icons/ai";
+import { AiOutlineRight } from "react-icons/ai";
 
 const User = () => {
   const firstFetching = useRef(true);
@@ -24,9 +26,12 @@ const User = () => {
   const [updateQuoteMode, setUpdateQuoteMode] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [postsCount, setPostsCount] = useState<number>();
+  const [currentPage, setCurrentPage] = useState(1);
+  const [fetchedPosts, setFetchedPosts] = useState<IPost[]>([]);
   useEffect(() => {
     const fetchUser = async () => {
-      firstFetching.current && setIsLoading(true);
+      firstFetching.current && setIsLoading(true); //with skeleton - first render
       const response = await fetch(
         `http://localhost:8080/users/${params.userId}`
       );
@@ -39,6 +44,8 @@ const User = () => {
           })();
         setUser(resData.user);
         setQuote(resData.user.quote);
+        setPostsCount(resData.postsCount);
+        setFetchedPosts(resData.user.posts);
       } else {
         firstFetching.current &&
           (() => {
@@ -56,7 +63,7 @@ const User = () => {
       }
     };
     fetchUser();
-  }, [posts]); //w skeleton - first render
+  }, [posts]);
   return (
     <div className={styles.userPage}>
       {isLoading ? (
@@ -163,9 +170,60 @@ const User = () => {
           </section>
           <main className={styles.posts}>
             <span>Recent activity</span>
-            {user.posts.map((post: IPost) => {
+            {fetchedPosts.map((post: IPost) => {
               return <Post key={post._id} post={post} />;
             })}
+            <section className={styles.pagination}>
+              {currentPage > 1 ? (
+                <Button
+                  color="green"
+                  children={<AiOutlineLeft />}
+                  onClick={async () => {
+                    const res = await fetch(
+                      `http://localhost:8080/users/${user._id}/posts/?page=${
+                        currentPage - 1
+                      }`
+                    );
+                    if (res.status === 200) {
+                      const resData = await res.json();
+                      setCurrentPage((page) => page - 1);
+                      setFetchedPosts(resData.posts);
+                    } else {
+                      setFeedFlashMessageConfiguration({
+                        text: "Something went wrong.",
+                        color: "red",
+                      });
+                    }
+                  }}
+                />
+              ) : null}
+              {postsCount && postsCount > 2 ? (
+                <Button color="blue" children={currentPage.toString()} />
+              ) : null}
+              {postsCount && postsCount >= currentPage * 2 ? (
+                <Button
+                  color="green"
+                  onClick={async () => {
+                    const res = await fetch(
+                      `http://localhost:8080/users/${user._id}/posts/?page=${
+                        currentPage + 1
+                      }`
+                    );
+                    if (res.status === 200) {
+                      const resData = await res.json();
+                      setCurrentPage((page) => page + 1);
+                      setFetchedPosts(resData.posts);
+                    } else {
+                      setFeedFlashMessageConfiguration({
+                        text: "Something went wrong.",
+                        color: "red",
+                      });
+                    }
+                  }}
+                  children={<AiOutlineRight />}
+                />
+              ) : null}
+            </section>
           </main>
         </>
       ) : (

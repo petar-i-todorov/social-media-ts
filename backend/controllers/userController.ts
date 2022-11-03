@@ -1,4 +1,6 @@
 import { Request, Response, NextFunction } from "express";
+import Post from "../models/post";
+import User from "../models/user";
 import { getUser, passToErrorHandlerMiddleware } from "../utils/feed";
 
 export const userController = {
@@ -8,9 +10,45 @@ export const userController = {
       if (!foundUser) {
         passToErrorHandlerMiddleware(next, 404, "Such a user was not found.");
       } else {
+        const user = await User.findById(req.params.userId).populate("posts");
         res.status(200).json({
           message: "User was successfully found and returned.",
           user: foundUser,
+          postsCount: user?.posts.length,
+        });
+      }
+    } catch (err) {
+      passToErrorHandlerMiddleware(next, 500, "Something went wrong.");
+    }
+  },
+  getUserPosts: async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const page = Number(req.query.page);
+      let posts;
+      if (typeof page === "number") {
+        posts = await Post.find({ creator: req.params.userId })
+          .sort({ createdAt: -1 })
+          .skip((page - 1) * 2)
+          .limit(2)
+          .populate("creator")
+          .populate({
+            path: "comments",
+            model: "Comment",
+            populate: {
+              path: "creator",
+              model: "User",
+            },
+          })
+          .populate({ path: "comments.votes", model: "CommentVote" });
+      }
+      if (posts) {
+        res.status(200).json({
+          message: "Posts were successfully found and returned.",
+          posts: posts,
+        });
+      } else {
+        res.status(404).json({
+          message: "Posts associated with that user could not be found.",
         });
       }
     } catch (err) {

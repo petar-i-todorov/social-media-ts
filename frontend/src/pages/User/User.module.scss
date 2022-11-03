@@ -81,5 +81,14 @@
     span {
       font-weight: 500px;
     }
+    .pagination {
+      display: flex;
+      justify-content: space-around;
+      width: 50%;
+      margin: 0 auto;
+      button {
+        width: 50px !important;
+      }
+    }
   }
 }

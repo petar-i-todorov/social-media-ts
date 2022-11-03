@@ -97,34 +97,24 @@ export const getUser = async (userId: string) => {
     .populate({
       path: "posts",
       model: "Post",
+      options: {
+        limit: 2,
+        sort: {
+          createdAt: -1,
+        },
+      },
       populate: {
         path: "creator",
         model: "User",
       },
     })
     .populate({
-      path: "posts",
-      model: "Post",
-      populate: {
-        path: "comments",
-        model: "Comment",
-        populate: {
-          path: "creator",
-          model: "User",
-        },
-      },
+      path: "posts.comments.creator",
+      model: "User",
     })
     .populate({
-      path: "posts",
-      model: "Post",
-      populate: {
-        path: "comments",
-        model: "Comment",
-        populate: {
-          path: "votes",
-          model: "CommentVote",
-        },
-      },
+      path: "posts.comments.votes",
+      model: "CommentVote",
     });
 };
 
