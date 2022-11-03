@@ -45,6 +45,7 @@ const User = () => {
         setUser(resData.user);
         setQuote(resData.user.quote);
         setPostsCount(resData.postsCount);
+        console.log(resData.postsCount);
         setFetchedPosts(resData.user.posts);
       } else {
         firstFetching.current &&
@@ -200,7 +201,7 @@ const User = () => {
               {postsCount && postsCount > 2 ? (
                 <Button color="blue" children={currentPage.toString()} />
               ) : null}
-              {postsCount && postsCount >= currentPage * 2 ? (
+              {postsCount && postsCount > currentPage * 2 ? (
                 <Button
                   color="green"
                   onClick={async () => {

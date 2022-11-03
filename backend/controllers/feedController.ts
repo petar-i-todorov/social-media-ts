@@ -13,6 +13,7 @@ import Comment from "../models/comment";
 import CommentVote from "../models/commentVote";
 import user from "../models/user";
 import { BACKEND, DEVOPS, FRONTEND, RECENCY, VOTES } from "../constants/feed";
+import User from "../models/user";
 
 const transporter = createTransport({
   service: "hotmail",
@@ -197,9 +198,22 @@ export const feedController = {
       if (postToDelete) {
         if (postToDelete.creator.toString() === req.body.userId) {
           await Post.deleteOne({ _id: req.params.postId });
-          res.status(200).json({
-            message: "Post was successfully deleted.",
-          });
+          const foundUser = await User.findById(req.body.userId);
+          if (!foundUser) {
+            passToErrorHandlerMiddleware(
+              next,
+              404,
+              "Such a user was not found."
+            );
+          } else {
+            foundUser.posts = foundUser.posts.filter(
+              (postId) => postId.toString() !== req.params.postId
+            );
+            await foundUser.save();
+            res.status(200).json({
+              message: "Post was successfully deleted.",
+            });
+          }
         } else {
           passToErrorHandlerMiddleware(
             next,
