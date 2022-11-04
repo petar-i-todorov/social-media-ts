@@ -39,7 +39,7 @@ const FeedPage = () => {
   }, [devRole, sortBy]);
   useEffect(() => {
     async function fetchData() {
-      if (isIntersecting) {
+      if (isIntersecting && lastPostDate && lastPostVotes !== null) {
         setIsLoading(true);
         const response = await fetch(
           `http://localhost:8080/posts?sortBy=${sortBy}&devRole=${devRole}&lastPostDate=${lastPostDate}&lastPostVotes=${lastPostVotes}`,
@@ -48,7 +48,6 @@ const FeedPage = () => {
           }
         );
         const fetchedPosts = await response.json();
-        console.log(fetchedPosts);
         if (fetchedPosts.length) {
           setLastPostDate(fetchedPosts[fetchedPosts.length - 1].createdAt);
           setLastPostVotes(fetchedPosts[fetchedPosts.length - 1].upvotes);
