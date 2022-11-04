@@ -13,8 +13,12 @@ const ReportPost: React.FC<{
     React.SetStateAction<boolean>
   >;
 }> = ({ setClosingConfirmationVisibility }) => {
-  const { setIsFeedFlashMessage, setFeedFlashMessageConfiguration } =
-    useContext(FlashMessageContext);
+  const {
+    setIsFeedFlashMessage,
+    setFeedFlashMessageConfiguration,
+    activeFlashTimeout,
+    setActiveFlashTimeout,
+  } = useContext(FlashMessageContext);
   const { postId } = useContext(PostIdContext);
   const [inappropriateLanguageChosen, setInappropriateLanguageChosen] =
     useState(false);
@@ -83,9 +87,11 @@ const ReportPost: React.FC<{
               text: "Something went wrong. Please, try again later.",
               color: "red",
             });
-            setTimeout(() => {
+            clearTimeout(activeFlashTimeout);
+            const timeout = setTimeout(() => {
               setIsFeedFlashMessage(false);
             }, 5000);
+            setActiveFlashTimeout(timeout);
           } else {
             const resData = await res.json();
             setReportPostVisibility(false);
@@ -94,9 +100,11 @@ const ReportPost: React.FC<{
               color: "green",
             });
             setIsFeedFlashMessage(true);
-            setTimeout(() => {
+            clearTimeout(activeFlashTimeout);
+            const timeout = setTimeout(() => {
               setIsFeedFlashMessage(false);
             }, 5000);
+            setActiveFlashTimeout(timeout);
           }
         }
       }}

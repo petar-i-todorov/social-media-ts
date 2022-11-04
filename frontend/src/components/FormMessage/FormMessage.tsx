@@ -5,7 +5,8 @@ const FormMessage: React.FC<{
   children: string;
   color: "green" | "red";
   flash?: boolean;
-}> = ({ children, color, flash }) => {
+  flashVisibility?: boolean;
+}> = ({ children, color, flash, flashVisibility }) => {
   const messageColor = color === "green" ? styles.green : styles.red;
   return (
     <div
@@ -14,7 +15,9 @@ const FormMessage: React.FC<{
         " " +
         messageColor +
         " " +
-        (flash ? styles.flash : "")
+        (flash
+          ? styles.flash + " " + (flashVisibility ? styles.flashVisible : null)
+          : null)
       }
     >
       {children}

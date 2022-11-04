@@ -22,8 +22,12 @@ const User = () => {
   const [user, setUser] = useState<any>();
   const params = useParams();
   const { posts } = useContext(PostsContext);
-  const { setFeedFlashMessageConfiguration, setIsFeedFlashMessage } =
-    useContext(FlashMessageContext);
+  const {
+    setFeedFlashMessageConfiguration,
+    setIsFeedFlashMessage,
+    activeFlashTimeout,
+    setActiveFlashTimeout,
+  } = useContext(FlashMessageContext);
   const [updateQuoteMode, setUpdateQuoteMode] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -61,9 +65,11 @@ const User = () => {
           color: "red",
         });
         setIsFeedFlashMessage(true);
-        setTimeout(() => {
+        clearTimeout(activeFlashTimeout);
+        const timeout = setTimeout(() => {
           setIsFeedFlashMessage(false);
         }, 5000);
+        setActiveFlashTimeout(timeout);
       }
     };
     fetchUser();
@@ -147,9 +153,11 @@ const User = () => {
                           color: "red",
                         });
                         setIsFeedFlashMessage(true);
-                        setTimeout(() => {
+                        clearTimeout(activeFlashTimeout);
+                        const timeout = setTimeout(() => {
                           setIsFeedFlashMessage(false);
                         }, 5000);
+                        setActiveFlashTimeout(timeout);
                       } else {
                         const resData = await res.json();
                         setUser(resData.updatedUser);
@@ -160,9 +168,11 @@ const User = () => {
                           color: "green",
                         });
                         setIsFeedFlashMessage(true);
-                        setTimeout(() => {
+                        clearTimeout(activeFlashTimeout);
+                        const timeout = setTimeout(() => {
                           setIsFeedFlashMessage(false);
                         }, 5000);
+                        setActiveFlashTimeout(timeout);
                       }
                     }}
                   />
@@ -192,9 +202,11 @@ const User = () => {
                       color: "red",
                     });
                     setIsFeedFlashMessage(true);
-                    setTimeout(() => {
+                    clearTimeout(activeFlashTimeout);
+                    const timeout = setTimeout(() => {
                       setIsFeedFlashMessage(false);
                     }, 5000);
+                    setActiveFlashTimeout(timeout);
                   } else {
                     const res = await fetch(
                       `http://localhost:8080/users/${user._id}/posts/?page=${
@@ -211,9 +223,11 @@ const User = () => {
                         color: "red",
                       });
                       setIsFeedFlashMessage(true);
-                      setTimeout(() => {
+                      clearTimeout(activeFlashTimeout);
+                      const timeout = setTimeout(() => {
                         setIsFeedFlashMessage(false);
                       }, 5000);
+                      setActiveFlashTimeout(timeout);
                     }
                   }
                 }}
@@ -242,9 +256,11 @@ const User = () => {
                       color: "red",
                     });
                     setIsFeedFlashMessage(true);
-                    setTimeout(() => {
+                    clearTimeout(activeFlashTimeout);
+                    const timeout = setTimeout(() => {
                       setIsFeedFlashMessage(false);
                     }, 5000);
+                    setActiveFlashTimeout(timeout);
                   } else {
                     const res = await fetch(
                       `http://localhost:8080/users/${user._id}/posts/?page=${

@@ -15,7 +15,6 @@ import { IPost } from "./types/feed";
 import { PostIdContext } from "./contexts/PostIdContext";
 import ConfirmationModal from "./components/ConfirmationModalBuilder/ConfirmationModalBuilder";
 import ReportPost from "./components/ReportPost/ReportPost";
-import { sortAndSetPosts } from "./utils/feed";
 import TimeAgo from "javascript-time-ago";
 import en from "javascript-time-ago/locale/en.json";
 import { FlashMessageContext } from "./contexts/FlashMessageFeedContext";
@@ -25,6 +24,9 @@ function App() {
   useEffect(() => {
     TimeAgo.addDefaultLocale(en);
   }, []);
+  const [activeFlashTimeout, setActiveFlashTimeout] = useState<
+    number | NodeJS.Timeout
+  >(0);
   const [addPostVisibility, setAddPostVisibility] = useState(false);
   const [deletePostVisibility, setDeletePostVisibility] = useState(false);
   const [posts, setPosts] = useState<IPost[]>([]);
@@ -72,6 +74,8 @@ function App() {
           isFeedFlashMessage,
           setFeedFlashMessageConfiguration,
           setIsFeedFlashMessage,
+          activeFlashTimeout,
+          setActiveFlashTimeout,
         }}
       >
         <PostIdContext.Provider value={{ postId, setPostId }}>

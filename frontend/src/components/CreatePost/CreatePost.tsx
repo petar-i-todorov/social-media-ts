@@ -18,7 +18,6 @@ import FormMessage from "../FormMessage/FormMessage";
 import ModalBuilder from "../ModalBuilder/ModalBuilder";
 import { IPost } from "../../types/feed";
 import { PostIdContext } from "../../contexts/PostIdContext";
-import { sortAndSetPosts } from "../../utils/feed";
 import { FlashMessageContext } from "../../contexts/FlashMessageFeedContext";
 
 const AddPost: React.FC<{
@@ -28,8 +27,12 @@ const AddPost: React.FC<{
     React.SetStateAction<boolean>
   >;
 }> = ({ setClosingConfirmationVisibility, editPost, postToEdit }) => {
-  const { setFeedFlashMessageConfiguration, setIsFeedFlashMessage } =
-    useContext(FlashMessageContext);
+  const {
+    setFeedFlashMessageConfiguration,
+    setIsFeedFlashMessage,
+    activeFlashTimeout,
+    setActiveFlashTimeout,
+  } = useContext(FlashMessageContext);
   const [title, setTitle] = useState("");
   const [isTitleValid, setIsTitleValid] = useState(true);
   const [titleErrorMessage, setTitleErrorMessage] = useState("");
@@ -64,7 +67,7 @@ const AddPost: React.FC<{
   const [isFormError, setIsFormError] = useState(false);
   const [formErrorText, setFormErrorText] = useState("");
   const { postId } = useContext(PostIdContext);
-  const { setPosts, sortBy, devRole, posts } = useContext(PostsContext);
+  const { setPosts, posts } = useContext(PostsContext);
   useEffect(() => {
     if (postToEdit) {
       setTitle(postToEdit.title);
@@ -173,18 +176,22 @@ const AddPost: React.FC<{
                   text: resData.message,
                   color: "green",
                 });
-                setTimeout(() => {
+                clearTimeout(activeFlashTimeout);
+                const timeout = setTimeout(() => {
                   setIsFeedFlashMessage(false);
                 }, 5000);
+                setActiveFlashTimeout(timeout);
               } else {
                 setIsFeedFlashMessage(true);
                 setFeedFlashMessageConfiguration({
                   text: "Something went wrong. Please, try again later.",
                   color: "red",
                 });
-                setTimeout(() => {
+                clearTimeout(activeFlashTimeout);
+                const timeout = setTimeout(() => {
                   setIsFeedFlashMessage(false);
                 }, 5000);
+                setActiveFlashTimeout(timeout);
               }
             } else {
               const res = await fetch("http://localhost:8080/posts/new", {
@@ -212,9 +219,11 @@ const AddPost: React.FC<{
                   text: "Post was successfully created.",
                   color: "green",
                 });
-                setTimeout(() => {
+                clearTimeout(activeFlashTimeout);
+                const timeout = setTimeout(() => {
                   setIsFeedFlashMessage(false);
                 }, 5000);
+                setActiveFlashTimeout(timeout);
               } else {
                 const resData = await res.json();
                 setFormErrorText(resData.message);
@@ -227,9 +236,11 @@ const AddPost: React.FC<{
               text: "Something went wrong. Please, try again later.",
               color: "red",
             });
-            setTimeout(() => {
+            clearTimeout(activeFlashTimeout);
+            const timeout = setTimeout(() => {
               setIsFeedFlashMessage(false);
             }, 5000);
+            setActiveFlashTimeout(timeout);
           }
         }
       }}

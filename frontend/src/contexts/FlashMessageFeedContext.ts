@@ -7,9 +7,15 @@ export const FlashMessageContext = createContext<{
   setFeedFlashMessageConfiguration: React.Dispatch<
     React.SetStateAction<{ text: string; color: "green" | "red" }>
   >;
+  activeFlashTimeout: number | NodeJS.Timeout;
+  setActiveFlashTimeout: React.Dispatch<
+    React.SetStateAction<number | NodeJS.Timeout>
+  >;
 }>({
   isFeedFlashMessage: false,
   setIsFeedFlashMessage: () => {},
   feedFlashMessageConfiguration: { text: "", color: "red" },
   setFeedFlashMessageConfiguration: () => {},
+  activeFlashTimeout: 0,
+  setActiveFlashTimeout: () => {},
 });

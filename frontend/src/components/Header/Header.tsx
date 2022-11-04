@@ -87,13 +87,12 @@ const NavBar = () => {
             <ThemeSwitcher />
           </li>
         </ul>
-        {isFeedFlashMessage && (
-          <FormMessage
-            children={feedFlashMessageConfiguration.text}
-            color={feedFlashMessageConfiguration.color}
-            flash
-          />
-        )}
+        <FormMessage
+          children={feedFlashMessageConfiguration.text}
+          color={feedFlashMessageConfiguration.color}
+          flash
+          flashVisibility={isFeedFlashMessage}
+        />
       </header>
       <Outlet />
     </>

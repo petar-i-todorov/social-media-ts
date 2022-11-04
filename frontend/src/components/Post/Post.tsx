@@ -36,6 +36,8 @@ const Post: React.FC<{
     setIsFeedFlashMessage,
     setFeedFlashMessageConfiguration,
     isFeedFlashMessage,
+    activeFlashTimeout,
+    setActiveFlashTimeout,
   } = useContext(FlashMessageContext);
   const [areCommentsVisible, setAreCommentsVisible] = useState(false);
   const [isUpvoteLocked, setIsUpvoteLocked] = useState(false);
@@ -134,9 +136,11 @@ const Post: React.FC<{
                   color: "red",
                 });
                 setIsFeedFlashMessage(true);
-                setTimeout(() => {
+                clearTimeout(activeFlashTimeout);
+                const timeout = setTimeout(() => {
                   setIsFeedFlashMessage(false);
                 }, 5000);
+                setActiveFlashTimeout(timeout);
               }
             }}
           >
@@ -173,9 +177,11 @@ const Post: React.FC<{
                   color: "red",
                 });
                 setIsFeedFlashMessage(true);
-                setTimeout(() => {
+                clearTimeout(activeFlashTimeout);
+                const timeout = setTimeout(() => {
                   setIsFeedFlashMessage(false);
                 }, 5000);
+                setActiveFlashTimeout(timeout);
               }
             }}
           >
@@ -255,9 +261,11 @@ const Post: React.FC<{
                     text: "Something went wrong. Please, try again later.",
                     color: "red",
                   });
-                  setTimeout(() => {
+                  clearTimeout(activeFlashTimeout);
+                  const timeout = setTimeout(() => {
                     setIsFeedFlashMessage(false);
                   }, 5000);
+                  setActiveFlashTimeout(timeout);
                 }
               }
             }

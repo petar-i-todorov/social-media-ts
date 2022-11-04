@@ -1,8 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import { AiFillDislike, AiFillLike } from "react-icons/ai";
 import { BsFillCircleFill } from "react-icons/bs";
-import { PostsContext } from "../../contexts/PostsContext";
-import { sortAndSetPosts } from "../../utils/feed";
 import styles from "./Comment.module.scss";
 import ReactTimeAgo from "react-time-ago";
 import { FaUserCircle } from "react-icons/fa";
@@ -13,8 +11,12 @@ const Comment: React.FC<{
   comment: IComment;
 }> = ({ comment }) => {
   const [commentObj, setCommentObj] = useState<IComment>(comment);
-  const { setFeedFlashMessageConfiguration, setIsFeedFlashMessage } =
-    useContext(FlashMessageContext);
+  const {
+    setFeedFlashMessageConfiguration,
+    setIsFeedFlashMessage,
+    activeFlashTimeout,
+    setActiveFlashTimeout,
+  } = useContext(FlashMessageContext);
   useEffect(() => {
     setCommentObj(comment);
   }, [comment]);
@@ -84,9 +86,11 @@ const Comment: React.FC<{
                   text: "Something went wrong. Please, try again later.",
                   color: "red",
                 });
-                setTimeout(() => {
+                clearTimeout(activeFlashTimeout);
+                const timeout = setTimeout(() => {
                   setIsFeedFlashMessage(false);
                 }, 5000);
+                setActiveFlashTimeout(timeout);
               }
             }}
           />
@@ -141,9 +145,11 @@ const Comment: React.FC<{
                   text: "Something went wrong. Please, try again later.",
                   color: "red",
                 });
-                setTimeout(() => {
+                clearTimeout(activeFlashTimeout);
+                const timeout = setTimeout(() => {
                   setIsFeedFlashMessage(false);
                 }, 5000);
+                setActiveFlashTimeout(timeout);
               }
             }}
           />
