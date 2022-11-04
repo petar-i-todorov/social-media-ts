@@ -51,7 +51,7 @@ const NavBar = () => {
               onKeyDown={async (event) => {
                 if (event.key === "Enter") {
                   const response = await fetch(
-                    `http://localhost:8080/posts?sortBy=${sortBy}&devRole=${devRole}&lastPostDate=null&lastPostVotes=null&substring=${searchText}`
+                    `http://localhost:8080/posts?sortBy=${sortBy}&devRole=${devRole}&substring=${searchText}`
                   );
                   if (response.status === 200) {
                     navigate("/");

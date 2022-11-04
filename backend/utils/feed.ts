@@ -47,7 +47,7 @@ export const getPosts = async (getConfig: {
   const { devRole, sortBy, lastPostDate, lastPostVotes, substring } = getConfig;
   let posts;
   if (sortBy === RECENCY) {
-    if (lastPostDate !== "null") {
+    if (lastPostDate) {
       posts = Post.find({ devRole: devRole, createdAt: { $lt: lastPostDate } })
         .sort({ createdAt: -1 })
         .limit(10);
@@ -66,7 +66,7 @@ export const getPosts = async (getConfig: {
     } else {
       posts = Post.find({ devRole: devRole }).sort({ createdAt: -1 }).limit(10);
     }
-  } else if (lastPostVotes !== "null" && lastPostDate !== "null") {
+  } else if (lastPostVotes && lastPostDate) {
     posts = Post.find({
       $or: [
         {

@@ -26,7 +26,7 @@ const FeedPage = () => {
     async function fetchData() {
       setIsLoading(true);
       const response = await fetch(
-        `http://localhost:8080/posts?sortBy=${sortBy}&devRole=${devRole}&lastPostDate=null&lastPostVotes=null`,
+        `http://localhost:8080/posts?sortBy=${sortBy}&devRole=${devRole}`,
         {
           method: "GET",
         }
