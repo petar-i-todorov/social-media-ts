@@ -42,12 +42,25 @@ export const getPosts = async (getConfig: {
   sortBy: SortBy;
   lastPostDate: string | undefined;
   lastPostVotes: string | undefined;
+  substring: string | undefined;
 }) => {
-  const { devRole, sortBy, lastPostDate, lastPostVotes } = getConfig;
+  const { devRole, sortBy, lastPostDate, lastPostVotes, substring } = getConfig;
   let posts;
   if (sortBy === RECENCY) {
     if (lastPostDate !== "null") {
       posts = Post.find({ devRole: devRole, createdAt: { $lt: lastPostDate } })
+        .sort({ createdAt: -1 })
+        .limit(10);
+    } else if (substring) {
+      posts = Post.find({
+        $or: [
+          { devRole: devRole, title: { $regex: substring } },
+          {
+            devRole: devRole,
+            description: { $regex: substring },
+          },
+        ],
+      })
         .sort({ createdAt: -1 })
         .limit(10);
     } else {
@@ -69,10 +82,20 @@ export const getPosts = async (getConfig: {
     })
       .sort({ upvotes: -1, createdAt: -1 })
       .limit(10);
-  } else {
-    posts = Post.find({ devRole: devRole })
+  } else if (substring) {
+    posts = Post.find({
+      $or: [
+        { devRole: devRole, title: { $regex: substring } },
+        {
+          devRole: devRole,
+          description: { $regex: substring },
+        },
+      ],
+    })
       .sort({ upvotes: -1, createdAt: -1 })
       .limit(10);
+  } else {
+    posts = Post.find({ devRole: devRole }).limit(10);
   }
   return posts
     .populate("creator")

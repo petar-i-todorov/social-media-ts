@@ -5,13 +5,15 @@ import styles from "./Feed.module.scss";
 import { ModalsManipulationContext } from "../../contexts/ModalsManipulationContext";
 import { PostsContext } from "../../contexts/PostsContext";
 import PostSkeleton from "../../components/Post/PostSkeleton";
+import { BiLoaderAlt } from "react-icons/bi";
 
 const FeedPage = () => {
   const [isIntersecting, setIsIntersecting] = useState(false);
   const { posts, setPosts, sortBy, setSortBy, devRole } =
     useContext(PostsContext);
   const { setAddPostVisibility } = useContext(ModalsManipulationContext);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false); //first render skeletons
+  const [isLoadingMore, setIsLoadingMore] = useState(false); //infinite scroll loader
   const [lastPostDate, setLastPostDate] = useState<null | string>(null);
   const [lastPostVotes, setLastPostVotes] = useState<null | number>(null);
   const infiniteObserver = new IntersectionObserver((entries, observer) => {
@@ -40,7 +42,7 @@ const FeedPage = () => {
   useEffect(() => {
     async function fetchData() {
       if (isIntersecting && lastPostDate && lastPostVotes !== null) {
-        setIsLoading(true);
+        setIsLoadingMore(true);
         const response = await fetch(
           `http://localhost:8080/posts?sortBy=${sortBy}&devRole=${devRole}&lastPostDate=${lastPostDate}&lastPostVotes=${lastPostVotes}`,
           {
@@ -52,7 +54,7 @@ const FeedPage = () => {
           setLastPostDate(fetchedPosts[fetchedPosts.length - 1].createdAt);
           setLastPostVotes(fetchedPosts[fetchedPosts.length - 1].upvotes);
         }
-        setIsLoading(false);
+        setIsLoadingMore(false);
         setPosts((posts) => [...posts, ...fetchedPosts]);
         setIsIntersecting(false);
       }
@@ -88,16 +90,7 @@ const FeedPage = () => {
           <option value="VOTES">Most upvoted</option>
         </select>
       </menu>
-      {posts.length ? (
-        posts.map((post, index) => {
-          if (index === posts.length - 1) {
-            return (
-              <Post key={post._id} post={post} observer={infiniteObserver} />
-            );
-          }
-          return <Post key={post._id} post={post} />;
-        })
-      ) : isLoading ? (
+      {isLoading ? (
         <div className={styles.skeletonsContainer}>
           <div className={styles.skeleton}>
             <PostSkeleton />
@@ -109,9 +102,19 @@ const FeedPage = () => {
             <PostSkeleton />
           </div>
         </div>
+      ) : posts.length ? (
+        posts.map((post, index) => {
+          if (index === posts.length - 1) {
+            return (
+              <Post key={post._id} post={post} observer={infiniteObserver} />
+            );
+          }
+          return <Post key={post._id} post={post} />;
+        })
       ) : (
         <h1 className={styles.text}>No posts were found...</h1>
       )}
+      {isLoadingMore && <BiLoaderAlt size="50" className={styles.loader} />}
     </main>
   );
 };

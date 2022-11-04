@@ -9,6 +9,21 @@
   position: fixed;
   z-index: 5;
   justify-content: center;
+
+  .loader {
+    @keyframes loader {
+      from {
+        transform: rotate(0deg);
+      }
+      to {
+        transform: rotate(360deg);
+      }
+    }
+    animation: loader 1s infinite;
+    position: fixed;
+    top: 70px;
+  }
+
   .nav {
     display: flex;
     list-style: none;

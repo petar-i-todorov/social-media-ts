@@ -11,6 +11,8 @@ export const FlashMessageContext = createContext<{
   setActiveFlashTimeout: React.Dispatch<
     React.SetStateAction<number | NodeJS.Timeout>
   >;
+  isLoader: boolean;
+  setIsLoader: React.Dispatch<React.SetStateAction<boolean>>;
 }>({
   isFeedFlashMessage: false,
   setIsFeedFlashMessage: () => {},
@@ -18,4 +20,6 @@ export const FlashMessageContext = createContext<{
   setFeedFlashMessageConfiguration: () => {},
   activeFlashTimeout: 0,
   setActiveFlashTimeout: () => {},
+  isLoader: false,
+  setIsLoader: () => {},
 });

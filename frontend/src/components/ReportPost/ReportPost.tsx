@@ -18,6 +18,7 @@ const ReportPost: React.FC<{
     setFeedFlashMessageConfiguration,
     activeFlashTimeout,
     setActiveFlashTimeout,
+    setIsLoader,
   } = useContext(FlashMessageContext);
   const { postId } = useContext(PostIdContext);
   const [inappropriateLanguageChosen, setInappropriateLanguageChosen] =
@@ -67,6 +68,7 @@ const ReportPost: React.FC<{
         if (!canProceed) {
           setIsError(true);
         } else {
+          setIsLoader(true);
           const res = await fetch(
             `http://localhost:8080/posts/report/${postId}`,
             {
@@ -81,6 +83,7 @@ const ReportPost: React.FC<{
               },
             }
           );
+          setIsLoader(false);
           if (res.status !== 200) {
             setIsFeedFlashMessage(true);
             setFeedFlashMessageConfiguration({

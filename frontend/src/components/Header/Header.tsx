@@ -1,6 +1,6 @@
 import styles from "./Header.module.scss";
 import { AiOutlineSearch } from "react-icons/ai";
-import { Link, Outlet } from "react-router-dom";
+import { Link, Outlet, useNavigate } from "react-router-dom";
 import ThemeSwitcher from "../ThemeSwitcher/ThemeSwitcher";
 import FormMessage from "../FormMessage/FormMessage";
 import { useContext, useState } from "react";
@@ -11,12 +11,22 @@ import { PostsContext } from "../../contexts/PostsContext";
 import { DevRole } from "../../types/feed";
 import { devRoles } from "../../constants/feed";
 import { GiRoundStar } from "react-icons/gi";
+import { BiLoaderCircle } from "react-icons/bi";
 
 const NavBar = () => {
-  const { isFeedFlashMessage, feedFlashMessageConfiguration } =
-    useContext(FlashMessageContext);
-  const { devRole, setDevRole } = useContext(PostsContext);
+  const {
+    isFeedFlashMessage,
+    feedFlashMessageConfiguration,
+    isLoader,
+    setFeedFlashMessageConfiguration,
+    setIsFeedFlashMessage,
+    setActiveFlashTimeout,
+    activeFlashTimeout,
+  } = useContext(FlashMessageContext);
+  const { devRole, setDevRole, sortBy, setPosts } = useContext(PostsContext);
   const [dropdownVisibility, setDropdownVisibility] = useState(false);
+  const [searchText, setSearchText] = useState("");
+  const navigate = useNavigate();
   return (
     <>
       <header className={styles.header}>
@@ -34,6 +44,33 @@ const NavBar = () => {
             <input
               placeholder="Search for posts"
               className={styles.searchBar}
+              value={searchText}
+              onChange={(event) => {
+                setSearchText((event.target as HTMLInputElement).value);
+              }}
+              onKeyDown={async (event) => {
+                if (event.key === "Enter") {
+                  const response = await fetch(
+                    `http://localhost:8080/posts?sortBy=${sortBy}&devRole=${devRole}&lastPostDate=null&lastPostVotes=null&substring=${searchText}`
+                  );
+                  if (response.status === 200) {
+                    navigate("/");
+                    const posts = await response.json();
+                    setPosts(posts);
+                  } else {
+                    setFeedFlashMessageConfiguration({
+                      text: "Something went wrong. Please, try again later.",
+                      color: "red",
+                    });
+                    setIsFeedFlashMessage(true);
+                    clearTimeout(activeFlashTimeout);
+                    const timeout = setTimeout(() => {
+                      setIsFeedFlashMessage(false);
+                    }, 5000);
+                    setActiveFlashTimeout(timeout);
+                  }
+                }
+              }}
             />
           </li>
           <li>
@@ -93,6 +130,9 @@ const NavBar = () => {
           flash
           flashVisibility={isFeedFlashMessage}
         />
+        {isLoader && (
+          <BiLoaderCircle size="50" color="gray" className={styles.loader} />
+        )}
       </header>
       <Outlet />
     </>

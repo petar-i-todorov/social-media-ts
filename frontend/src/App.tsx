@@ -27,6 +27,7 @@ function App() {
   const [activeFlashTimeout, setActiveFlashTimeout] = useState<
     number | NodeJS.Timeout
   >(0);
+  const [isLoader, setIsLoader] = useState(false);
   const [addPostVisibility, setAddPostVisibility] = useState(false);
   const [deletePostVisibility, setDeletePostVisibility] = useState(false);
   const [posts, setPosts] = useState<IPost[]>([]);
@@ -76,6 +77,8 @@ function App() {
           setIsFeedFlashMessage,
           activeFlashTimeout,
           setActiveFlashTimeout,
+          isLoader,
+          setIsLoader,
         }}
       >
         <PostIdContext.Provider value={{ postId, setPostId }}>
@@ -143,6 +146,7 @@ function App() {
                         question="Are you sure you want to delete this post?"
                         onConfirmation={async () => {
                           try {
+                            setIsLoader(true);
                             const res = await fetch(
                               `http://localhost:8080/posts/${postId}`,
                               {
@@ -153,6 +157,7 @@ function App() {
                                 },
                               }
                             );
+                            setIsLoader(false);
                             if (res.status === 200) {
                               setPosts((posts) =>
                                 posts.filter((post) => post._id !== postId)

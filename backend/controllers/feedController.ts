@@ -87,6 +87,10 @@ export const feedController = {
         !(
           typeof req.query.lastPostVotes === "string" ||
           req.query.lastPostVotes === undefined
+        ) ||
+        !(
+          typeof req.query.substring === "string" ||
+          req.query.substring === undefined
         )
       ) {
         passToErrorHandlerMiddleware(next, 500, "Invalid query params.");
@@ -96,6 +100,7 @@ export const feedController = {
           sortBy: req.query.sortBy,
           lastPostDate: req.query.lastPostDate,
           lastPostVotes: req.query.lastPostVotes,
+          substring: req.query.substring,
         });
         if (!posts) {
           passToErrorHandlerMiddleware(next, 404, "Such a post was not found.");
