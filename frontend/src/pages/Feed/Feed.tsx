@@ -42,12 +42,12 @@ const FeedPage = () => {
   useEffect(() => {
     async function fetchData() {
       if (isIntersecting && lastPostDate && lastPostVotes !== null) {
+        console.log(
+          `http://localhost:8080/posts?sortBy=${sortBy}&devRole=${devRole}&lastPostDate=${lastPostDate}&lastPostVotes=${lastPostVotes}`
+        );
         setIsLoadingMore(true);
         const response = await fetch(
-          `http://localhost:8080/posts?sortBy=${sortBy}&devRole=${devRole}&lastPostDate=${lastPostDate}&lastPostVotes=${lastPostVotes}`,
-          {
-            method: "GET",
-          }
+          `http://localhost:8080/posts?sortBy=${sortBy}&devRole=${devRole}&lastPostDate=${lastPostDate}&lastPostVotes=${lastPostVotes}`
         );
         const fetchedPosts = await response.json();
         if (fetchedPosts.length) {
@@ -55,6 +55,9 @@ const FeedPage = () => {
           setLastPostVotes(fetchedPosts[fetchedPosts.length - 1].upvotes);
         }
         setIsLoadingMore(false);
+        console.log(posts);
+        console.log(fetchedPosts);
+        console.log(lastPostDate);
         setPosts((posts) => [...posts, ...fetchedPosts]);
         setIsIntersecting(false);
       }

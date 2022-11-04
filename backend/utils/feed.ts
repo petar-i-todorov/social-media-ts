@@ -3,7 +3,7 @@ import Post from "../models/post";
 import CustomError from "../types/Error";
 import User from "../models/user";
 import { DevRole, SortBy } from "../types/Feed";
-import { postsPerPage, RECENCY, VOTES } from "../constants/feed";
+import { postsPerPage, RECENCY } from "../constants/feed";
 import Comment from "../models/comment";
 
 export const getComment = async (id: string) => {
@@ -72,7 +72,7 @@ export const getPosts = async (getConfig: {
         {
           devRole: devRole,
           upvotes: { $eq: Number(lastPostVotes) },
-          createdAt: { $lt: lastPostDate },
+          createdAt: { $gt: lastPostDate },
         },
         {
           devRole: devRole,
