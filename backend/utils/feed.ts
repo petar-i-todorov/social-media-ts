@@ -3,7 +3,7 @@ import Post from "../models/post";
 import CustomError from "../types/Error";
 import User from "../models/user";
 import { DevRole, SortBy } from "../types/Feed";
-import { RECENCY, VOTES } from "../constants/feed";
+import { postsPerPage, RECENCY, VOTES } from "../constants/feed";
 import Comment from "../models/comment";
 
 export const getComment = async (id: string) => {
@@ -98,7 +98,7 @@ export const getUser = async (userId: string) => {
       path: "posts",
       model: "Post",
       options: {
-        limit: 2,
+        limit: postsPerPage,
         sort: {
           createdAt: -1,
         },

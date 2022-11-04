@@ -1,4 +1,5 @@
 import { Request, Response, NextFunction } from "express";
+import { postsPerPage } from "../constants/feed";
 import Post from "../models/post";
 import User from "../models/user";
 import { getUser, passToErrorHandlerMiddleware } from "../utils/feed";
@@ -28,8 +29,8 @@ export const userController = {
       if (typeof page === "number") {
         posts = await Post.find({ creator: req.params.userId })
           .sort({ createdAt: -1 })
-          .skip((page - 1) * 2)
-          .limit(2)
+          .skip((page - 1) * postsPerPage)
+          .limit(postsPerPage)
           .populate("creator")
           .populate({
             path: "comments",

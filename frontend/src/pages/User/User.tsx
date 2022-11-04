@@ -16,6 +16,7 @@ import { AiOutlineLeft } from "react-icons/ai";
 import { AiOutlineRight } from "react-icons/ai";
 
 const User = () => {
+  const postsPerPage = useRef(10);
   const firstFetching = useRef(true);
   const [quote, setQuote] = useState("");
   const [user, setUser] = useState<any>();
@@ -45,7 +46,9 @@ const User = () => {
         setUser(resData.user);
         setQuote(resData.user.quote);
         setPostsCount(resData.postsCount);
-        console.log(resData.postsCount);
+        if (postsCount && resData.postsCount % postsPerPage.current === 0) {
+          setCurrentPage((page) => page - 1);
+        }
         setFetchedPosts(resData.user.posts);
       } else {
         firstFetching.current &&
@@ -175,11 +178,24 @@ const User = () => {
               return <Post key={post._id} post={post} />;
             })}
             <section className={styles.pagination}>
-              {currentPage > 1 ? (
-                <Button
-                  color="green"
-                  children={<AiOutlineLeft />}
-                  onClick={async () => {
+              <Button
+                isLocked={!(currentPage > 1)}
+                color="green"
+                children={<AiOutlineLeft />}
+                onClick={async () => {
+                  if (!(currentPage > 1)) {
+                    setFeedFlashMessageConfiguration({
+                      text:
+                        localStorage.getItem("userId") === user._id
+                          ? "You are already staring at the first page of your posts, dummy."
+                          : "You are already staring at the first page of this user's posts, dummy.",
+                      color: "red",
+                    });
+                    setIsFeedFlashMessage(true);
+                    setTimeout(() => {
+                      setIsFeedFlashMessage(false);
+                    }, 5000);
+                  } else {
                     const res = await fetch(
                       `http://localhost:8080/users/${user._id}/posts/?page=${
                         currentPage - 1
@@ -194,17 +210,42 @@ const User = () => {
                         text: "Something went wrong.",
                         color: "red",
                       });
+                      setIsFeedFlashMessage(true);
+                      setTimeout(() => {
+                        setIsFeedFlashMessage(false);
+                      }, 5000);
                     }
-                  }}
-                />
-              ) : null}
-              {postsCount && postsCount > 2 ? (
-                <Button color="blue" children={currentPage.toString()} />
-              ) : null}
-              {postsCount && postsCount > currentPage * 2 ? (
-                <Button
-                  color="green"
-                  onClick={async () => {
+                  }
+                }}
+              />
+              <span className={styles.currentPage}>{currentPage}</span>
+              <Button
+                isLocked={
+                  !(
+                    postsCount &&
+                    postsCount > currentPage * postsPerPage.current
+                  )
+                }
+                color="green"
+                onClick={async () => {
+                  if (
+                    !(
+                      postsCount &&
+                      postsCount > currentPage * postsPerPage.current
+                    )
+                  ) {
+                    setFeedFlashMessageConfiguration({
+                      text:
+                        localStorage.getItem("userId") === user._id
+                          ? "You have no more posts."
+                          : "This user has no more posts.",
+                      color: "red",
+                    });
+                    setIsFeedFlashMessage(true);
+                    setTimeout(() => {
+                      setIsFeedFlashMessage(false);
+                    }, 5000);
+                  } else {
                     const res = await fetch(
                       `http://localhost:8080/users/${user._id}/posts/?page=${
                         currentPage + 1
@@ -220,10 +261,10 @@ const User = () => {
                         color: "red",
                       });
                     }
-                  }}
-                  children={<AiOutlineRight />}
-                />
-              ) : null}
+                  }
+                }}
+                children={<AiOutlineRight />}
+              />
             </section>
           </main>
         </>

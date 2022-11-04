@@ -86,8 +86,12 @@
       justify-content: space-around;
       width: 50%;
       margin: 0 auto;
+      align-items: center;
       button {
         width: 50px !important;
+      }
+      .currentPage {
+        font-size: 25px;
       }
     }
   }
