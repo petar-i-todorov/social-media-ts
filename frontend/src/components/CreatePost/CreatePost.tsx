@@ -27,6 +27,7 @@ const AddPost: React.FC<{
     React.SetStateAction<boolean>
   >;
 }> = ({ setClosingConfirmationVisibility, editPost, postToEdit }) => {
+  const { devRole } = useContext(PostsContext);
   const {
     setFeedFlashMessageConfiguration,
     setIsFeedFlashMessage,
@@ -50,8 +51,6 @@ const AddPost: React.FC<{
   const [urlErrorMessage, setUrlErrorMessage] = useState("");
   const [isUrlErrorMessageVisible, setIsUrlErrorMessageVisible] =
     useState(false);
-  const [chosenDevRole, setChosenDevRole] = useState("");
-  const [isDevRoleValid, setIsDevRoleValid] = useState(true);
   const [isYoutubeSelected, setIsYoutubeSelected] = useState(false);
   const [isStackoverflowSelected, setIsStackoverflowSelected] = useState(false);
   const [isGithubSelected, setIsGithubSelected] = useState(false);
@@ -73,7 +72,6 @@ const AddPost: React.FC<{
       setTitle(postToEdit.title);
       setDescription(postToEdit.description);
       setUrl(postToEdit.url);
-      setChosenDevRole(postToEdit.devRole);
       if (postToEdit.platform === "YOUTUBE") {
         setIsYoutubeSelected(true);
       } else if (postToEdit.platform === "UDEMY") {
@@ -112,8 +110,6 @@ const AddPost: React.FC<{
           setUrlErrorMessage("Invalid Url.");
           setIsUrlValid(false);
           setIsUrlErrorMessageVisible(true);
-        } else if (!chosenDevRole) {
-          setIsDevRoleValid(false);
         } else if (
           !isYoutubeSelected &&
           !isStackoverflowSelected &&
@@ -154,7 +150,7 @@ const AddPost: React.FC<{
                     title: title,
                     description: description,
                     url: url,
-                    devRole: chosenDevRole,
+                    devRole: devRole,
                     platform: platform,
                   }),
                 }
@@ -168,9 +164,7 @@ const AddPost: React.FC<{
                   .indexOf(resData.updatedPost._id.toString());
                 const updatedPosts = JSON.parse(JSON.stringify(posts));
                 updatedPosts[indexOfUpdatedPost] = resData.updatedPost;
-                console.log(Array.isArray(updatedPosts));
-                console.log(Array.isArray(posts));
-                setPosts([updatedPosts[0], updatedPosts[1]]);
+                setPosts(updatedPosts);
                 setIsFeedFlashMessage(true);
                 setFeedFlashMessageConfiguration({
                   text: resData.message,
@@ -205,7 +199,7 @@ const AddPost: React.FC<{
                   title: title,
                   description: description,
                   url: url,
-                  devRole: chosenDevRole,
+                  devRole: devRole,
                   platform: platform,
                 }),
               });
@@ -313,28 +307,6 @@ const AddPost: React.FC<{
             }
           }}
         />
-        <select
-          defaultValue={postToEdit?.devRole || "choose"}
-          name="Dev Role"
-          onChange={(event) => {
-            const target = event.target as HTMLSelectElement;
-            if (
-              target.value === "Frontend" ||
-              target.value === "Backend" ||
-              target.value === "DevOps"
-            ) {
-              setChosenDevRole(target.value);
-            }
-          }}
-          className={!isDevRoleValid ? styles.invalidSelect : ""}
-        >
-          <option disabled value="choose">
-            -- choose a dev role --
-          </option>
-          <option value="Frontend">Frontend</option>
-          <option value="Backend">Backend</option>
-          <option value="DevOps">DevOps</option>
-        </select>
         <span>Source' social media</span>
         <div className={styles.optionsContainer}>
           <RiYoutubeFill

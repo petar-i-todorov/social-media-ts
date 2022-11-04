@@ -2,6 +2,7 @@ import { Router } from "express";
 import { feedController } from "../controllers/feedController";
 import { body } from "express-validator";
 import { isAuth } from "../middlewares/is-auth";
+import { BACKEND, DEVOPS, FRONTEND } from "../constants/feed";
 
 const router = Router();
 
@@ -31,7 +32,7 @@ router.post(
     throw new Error("Invalid platform.");
   }),
   body("devRole").custom((value) => {
-    if (value === "Frontend" || value === "Backend" || value === "DevOps") {
+    if (value === FRONTEND || value === BACKEND || value === DEVOPS) {
       return true;
     }
     throw new Error("Invalid dev role.");
