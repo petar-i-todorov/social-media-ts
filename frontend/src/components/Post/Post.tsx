@@ -130,7 +130,7 @@ const Post: React.FC<{
               const resData = await response.json();
               if (response.status === 200) {
                 setPostObj(resData.updatedPost);
-              } else if (!isFeedFlashMessage) {
+              } else {
                 setFeedFlashMessageConfiguration({
                   text: resData.message,
                   color: "red",
@@ -171,7 +171,7 @@ const Post: React.FC<{
               const resData = await response.json();
               if (response.status === 200) {
                 setPostObj(resData.updatedPost);
-              } else if (!isFeedFlashMessage) {
+              } else {
                 setFeedFlashMessageConfiguration({
                   text: resData.message,
                   color: "red",
