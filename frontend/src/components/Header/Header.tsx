@@ -13,7 +13,9 @@ import { devRoles } from "../../constants/feed";
 import { GiRoundStar } from "react-icons/gi";
 import { BiLoaderCircle } from "react-icons/bi";
 
-const NavBar = () => {
+const NavBar: React.FC<{
+  setIsNavigatingToFeed: React.Dispatch<React.SetStateAction<boolean>>;
+}> = ({ setIsNavigatingToFeed }) => {
   const {
     isFeedFlashMessage,
     feedFlashMessageConfiguration,
@@ -61,6 +63,8 @@ const NavBar = () => {
                     const posts = await response.json();
                     setPosts(posts);
                   } else if (response.status === 404) {
+                    setIsNavigatingToFeed(true);
+                    console.log("Hey");
                     navigate("/");
                     setPosts([]);
                   } else {

@@ -27,6 +27,7 @@ function App() {
   const [activeFlashTimeout, setActiveFlashTimeout] = useState<
     number | NodeJS.Timeout
   >(0);
+  const [isNavigatingToFeed, setIsNavigatingToFeed] = useState(false); //prevent re-render of the feed on navigate
   const [isLoader, setIsLoader] = useState(false);
   const [addPostVisibility, setAddPostVisibility] = useState(false);
   const [deletePostVisibility, setDeletePostVisibility] = useState(false);
@@ -117,8 +118,21 @@ function App() {
                       path="reset/:token"
                       element={<SetNewPasswordPage />}
                     />
-                    <Route path="" element={<Header />}>
-                      <Route path="" element={<FeedPage />} />
+                    <Route
+                      path=""
+                      element={
+                        <Header setIsNavigatingToFeed={setIsNavigatingToFeed} />
+                      }
+                    >
+                      <Route
+                        path=""
+                        element={
+                          <FeedPage
+                            isNavigatingToFeed={isNavigatingToFeed}
+                            setIsNavigatingToFeed={setIsNavigatingToFeed}
+                          />
+                        }
+                      />
                       <Route path="user/:userId" element={<User />} />
                     </Route>
                   </Routes>

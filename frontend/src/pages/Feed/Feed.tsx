@@ -7,7 +7,10 @@ import { PostsContext } from "../../contexts/PostsContext";
 import PostSkeleton from "../../components/Post/PostSkeleton";
 import { BiLoaderAlt } from "react-icons/bi";
 
-const FeedPage = () => {
+const FeedPage: React.FC<{
+  isNavigatingToFeed: boolean;
+  setIsNavigatingToFeed: React.Dispatch<React.SetStateAction<boolean>>;
+}> = ({ isNavigatingToFeed, setIsNavigatingToFeed }) => {
   const [isIntersecting, setIsIntersecting] = useState(false);
   const { posts, setPosts, sortBy, setSortBy, devRole } =
     useContext(PostsContext);
@@ -26,16 +29,18 @@ const FeedPage = () => {
     async function fetchData() {
       setIsLoading(true);
       const response = await fetch(
-        `http://localhost:8080/posts?sortBy=${sortBy}&devRole=${devRole}`,
-        {
-          method: "GET",
-        }
+        `http://localhost:8080/posts?sortBy=${sortBy}&devRole=${devRole}`
       );
       const posts = await response.json();
       setIsLoading(false);
       setPosts(posts);
     }
-    fetchData();
+    if (!isNavigatingToFeed) {
+      console.log("hey");
+      fetchData();
+    } else {
+      setIsNavigatingToFeed(false);
+    }
   }, [devRole, sortBy]);
   useEffect(() => {
     async function fetchData() {
