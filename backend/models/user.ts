@@ -26,6 +26,10 @@ const userSchema = new mongoose.Schema({
     type: Date,
   },
   posts: [{ type: Types.ObjectId, ref: "Post" }],
+  avatarUrl: {
+    required: false,
+    type: String,
+  },
 });
 
 export default mongoose.model("User", userSchema);

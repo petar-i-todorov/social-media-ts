@@ -8,12 +8,38 @@ import CustomError from "./types/Error";
 import postsRouter from "./routes/posts";
 import commentsRouter from "./routes/comments";
 import usersRouter from "./routes/users";
+import multer from "multer";
 
 dotenv.config();
 
 const app = express();
 
 app.use(express.json());
+
+app.use(
+  multer({
+    storage: multer.diskStorage({
+      destination: (req, file, callback) => {
+        callback(null, "images");
+      },
+      filename: (req, file, callback) => {
+        callback(null, Date.now() + "-" + file.originalname);
+      },
+    }),
+    fileFilter: (req, file, callback) => {
+      if (
+        file.mimetype === "image/png" ||
+        file.mimetype === "image/jpg" ||
+        file.mimetype === "image/jpeg"
+      ) {
+        callback(null, true);
+      }
+      callback(null, false);
+    },
+  }).single("avatar")
+);
+
+app.use("/images", express.static("./images"));
 
 app.use(cors());
 

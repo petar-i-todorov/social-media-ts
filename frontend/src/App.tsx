@@ -53,6 +53,7 @@ function App() {
       text: "",
       color: "red",
     });
+  const [areSuggestionsVisible, setAreSuggestionsVisible] = useState(false);
   useEffect(() => {
     const setEditPost = async () => {
       if (editPostVisibility) {
@@ -105,7 +106,13 @@ function App() {
                 setDevRole,
               }}
             >
-              <div className={styles.app} id="app">
+              <div
+                className={styles.app}
+                id="app"
+                onClick={() => {
+                  setAreSuggestionsVisible(false);
+                }}
+              >
                 <>
                   <Routes>
                     <Route path="login" element={<LoginPage />} />
@@ -121,7 +128,11 @@ function App() {
                     <Route
                       path=""
                       element={
-                        <Header setIsNavigatingToFeed={setIsNavigatingToFeed} />
+                        <Header
+                          setIsNavigatingToFeed={setIsNavigatingToFeed}
+                          areSuggestionsVisible={areSuggestionsVisible}
+                          setAreSuggestionsVisible={setAreSuggestionsVisible}
+                        />
                       }
                     >
                       <Route

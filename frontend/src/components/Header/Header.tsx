@@ -15,7 +15,13 @@ import { BiLoaderCircle } from "react-icons/bi";
 
 const NavBar: React.FC<{
   setIsNavigatingToFeed: React.Dispatch<React.SetStateAction<boolean>>;
-}> = ({ setIsNavigatingToFeed }) => {
+  areSuggestionsVisible: boolean;
+  setAreSuggestionsVisible: React.Dispatch<React.SetStateAction<boolean>>;
+}> = ({
+  setIsNavigatingToFeed,
+  areSuggestionsVisible,
+  setAreSuggestionsVisible,
+}) => {
   const {
     isFeedFlashMessage,
     feedFlashMessageConfiguration,
@@ -30,10 +36,14 @@ const NavBar: React.FC<{
   const [dropdownVisibility, setDropdownVisibility] = useState(false);
   const [searchText, setSearchText] = useState("");
   const navigate = useNavigate();
-  const [areSuggestionsVisible, setAreSuggestionsVisible] = useState(false);
   return (
     <>
-      <header className={styles.header}>
+      <header
+        className={styles.header}
+        onClick={() => {
+          setAreSuggestionsVisible(false);
+        }}
+      >
         <ul className={styles.nav}>
           <li>
             <Link to="">
@@ -137,6 +147,9 @@ const NavBar: React.FC<{
               onFocus={() => {
                 setAreSuggestionsVisible(true);
               }}
+              onClick={(event) => {
+                event.stopPropagation();
+              }}
               placeholder="Search for posts"
               className={styles.searchBar}
               value={searchText}
@@ -145,6 +158,8 @@ const NavBar: React.FC<{
               }}
               onKeyDown={async (event) => {
                 if (event.key === "Enter") {
+                  (event.target as HTMLInputElement).blur();
+                  setAreSuggestionsVisible(false);
                   setIsLoader(true);
                   const response = await fetch(
                     `http://localhost:8080/posts?sortBy=${sortBy}&devRole=${devRole}&substring=${searchText}`

@@ -7,5 +7,6 @@ const router = Router();
 router.get("/:userId", userController.getUser);
 router.get("/:userId/posts", userController.getUserPosts);
 router.patch("/:userId/updateQuote", isAuth, userController.updateQuote);
+router.patch("/:userId/updateAvatar", isAuth, userController.updateAvatar);
 
 export default router;

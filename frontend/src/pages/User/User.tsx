@@ -20,6 +20,7 @@ const User = () => {
   const firstFetching = useRef(true);
   const [quote, setQuote] = useState("");
   const [user, setUser] = useState<any>();
+  console.log(user);
   const params = useParams();
   const { posts } = useContext(PostsContext);
   const {
@@ -105,7 +106,31 @@ const User = () => {
                 setUpdateQuoteMode((state) => !state);
               }}
             />
-            <FaCircle size="150" color="gray" className={styles.userAvatar} />
+            <label htmlFor="avatar">
+              <FaCircle size="150" color="gray" className={styles.userAvatar} />
+            </label>
+            <input
+              type="file"
+              id="avatar"
+              className={styles.avatarInput}
+              onChange={(event) => {
+                if (event.target.files) {
+                  const formData = new FormData();
+                  formData.append("avatar", event.target.files[0]);
+                  fetch(
+                    `http://localhost:8080/users/${user._id}/updateAvatar`,
+                    {
+                      method: "PATCH",
+                      body: formData,
+                      headers: {
+                        Authorization:
+                          "Bearer " + localStorage.getItem("token"),
+                      },
+                    }
+                  );
+                }
+              }}
+            />
             <div className={styles.userQuote}>
               {updateQuoteMode ? (
                 <>

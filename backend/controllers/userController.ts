@@ -59,7 +59,7 @@ export const userController = {
   updateQuote: async (req: Request, res: Response, next: NextFunction) => {
     const user = await getUser(req.params.userId);
     if (!user) {
-      passToErrorHandlerMiddleware(next, 500, "Such a user was not found.");
+      passToErrorHandlerMiddleware(next, 404, "Such a user was not found.");
     } else {
       user.quote = req.body.quote;
       await user.save();
@@ -67,6 +67,37 @@ export const userController = {
         message: "User quote was successfully updated.",
         updatedUser: user,
       });
+    }
+  },
+  updateAvatar: async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const user = await User.findById(req.params.userId);
+      if (!user) {
+        passToErrorHandlerMiddleware(next, 404, "Such a user was not found.");
+      } else {
+        if (req.file) {
+          await User.findByIdAndUpdate(req.params.userId, {
+            avatarUrl: req.file.path.replace("\\", "/"),
+          });
+          const updatedUser = await User.findById(req.params.userId);
+          res.status(200).json({
+            message: "Avatar was successfully updated.",
+            updatedUser: updatedUser,
+          });
+        } else {
+          passToErrorHandlerMiddleware(
+            next,
+            422,
+            "No avatar was found. Please, try again later."
+          );
+        }
+      }
+    } catch (err) {
+      passToErrorHandlerMiddleware(
+        next,
+        500,
+        "Something went wrong. Please, try again later."
+      );
     }
   },
 };
