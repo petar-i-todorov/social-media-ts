@@ -3,13 +3,13 @@ import { AiOutlineSearch } from "react-icons/ai";
 import { Link, Outlet, useNavigate } from "react-router-dom";
 import ThemeSwitcher from "../ThemeSwitcher/ThemeSwitcher";
 import FormMessage from "../FormMessage/FormMessage";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { FlashMessageContext } from "../../contexts/FlashMessageFeedContext";
 import { FaUserCircle } from "react-icons/fa";
 import { VscTriangleDown } from "react-icons/vsc";
 import { PostsContext } from "../../contexts/PostsContext";
 import { DevRole } from "../../types/feed";
-import { devRoles } from "../../constants/feed";
+import { devRoles, searchSuggestions } from "../../constants/feed";
 import { GiRoundStar } from "react-icons/gi";
 import { BiLoaderCircle } from "react-icons/bi";
 
@@ -30,6 +30,7 @@ const NavBar: React.FC<{
   const [dropdownVisibility, setDropdownVisibility] = useState(false);
   const [searchText, setSearchText] = useState("");
   const navigate = useNavigate();
+  const [areSuggestionsVisible, setAreSuggestionsVisible] = useState(false);
   return (
     <>
       <header className={styles.header}>
@@ -43,8 +44,99 @@ const NavBar: React.FC<{
             </Link>
           </li>
           <li className={styles.searchContainer}>
+            {areSuggestionsVisible && (
+              <div className={styles.searchSuggestions}>
+                {searchSuggestions.find((suggestion) => {
+                  return suggestion.includes(searchText);
+                }) ? (
+                  searchSuggestions.map((suggestion) => {
+                    if (
+                      suggestion
+                        .toLowerCase()
+                        .includes(searchText.toLowerCase())
+                    ) {
+                      return (
+                        <div
+                          className={styles.suggestion}
+                          onClick={async () => {
+                            setSearchText(suggestion);
+                            setAreSuggestionsVisible(false);
+                            setIsLoader(true);
+                            const response = await fetch(
+                              `http://localhost:8080/posts?sortBy=${sortBy}&devRole=${devRole}&substring=${suggestion}`
+                            );
+                            setIsLoader(false);
+                            if (response.status === 200) {
+                              setIsNavigatingToFeed(true);
+                              navigate("/");
+                              const posts = await response.json();
+                              setPosts(posts);
+                            } else if (response.status === 404) {
+                              setIsNavigatingToFeed(true);
+                              navigate("/");
+                              setPosts([]);
+                            } else {
+                              setFeedFlashMessageConfiguration({
+                                text: "Something went wrong. Please, try again later.",
+                                color: "red",
+                              });
+                              setIsFeedFlashMessage(true);
+                              clearTimeout(activeFlashTimeout);
+                              const timeout = setTimeout(() => {
+                                setIsFeedFlashMessage(false);
+                              }, 5000);
+                              setActiveFlashTimeout(timeout);
+                            }
+                          }}
+                        >
+                          {suggestion}
+                        </div>
+                      );
+                    }
+                  })
+                ) : (
+                  <div
+                    className={styles.suggestion}
+                    onClick={async () => {
+                      setAreSuggestionsVisible(false);
+                      setIsLoader(true);
+                      const response = await fetch(
+                        `http://localhost:8080/posts?sortBy=${sortBy}&devRole=${devRole}&substring=${searchText}`
+                      );
+                      setIsLoader(false);
+                      if (response.status === 200) {
+                        setIsNavigatingToFeed(true);
+                        navigate("/");
+                        const posts = await response.json();
+                        setPosts(posts);
+                      } else if (response.status === 404) {
+                        setIsNavigatingToFeed(true);
+                        navigate("/");
+                        setPosts([]);
+                      } else {
+                        setFeedFlashMessageConfiguration({
+                          text: "Something went wrong. Please, try again later.",
+                          color: "red",
+                        });
+                        setIsFeedFlashMessage(true);
+                        clearTimeout(activeFlashTimeout);
+                        const timeout = setTimeout(() => {
+                          setIsFeedFlashMessage(false);
+                        }, 5000);
+                        setActiveFlashTimeout(timeout);
+                      }
+                    }}
+                  >
+                    {searchText}
+                  </div>
+                )}
+              </div>
+            )}
             <AiOutlineSearch size="30" color="black" />
             <input
+              onFocus={() => {
+                setAreSuggestionsVisible(true);
+              }}
               placeholder="Search for posts"
               className={styles.searchBar}
               value={searchText}
@@ -59,12 +151,12 @@ const NavBar: React.FC<{
                   );
                   setIsLoader(false);
                   if (response.status === 200) {
+                    setIsNavigatingToFeed(true);
                     navigate("/");
                     const posts = await response.json();
                     setPosts(posts);
                   } else if (response.status === 404) {
                     setIsNavigatingToFeed(true);
-                    console.log("Hey");
                     navigate("/");
                     setPosts([]);
                   } else {

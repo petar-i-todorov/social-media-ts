@@ -36,7 +36,6 @@ const FeedPage: React.FC<{
       setPosts(posts);
     }
     if (!isNavigatingToFeed) {
-      console.log("hey");
       fetchData();
     } else {
       setIsNavigatingToFeed(false);
