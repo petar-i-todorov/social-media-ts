@@ -102,10 +102,11 @@ export const feedController = {
           lastPostVotes: req.query.lastPostVotes,
           substring: req.query.substring,
         });
-        if (!posts) {
+        if (!posts.length) {
           passToErrorHandlerMiddleware(next, 404, "Such a post was not found.");
+        } else {
+          res.status(200).json(posts);
         }
-        res.status(200).json(posts);
       }
     } catch (err) {
       passToErrorHandlerMiddleware(next, 500, "Something went wrong.");

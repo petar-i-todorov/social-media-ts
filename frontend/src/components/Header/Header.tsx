@@ -22,6 +22,7 @@ const NavBar = () => {
     setIsFeedFlashMessage,
     setActiveFlashTimeout,
     activeFlashTimeout,
+    setIsLoader,
   } = useContext(FlashMessageContext);
   const { devRole, setDevRole, sortBy, setPosts } = useContext(PostsContext);
   const [dropdownVisibility, setDropdownVisibility] = useState(false);
@@ -50,13 +51,18 @@ const NavBar = () => {
               }}
               onKeyDown={async (event) => {
                 if (event.key === "Enter") {
+                  setIsLoader(true);
                   const response = await fetch(
                     `http://localhost:8080/posts?sortBy=${sortBy}&devRole=${devRole}&substring=${searchText}`
                   );
+                  setIsLoader(false);
                   if (response.status === 200) {
                     navigate("/");
                     const posts = await response.json();
                     setPosts(posts);
+                  } else if (response.status === 404) {
+                    navigate("/");
+                    setPosts([]);
                   } else {
                     setFeedFlashMessageConfiguration({
                       text: "Something went wrong. Please, try again later.",

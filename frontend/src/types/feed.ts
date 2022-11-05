@@ -23,7 +23,7 @@ export interface IPost {
   downvotedBy: string[];
   creator: IUser;
   comments: IComment[];
-  createdAt: Date;
+  createdAt: string;
 }
 
 export interface IComment {
@@ -32,7 +32,7 @@ export interface IComment {
   text: string;
   totalVotes: number;
   votes: ICommentVote[];
-  createdAt: Date;
+  createdAt: string;
 }
 
 export interface ICommentVote {

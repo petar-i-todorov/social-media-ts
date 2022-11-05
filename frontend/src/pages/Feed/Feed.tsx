@@ -32,8 +32,6 @@ const FeedPage = () => {
         }
       );
       const posts = await response.json();
-      setLastPostDate(posts[posts.length - 1].createdAt);
-      setLastPostVotes(posts[posts.length - 1].upvotes);
       setIsLoading(false);
       setPosts(posts);
     }
@@ -42,28 +40,26 @@ const FeedPage = () => {
   useEffect(() => {
     async function fetchData() {
       if (isIntersecting && lastPostDate && lastPostVotes !== null) {
-        console.log(
-          `http://localhost:8080/posts?sortBy=${sortBy}&devRole=${devRole}&lastPostDate=${lastPostDate}&lastPostVotes=${lastPostVotes}`
-        );
         setIsLoadingMore(true);
         const response = await fetch(
           `http://localhost:8080/posts?sortBy=${sortBy}&devRole=${devRole}&lastPostDate=${lastPostDate}&lastPostVotes=${lastPostVotes}`
         );
         const fetchedPosts = await response.json();
         if (fetchedPosts.length) {
-          setLastPostDate(fetchedPosts[fetchedPosts.length - 1].createdAt);
-          setLastPostVotes(fetchedPosts[fetchedPosts.length - 1].upvotes);
+          setPosts((posts) => [...posts, ...fetchedPosts]);
         }
         setIsLoadingMore(false);
-        console.log(posts);
-        console.log(fetchedPosts);
-        console.log(lastPostDate);
-        setPosts((posts) => [...posts, ...fetchedPosts]);
         setIsIntersecting(false);
       }
     }
     fetchData();
   }, [isIntersecting]);
+  useEffect(() => {
+    if (posts.length) {
+      setLastPostDate(posts[posts.length - 1].createdAt);
+      setLastPostVotes(posts[posts.length - 1].upvotes);
+    }
+  }, [posts]);
   return (
     <main className={styles.feed}>
       <menu className={styles.feedMenu}>

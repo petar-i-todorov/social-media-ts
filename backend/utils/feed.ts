@@ -54,10 +54,10 @@ export const getPosts = async (getConfig: {
     } else if (substring) {
       posts = Post.find({
         $or: [
-          { devRole: devRole, title: { $regex: substring } },
+          { devRole: devRole, title: { $regex: new RegExp(substring, "i") } },
           {
             devRole: devRole,
-            description: { $regex: substring },
+            description: { $regex: new RegExp(substring, "i") },
           },
         ],
       })
@@ -85,10 +85,13 @@ export const getPosts = async (getConfig: {
   } else if (substring) {
     posts = Post.find({
       $or: [
-        { devRole: devRole, title: { $regex: substring } },
         {
           devRole: devRole,
-          description: { $regex: substring },
+          title: { $regex: new RegExp(substring, "i") },
+        },
+        {
+          devRole: devRole,
+          description: { $regex: new RegExp(substring, "i") },
         },
       ],
     })

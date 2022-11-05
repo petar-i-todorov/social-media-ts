@@ -35,7 +35,6 @@ const Post: React.FC<{
   const {
     setIsFeedFlashMessage,
     setFeedFlashMessageConfiguration,
-    isFeedFlashMessage,
     activeFlashTimeout,
     setActiveFlashTimeout,
   } = useContext(FlashMessageContext);
