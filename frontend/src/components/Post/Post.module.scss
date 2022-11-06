@@ -99,6 +99,9 @@
     align-items: center;
     padding: 10px;
     width: 100%;
+    .userAvatar {
+      border-radius: 50%;
+    }
     .commentInput {
       width: 100%;
       height: 35px;

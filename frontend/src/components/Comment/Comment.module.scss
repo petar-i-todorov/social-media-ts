@@ -5,6 +5,9 @@
   .commentContent {
     display: flex;
     gap: 10px;
+    .userAvatar {
+      border-radius: 50%;
+    }
     .commentInfo {
       display: flex;
       flex-direction: column;

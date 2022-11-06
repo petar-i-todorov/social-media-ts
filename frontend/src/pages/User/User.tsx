@@ -16,7 +16,7 @@ import { AiOutlineLeft } from "react-icons/ai";
 import { AiOutlineRight } from "react-icons/ai";
 import { MdPhotoCamera } from "react-icons/md";
 
-const User = () => {
+const User: React.FC<{ userAvatar: string }> = ({ userAvatar }) => {
   const postsPerPage = useRef(10);
   const firstFetching = useRef(true);
   const [quote, setQuote] = useState("");
@@ -74,7 +74,7 @@ const User = () => {
       }
     };
     fetchUser();
-  }, [posts]);
+  }, [posts, params.userId]);
   return (
     <div className={styles.userPage}>
       {isLoading ? (
@@ -276,7 +276,9 @@ const User = () => {
           <main className={styles.posts}>
             <span>Recent activity</span>
             {fetchedPosts.map((post: IPost) => {
-              return <Post key={post._id} post={post} />;
+              return (
+                <Post key={post._id} post={post} userAvatar={userAvatar} />
+              );
             })}
             <section className={styles.pagination}>
               <Button

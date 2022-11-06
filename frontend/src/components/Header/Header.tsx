@@ -17,10 +17,12 @@ const NavBar: React.FC<{
   setIsNavigatingToFeed: React.Dispatch<React.SetStateAction<boolean>>;
   areSuggestionsVisible: boolean;
   setAreSuggestionsVisible: React.Dispatch<React.SetStateAction<boolean>>;
+  userAvatar: string;
 }> = ({
   setIsNavigatingToFeed,
   areSuggestionsVisible,
   setAreSuggestionsVisible,
+  userAvatar,
 }) => {
   const {
     isFeedFlashMessage,
@@ -198,7 +200,16 @@ const NavBar: React.FC<{
                   : "/login"
               }
             >
-              <FaUserCircle size="35" color="white" />
+              {userAvatar ? (
+                <img
+                  src={`http://localhost:8080/${userAvatar}`}
+                  width="35"
+                  height="35"
+                  className={styles.userAvatar}
+                />
+              ) : (
+                <FaUserCircle size="35" color="white" />
+              )}
             </Link>
           </li>
           <li>

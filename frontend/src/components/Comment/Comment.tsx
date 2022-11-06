@@ -23,7 +23,16 @@ const Comment: React.FC<{
   return (
     <div className={styles.comment}>
       <div className={styles.commentContent}>
-        <FaUserCircle size="30.8" />
+        {commentObj.creator.avatarUrl ? (
+          <img
+            width="30.8"
+            height="30.8"
+            src={`http://localhost:8080/${commentObj.creator.avatarUrl}`}
+            className={styles.userAvatar}
+          />
+        ) : (
+          <FaUserCircle size="30.8" />
+        )}
         <div className={styles.commentInfo}>
           <div className={styles.commentHeader}>
             <span className={styles.commentAuthor}>

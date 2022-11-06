@@ -10,7 +10,8 @@ import { BiLoaderAlt } from "react-icons/bi";
 const FeedPage: React.FC<{
   isNavigatingToFeed: boolean;
   setIsNavigatingToFeed: React.Dispatch<React.SetStateAction<boolean>>;
-}> = ({ isNavigatingToFeed, setIsNavigatingToFeed }) => {
+  userAvatar: string;
+}> = ({ isNavigatingToFeed, setIsNavigatingToFeed, userAvatar }) => {
   const [isIntersecting, setIsIntersecting] = useState(false);
   const { posts, setPosts, sortBy, setSortBy, devRole } =
     useContext(PostsContext);
@@ -109,10 +110,15 @@ const FeedPage: React.FC<{
         posts.map((post, index) => {
           if (index === posts.length - 1) {
             return (
-              <Post key={post._id} post={post} observer={infiniteObserver} />
+              <Post
+                key={post._id}
+                post={post}
+                observer={infiniteObserver}
+                userAvatar={userAvatar}
+              />
             );
           }
-          return <Post key={post._id} post={post} />;
+          return <Post key={post._id} post={post} userAvatar={userAvatar} />;
         })
       ) : (
         <h1 className={styles.text}>No posts were found...</h1>

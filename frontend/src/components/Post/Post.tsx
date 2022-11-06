@@ -23,7 +23,8 @@ import { IPost } from "../../types/feed";
 const Post: React.FC<{
   post: IPost;
   observer?: IntersectionObserver;
-}> = ({ post, observer }) => {
+  userAvatar: string;
+}> = ({ post, observer, userAvatar }) => {
   const [postObj, setPostObj] = useState<IPost>(post);
   const postRef = useRef(null);
   useEffect(() => {
@@ -227,7 +228,16 @@ const Post: React.FC<{
       </div>
       <hr />
       <section className={styles.writeComment}>
-        <FaUserCircle size="35" />
+        {userAvatar ? (
+          <img
+            src={`http://localhost:8080/${userAvatar}`}
+            width="35"
+            height="35"
+            className={styles.userAvatar}
+          />
+        ) : (
+          <FaUserCircle size="35" />
+        )}
         <input
           className={styles.commentInput}
           type="text"

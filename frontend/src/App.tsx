@@ -69,6 +69,32 @@ function App() {
   const [devRole, setDevRole] = useState<"FRONTEND" | "BACKEND" | "DEVOPS">(
     "FRONTEND"
   );
+  const [userAvatar, setUserAvatar] = useState<string>("");
+  useEffect(() => {
+    const fetchAvatar = async () => {
+      const res = await fetch(
+        `http://localhost:8080/users/${localStorage.getItem("userId")}/avatar`
+      );
+      if (res.status === 200) {
+        const { avatarUrl } = await res.json();
+        setUserAvatar(avatarUrl);
+      } else {
+        setFeedFlashMessageConfiguration({
+          text: "Something went wrong.",
+          color: "red",
+        });
+        setIsFeedFlashMessage(true);
+        clearTimeout(activeFlashTimeout);
+        const timeout = setTimeout(() => {
+          setIsFeedFlashMessage(false);
+        }, 5000);
+        setActiveFlashTimeout(timeout);
+      }
+    };
+    if (localStorage.getItem("userId")) {
+      fetchAvatar();
+    }
+  }, [localStorage.getItem("userId")]);
   return (
     <BrowserRouter>
       <FlashMessageContext.Provider
@@ -132,6 +158,7 @@ function App() {
                           setIsNavigatingToFeed={setIsNavigatingToFeed}
                           areSuggestionsVisible={areSuggestionsVisible}
                           setAreSuggestionsVisible={setAreSuggestionsVisible}
+                          userAvatar={userAvatar}
                         />
                       }
                     >
@@ -141,10 +168,14 @@ function App() {
                           <FeedPage
                             isNavigatingToFeed={isNavigatingToFeed}
                             setIsNavigatingToFeed={setIsNavigatingToFeed}
+                            userAvatar={userAvatar}
                           />
                         }
                       />
-                      <Route path="user/:userId" element={<User />} />
+                      <Route
+                        path="user/:userId"
+                        element={<User userAvatar={userAvatar} />}
+                      />
                     </Route>
                   </Routes>
                   {reportPostVisibility &&

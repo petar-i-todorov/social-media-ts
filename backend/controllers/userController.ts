@@ -100,4 +100,19 @@ export const userController = {
       );
     }
   },
+  getAvatar: async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const user = await User.findById(req.params.userId);
+      if (!user) {
+        passToErrorHandlerMiddleware(next, 404, "Such a user was not found.");
+      } else {
+        res.status(200).json({
+          message: "Avatar was successfully fetched.",
+          avatarUrl: user.avatarUrl,
+        });
+      }
+    } catch (err) {
+      passToErrorHandlerMiddleware(next, 500, "Something went wrong.");
+    }
+  },
 };
