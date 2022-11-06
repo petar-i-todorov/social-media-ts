@@ -52,13 +52,11 @@ app.use("/comments", commentsRouter);
 app.use("/users", usersRouter);
 
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {
-  setTimeout(() => {
-    if (err instanceof CustomError) {
-      res.status(err.status).json({ message: err.message });
-    } else {
-      res.status(500).json({ message: err.message });
-    }
-  }, 2000);
+  if (err instanceof CustomError) {
+    res.status(err.status).json({ message: err.message });
+  } else {
+    res.status(500).json({ message: err.message });
+  }
 });
 
 mongoose

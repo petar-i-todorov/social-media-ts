@@ -14,13 +14,13 @@ import UserSkeleton from "./UserSkeleton";
 import PostSkeleton from "../../components/Post/PostSkeleton";
 import { AiOutlineLeft } from "react-icons/ai";
 import { AiOutlineRight } from "react-icons/ai";
+import { MdPhotoCamera } from "react-icons/md";
 
 const User = () => {
   const postsPerPage = useRef(10);
   const firstFetching = useRef(true);
   const [quote, setQuote] = useState("");
   const [user, setUser] = useState<any>();
-  console.log(user);
   const params = useParams();
   const { posts } = useContext(PostsContext);
   const {
@@ -98,36 +98,102 @@ const User = () => {
               setUpdateQuoteMode(false);
             }}
           >
-            <TbEdit
-              className={styles.editIcon}
-              size="25"
-              onClick={(event) => {
-                event.stopPropagation();
-                setUpdateQuoteMode((state) => !state);
-              }}
-            />
-            <label htmlFor="avatar">
+            {localStorage.getItem("userId") === user._id ? (
+              <>
+                <TbEdit
+                  className={styles.editIcon}
+                  size="25"
+                  onClick={(event) => {
+                    event.stopPropagation();
+                    setUpdateQuoteMode((state) => !state);
+                  }}
+                />
+                <label htmlFor="avatar">
+                  <MdPhotoCamera size="25" className={styles.uploadLogo} />
+                  {user.avatarUrl ? (
+                    <img
+                      src={`http://localhost:8080/${user.avatarUrl}`}
+                      width="150"
+                      height="150"
+                      className={styles.userAvatar}
+                    />
+                  ) : (
+                    <FaCircle
+                      size="150"
+                      color="gray"
+                      className={styles.userAvatar}
+                    />
+                  )}
+                </label>
+              </>
+            ) : user.avatarUrl ? (
+              <img
+                src={`http://localhost:8080/${user.avatarUrl}`}
+                width="150"
+                height="150"
+                className={styles.userAvatar}
+              />
+            ) : (
               <FaCircle size="150" color="gray" className={styles.userAvatar} />
-            </label>
+            )}
             <input
               type="file"
               id="avatar"
               className={styles.avatarInput}
-              onChange={(event) => {
+              onChange={async (event) => {
                 if (event.target.files) {
                   const formData = new FormData();
                   formData.append("avatar", event.target.files[0]);
-                  fetch(
-                    `http://localhost:8080/users/${user._id}/updateAvatar`,
-                    {
-                      method: "PATCH",
-                      body: formData,
-                      headers: {
-                        Authorization:
-                          "Bearer " + localStorage.getItem("token"),
-                      },
+                  try {
+                    const response = await fetch(
+                      `http://localhost:8080/users/${user._id}/updateAvatar`,
+                      {
+                        method: "PATCH",
+                        body: formData,
+                        headers: {
+                          Authorization:
+                            "Bearer " + localStorage.getItem("token"),
+                        },
+                      }
+                    );
+                    if (response.status === 200) {
+                      const { updatedUser } = await response.json();
+                      setUser(updatedUser);
+                    } else if (response.status === 422) {
+                      setFeedFlashMessageConfiguration({
+                        text: "Please, check the file format of the avatar you're trying to upload. The only allowed formats are png, jpg and jpeg.",
+                        color: "red",
+                      });
+                      setIsFeedFlashMessage(true);
+                      clearTimeout(activeFlashTimeout);
+                      const timeout = setTimeout(() => {
+                        setIsFeedFlashMessage(false);
+                      }, 5000);
+                      setActiveFlashTimeout(timeout);
+                    } else {
+                      setFeedFlashMessageConfiguration({
+                        text: "Something went wrong. Please, try again later",
+                        color: "red",
+                      });
+                      setIsFeedFlashMessage(true);
+                      clearTimeout(activeFlashTimeout);
+                      const timeout = setTimeout(() => {
+                        setIsFeedFlashMessage(false);
+                      }, 5000);
+                      setActiveFlashTimeout(timeout);
                     }
-                  );
+                  } catch (err) {
+                    setFeedFlashMessageConfiguration({
+                      text: "Something went wrong. Please, try again later.",
+                      color: "red",
+                    });
+                    setIsFeedFlashMessage(true);
+                    clearTimeout(activeFlashTimeout);
+                    const timeout = setTimeout(() => {
+                      setIsFeedFlashMessage(false);
+                    }, 5000);
+                    setActiveFlashTimeout(timeout);
+                  }
                 }
               }}
             />

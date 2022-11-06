@@ -40,10 +40,22 @@
     border-radius: 7px;
     box-shadow: 2px 2px 10px lightgray;
     position: relative;
+    .userAvatar {
+      z-index: 3;
+    }
     label[for="avatar"] {
       z-index: 3;
+      position: relative;
       .userAvatar {
-        text-align: center;
+        cursor: pointer;
+        border-radius: 50%;
+      }
+      .uploadLogo {
+        position: absolute;
+        left: 0;
+        bottom: 20px;
+        background-color: white;
+        border-radius: 50%;
         cursor: pointer;
       }
     }
