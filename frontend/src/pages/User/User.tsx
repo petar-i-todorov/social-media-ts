@@ -28,6 +28,7 @@ const User: React.FC<{ userAvatar: string }> = ({ userAvatar }) => {
     setIsFeedFlashMessage,
     activeFlashTimeout,
     setActiveFlashTimeout,
+    setIsLoader,
   } = useContext(FlashMessageContext);
   const [updateQuoteMode, setUpdateQuoteMode] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
@@ -35,14 +36,17 @@ const User: React.FC<{ userAvatar: string }> = ({ userAvatar }) => {
   const [postsCount, setPostsCount] = useState<number>();
   const [currentPage, setCurrentPage] = useState(1);
   const [fetchedPosts, setFetchedPosts] = useState<IPost[]>([]);
+
   useEffect(() => {
     const fetchUser = async () => {
+      !firstFetching.current && setIsLoader(true); //just show loader (for example on post editing)
       firstFetching.current && setIsLoading(true); //with skeleton - first render
       const response = await fetch(
         `http://localhost:8080/users/${params.userId}`
       );
       if (response.status === 200) {
         const resData = await response.json();
+        !firstFetching.current && setIsLoader(false);
         firstFetching.current &&
           (() => {
             setIsLoading(false);
@@ -56,6 +60,7 @@ const User: React.FC<{ userAvatar: string }> = ({ userAvatar }) => {
         }
         setFetchedPosts(resData.user.posts);
       } else {
+        !firstFetching.current && setIsLoader(false);
         firstFetching.current &&
           (() => {
             setIsLoading(false);
