@@ -70,6 +70,40 @@ const Post: React.FC<{
   const [showMoreVisibility, setShowMoreVisibility] = useState(
     postObj.description.length > 250
   );
+  const writeComment = async () => {
+    if (commentText.length > 0) {
+      const res = await fetch(
+        `http://localhost:8080/posts/addComment/${postObj._id}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: "Bearer " + localStorage.getItem("token"),
+          },
+          body: JSON.stringify({
+            text: commentText,
+            creatorId: localStorage.getItem("userId"),
+          }),
+        }
+      );
+      setCommentText("");
+      if (res.status === 200 || res.status === 201) {
+        const resData = await res.json();
+        setPostObj(resData.updatedPost);
+      } else {
+        setIsFeedFlashMessage(true);
+        setFeedFlashMessageConfiguration({
+          text: "Something went wrong. Please, try again later.",
+          color: "red",
+        });
+        clearTimeout(activeFlashTimeout);
+        const timeout = setTimeout(() => {
+          setIsFeedFlashMessage(false);
+        }, 5000);
+        setActiveFlashTimeout(timeout);
+      }
+    }
+  };
   return (
     <div
       ref={postRef}
@@ -249,39 +283,7 @@ const Post: React.FC<{
               value={commentText}
               onKeyUp={async (event) => {
                 if (event.key === "Enter") {
-                  if (commentText.length > 0) {
-                    const res = await fetch(
-                      `http://localhost:8080/posts/addComment/${postObj._id}`,
-                      {
-                        method: "POST",
-                        headers: {
-                          "Content-Type": "application/json",
-                          Authorization:
-                            "Bearer " + localStorage.getItem("token"),
-                        },
-                        body: JSON.stringify({
-                          text: commentText,
-                          creatorId: localStorage.getItem("userId"),
-                        }),
-                      }
-                    );
-                    setCommentText("");
-                    if (res.status === 200 || res.status === 201) {
-                      const resData = await res.json();
-                      setPostObj(resData.updatedPost);
-                    } else {
-                      setIsFeedFlashMessage(true);
-                      setFeedFlashMessageConfiguration({
-                        text: "Something went wrong. Please, try again later.",
-                        color: "red",
-                      });
-                      clearTimeout(activeFlashTimeout);
-                      const timeout = setTimeout(() => {
-                        setIsFeedFlashMessage(false);
-                      }, 5000);
-                      setActiveFlashTimeout(timeout);
-                    }
-                  }
+                  writeComment();
                 }
               }}
               onChange={(event) => {
@@ -290,7 +292,7 @@ const Post: React.FC<{
               }}
             />
             <div className={styles.send}>
-              <IoSend size="35" color="lightblue" />
+              <IoSend size="35" color="lightblue" onClick={writeComment} />
             </div>
           </section>
         </>
