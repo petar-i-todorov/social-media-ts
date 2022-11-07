@@ -90,6 +90,7 @@ const Post: React.FC<{
       if (res.status === 200 || res.status === 201) {
         const resData = await res.json();
         setPostObj(resData.updatedPost);
+        !areCommentsVisible && setAreCommentsVisible(true);
       } else {
         setIsFeedFlashMessage(true);
         setFeedFlashMessageConfiguration({
