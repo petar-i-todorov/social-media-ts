@@ -3,6 +3,9 @@ import { postsPerPage } from "../constants/feed";
 import Post from "../models/post";
 import User from "../models/user";
 import { getUser, passToErrorHandlerMiddleware } from "../utils/feed";
+import fs from "fs";
+import path from "path";
+import { fileURLToPath } from "url";
 
 export const userController = {
   getUser: async (req: Request, res: Response, next: NextFunction) => {
@@ -75,6 +78,13 @@ export const userController = {
       if (!user) {
         passToErrorHandlerMiddleware(next, 404, "Such a user was not found.");
       } else {
+        if (user.avatarUrl) {
+          fs.unlink(path.join(__dirname, "..", user.avatarUrl), (err) => {
+            if (err) {
+              console.log(err);
+            }
+          });
+        }
         if (req.file) {
           await User.findByIdAndUpdate(req.params.userId, {
             avatarUrl: req.file.path.replace("\\", "/"),
