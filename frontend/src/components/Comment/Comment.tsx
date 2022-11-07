@@ -6,6 +6,7 @@ import ReactTimeAgo from "react-time-ago";
 import { FaUserCircle } from "react-icons/fa";
 import { FlashMessageContext } from "../../contexts/FlashMessageFeedContext";
 import { IComment } from "../../types/feed";
+import { Link } from "react-router-dom";
 
 const Comment: React.FC<{
   comment: IComment;
@@ -23,16 +24,18 @@ const Comment: React.FC<{
   return (
     <div className={styles.comment}>
       <div className={styles.commentContent}>
-        {commentObj.creator.avatarUrl ? (
-          <img
-            width="30.8"
-            height="30.8"
-            src={`http://localhost:8080/${commentObj.creator.avatarUrl}`}
-            className={styles.userAvatar}
-          />
-        ) : (
-          <FaUserCircle size="30.8" />
-        )}
+        <Link to={`/user/${commentObj.creator._id}`}>
+          {commentObj.creator.avatarUrl ? (
+            <img
+              width="30.8"
+              height="30.8"
+              src={`http://localhost:8080/${commentObj.creator.avatarUrl}`}
+              className={styles.userAvatar}
+            />
+          ) : (
+            <FaUserCircle size="30.8" />
+          )}
+        </Link>
         <div className={styles.commentInfo}>
           <div className={styles.commentHeader}>
             <span className={styles.commentAuthor}>

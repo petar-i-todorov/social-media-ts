@@ -34,8 +34,13 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    p {
+    .headerText {
       text-align: center;
+      a {
+        &:hover {
+          text-decoration: underline;
+        }
+      }
     }
     .moreOptionsContainer {
       position: relative;

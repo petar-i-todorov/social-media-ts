@@ -77,13 +77,13 @@ const Post: React.FC<{
       onClick={() => setMoreOptionsVisibility(false)}
     >
       <div className={styles.postHeader}>
-        <p>
+        <div className={styles.headerText}>
           <span>Posted by </span>
           <Link to={"/user/" + postObj.creator._id}>
-            {postObj.creator.name}{" "}
-          </Link>
+            {postObj.creator.name}
+          </Link>{" "}
           <ReactTimeAgo date={new Date(postObj.createdAt)} locale="en-US" />
-        </p>
+        </div>
         <div className={styles.moreOptionsContainer}>
           <BsThreeDots
             size="30"
@@ -226,68 +226,75 @@ const Post: React.FC<{
           )}
         </div>
       </div>
-      <hr />
-      <section className={styles.writeComment}>
-        {userAvatar ? (
-          <img
-            src={`http://localhost:8080/${userAvatar}`}
-            width="35"
-            height="35"
-            className={styles.userAvatar}
-          />
-        ) : (
-          <FaUserCircle size="35" />
-        )}
-        <input
-          className={styles.commentInput}
-          type="text"
-          placeholder="Write a comment..."
-          value={commentText}
-          onKeyUp={async (event) => {
-            if (event.key === "Enter") {
-              if (commentText.length > 0) {
-                const res = await fetch(
-                  `http://localhost:8080/posts/addComment/${postObj._id}`,
-                  {
-                    method: "POST",
-                    headers: {
-                      "Content-Type": "application/json",
-                      Authorization: "Bearer " + localStorage.getItem("token"),
-                    },
-                    body: JSON.stringify({
-                      text: commentText,
-                      creatorId: localStorage.getItem("userId"),
-                    }),
+      {localStorage.getItem("userId") && (
+        <>
+          <hr />
+          <section className={styles.writeComment}>
+            <Link to={`/user/${localStorage.getItem("userId")}`}>
+              {userAvatar ? (
+                <img
+                  src={`http://localhost:8080/${userAvatar}`}
+                  width="35"
+                  height="35"
+                  className={styles.userAvatar}
+                />
+              ) : (
+                <FaUserCircle size="35" />
+              )}
+            </Link>
+            <input
+              className={styles.commentInput}
+              type="text"
+              placeholder="Write a comment..."
+              value={commentText}
+              onKeyUp={async (event) => {
+                if (event.key === "Enter") {
+                  if (commentText.length > 0) {
+                    const res = await fetch(
+                      `http://localhost:8080/posts/addComment/${postObj._id}`,
+                      {
+                        method: "POST",
+                        headers: {
+                          "Content-Type": "application/json",
+                          Authorization:
+                            "Bearer " + localStorage.getItem("token"),
+                        },
+                        body: JSON.stringify({
+                          text: commentText,
+                          creatorId: localStorage.getItem("userId"),
+                        }),
+                      }
+                    );
+                    setCommentText("");
+                    if (res.status === 200 || res.status === 201) {
+                      const resData = await res.json();
+                      setPostObj(resData.updatedPost);
+                    } else {
+                      setIsFeedFlashMessage(true);
+                      setFeedFlashMessageConfiguration({
+                        text: "Something went wrong. Please, try again later.",
+                        color: "red",
+                      });
+                      clearTimeout(activeFlashTimeout);
+                      const timeout = setTimeout(() => {
+                        setIsFeedFlashMessage(false);
+                      }, 5000);
+                      setActiveFlashTimeout(timeout);
+                    }
                   }
-                );
-                setCommentText("");
-                if (res.status === 200 || res.status === 201) {
-                  const resData = await res.json();
-                  setPostObj(resData.updatedPost);
-                } else {
-                  setIsFeedFlashMessage(true);
-                  setFeedFlashMessageConfiguration({
-                    text: "Something went wrong. Please, try again later.",
-                    color: "red",
-                  });
-                  clearTimeout(activeFlashTimeout);
-                  const timeout = setTimeout(() => {
-                    setIsFeedFlashMessage(false);
-                  }, 5000);
-                  setActiveFlashTimeout(timeout);
                 }
-              }
-            }
-          }}
-          onChange={(event) => {
-            const target = event.target as HTMLInputElement;
-            setCommentText(target.value);
-          }}
-        />
-        <div className={styles.send}>
-          <IoSend size="35" color="lightblue" />
-        </div>
-      </section>
+              }}
+              onChange={(event) => {
+                const target = event.target as HTMLInputElement;
+                setCommentText(target.value);
+              }}
+            />
+            <div className={styles.send}>
+              <IoSend size="35" color="lightblue" />
+            </div>
+          </section>
+        </>
+      )}
       {postObj.comments.length ? (
         <div className={styles.showComments}>
           <span

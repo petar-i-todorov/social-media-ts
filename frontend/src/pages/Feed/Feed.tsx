@@ -6,6 +6,7 @@ import { ModalsManipulationContext } from "../../contexts/ModalsManipulationCont
 import { PostsContext } from "../../contexts/PostsContext";
 import PostSkeleton from "../../components/Post/PostSkeleton";
 import { BiLoaderAlt } from "react-icons/bi";
+import { BsGithub, BsLinkedin } from "react-icons/bs";
 
 const FeedPage: React.FC<{
   isNavigatingToFeed: boolean;
@@ -66,65 +67,67 @@ const FeedPage: React.FC<{
     }
   }, [posts]);
   return (
-    <main className={styles.feed}>
-      <menu className={styles.feedMenu}>
-        {localStorage.getItem("userId") && (
-          <Button
-            color="blue"
-            className={styles.addBtn}
-            onClick={() => {
-              setAddPostVisibility(true);
+    <>
+      <main className={styles.feed}>
+        <menu className={styles.feedMenu}>
+          {localStorage.getItem("userId") && (
+            <Button
+              color="blue"
+              className={styles.addBtn}
+              onClick={() => {
+                setAddPostVisibility(true);
+              }}
+            >
+              Add a post
+            </Button>
+          )}
+          <select
+            id="sort"
+            className={styles.sortDropdown}
+            onChange={(event) => {
+              if (
+                event.target.value === "RECENCY" ||
+                event.target.value === "VOTES"
+              )
+                setSortBy(event.target.value);
             }}
           >
-            Add a post
-          </Button>
+            <option value="RECENCY">Most recent</option>
+            <option value="VOTES">Most upvoted</option>
+          </select>
+        </menu>
+        {isLoading ? (
+          <div className={styles.skeletonsContainer}>
+            <div className={styles.skeleton}>
+              <PostSkeleton />
+            </div>
+            <div className={styles.skeleton}>
+              <PostSkeleton />
+            </div>
+            <div className={styles.skeleton}>
+              <PostSkeleton />
+            </div>
+          </div>
+        ) : posts.length ? (
+          posts.map((post, index) => {
+            if (index === posts.length - 1) {
+              return (
+                <Post
+                  key={post._id}
+                  post={post}
+                  observer={infiniteObserver}
+                  userAvatar={userAvatar}
+                />
+              );
+            }
+            return <Post key={post._id} post={post} userAvatar={userAvatar} />;
+          })
+        ) : (
+          <h1 className={styles.text}>No posts were found...</h1>
         )}
-        <select
-          id="sort"
-          className={styles.sortDropdown}
-          onChange={(event) => {
-            if (
-              event.target.value === "RECENCY" ||
-              event.target.value === "VOTES"
-            )
-              setSortBy(event.target.value);
-          }}
-        >
-          <option value="RECENCY">Most recent</option>
-          <option value="VOTES">Most upvoted</option>
-        </select>
-      </menu>
-      {isLoading ? (
-        <div className={styles.skeletonsContainer}>
-          <div className={styles.skeleton}>
-            <PostSkeleton />
-          </div>
-          <div className={styles.skeleton}>
-            <PostSkeleton />
-          </div>
-          <div className={styles.skeleton}>
-            <PostSkeleton />
-          </div>
-        </div>
-      ) : posts.length ? (
-        posts.map((post, index) => {
-          if (index === posts.length - 1) {
-            return (
-              <Post
-                key={post._id}
-                post={post}
-                observer={infiniteObserver}
-                userAvatar={userAvatar}
-              />
-            );
-          }
-          return <Post key={post._id} post={post} userAvatar={userAvatar} />;
-        })
-      ) : (
-        <h1 className={styles.text}>No posts were found...</h1>
-      )}
-      {isLoadingMore && <BiLoaderAlt size="50" className={styles.loader} />}
-    </main>
+        {isLoadingMore && <BiLoaderAlt size="50" className={styles.loader} />}
+      </main>
+    </>
   );
 };
 
