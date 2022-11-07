@@ -23,18 +23,16 @@ export const getPost = async (id: string) => {
     .populate("creator")
     .populate({
       path: "comments",
+      model: "Comment",
+      options: {
+        sort: { createdAt: -1 },
+      },
       populate: {
         path: "creator",
         model: "User",
       },
     })
-    .populate({
-      path: "comments",
-      populate: {
-        path: "votes",
-        model: "CommentVote",
-      },
-    });
+    .populate("comments.votes");
 };
 
 export const getPosts = async (getConfig: {
@@ -104,18 +102,16 @@ export const getPosts = async (getConfig: {
     .populate("creator")
     .populate({
       path: "comments",
+      model: "Comment",
+      options: {
+        sort: { createdAt: -1 },
+      },
       populate: {
         path: "creator",
         model: "User",
       },
     })
-    .populate({
-      path: "comments",
-      populate: {
-        path: "votes",
-        model: "CommentVote",
-      },
-    });
+    .populate("comments.votes");
 };
 
 export const getUser = async (userId: string) => {
