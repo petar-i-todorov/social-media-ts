@@ -10,8 +10,6 @@ import commentsRouter from "./routes/comments";
 import usersRouter from "./routes/users";
 import multer from "multer";
 
-dotenv.config();
-
 const app = express();
 
 app.use(express.json());

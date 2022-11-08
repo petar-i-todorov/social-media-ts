@@ -1,10 +1,16 @@
-import { ChangeEvent, useContext, useEffect, useRef, useState } from "react";
+import React, {
+  ChangeEvent,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { FaCircle } from "react-icons/fa";
 import { useParams } from "react-router-dom";
 import Post from "../../components/Post/Post";
 import { FlashMessageContext } from "../../contexts/FlashMessageFeedContext";
 import { PostsContext } from "../../contexts/PostsContext";
-import { IPost } from "../../types/feed";
+import { IPost, IUser } from "../../types/feed";
 import styles from "./User.module.scss";
 import { TbEdit } from "react-icons/tb";
 import TextArea from "../../components/TextArea/TextArea";
@@ -16,11 +22,13 @@ import { AiOutlineLeft } from "react-icons/ai";
 import { AiOutlineRight } from "react-icons/ai";
 import { MdPhotoCamera } from "react-icons/md";
 
-const User: React.FC<{ userAvatar: string }> = ({ userAvatar }) => {
+const User: React.FC<{
+  user: IUser | null;
+  setUser: React.Dispatch<React.SetStateAction<IUser | null>>;
+}> = ({ user, setUser }) => {
   const postsPerPage = useRef(10);
   const firstFetching = useRef(true);
   const [quote, setQuote] = useState("");
-  const [user, setUser] = useState<any>();
   const params = useParams();
   const { posts } = useContext(PostsContext);
   const {
@@ -114,7 +122,9 @@ const User: React.FC<{ userAvatar: string }> = ({ userAvatar }) => {
                   }}
                 />
                 <label htmlFor="avatar">
-                  <MdPhotoCamera size="25" className={styles.uploadLogo} />
+                  <div className={styles.uploadLogo}>
+                    <MdPhotoCamera size="25" />
+                  </div>
                   {user.avatarUrl ? (
                     <img
                       src={`http://localhost:8080/${user.avatarUrl}`}
@@ -282,7 +292,7 @@ const User: React.FC<{ userAvatar: string }> = ({ userAvatar }) => {
             <span>Recent activity</span>
             {fetchedPosts.map((post: IPost) => {
               return (
-                <Post key={post._id} post={post} userAvatar={userAvatar} />
+                <Post key={post._id} post={post} userAvatar={user.avatarUrl} />
               );
             })}
             <section className={styles.pagination}>

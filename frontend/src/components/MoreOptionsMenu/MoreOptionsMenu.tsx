@@ -23,7 +23,7 @@ const MoreOptionsMenu: React.FC<{
         event.stopPropagation();
       }}
     >
-      <span
+      <div
         className={styles.option}
         onClick={(event) => {
           event.preventDefault();
@@ -32,11 +32,10 @@ const MoreOptionsMenu: React.FC<{
         }}
       >
         <span>Report</span> <MdReportProblem size="20px" color="orange" />
-      </span>
+      </div>
       {isAuthor && (
         <>
-          <hr />
-          <span className={styles.option}>
+          <div className={styles.option}>
             <span
               className={styles.option}
               onClick={(event) => {
@@ -48,9 +47,8 @@ const MoreOptionsMenu: React.FC<{
               Delete
               <MdDelete size="20px" color="gray" />
             </span>
-          </span>
-          <hr />
-          <span className={styles.option}>
+          </div>
+          <div className={styles.option}>
             <span
               className={styles.option}
               onClick={(event) => {
@@ -62,7 +60,7 @@ const MoreOptionsMenu: React.FC<{
               Edit
               <FiEdit size="18px" color="black" />
             </span>
-          </span>
+          </div>
         </>
       )}
     </div>

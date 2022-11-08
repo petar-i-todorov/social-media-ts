@@ -23,7 +23,7 @@ import { IPost } from "../../types/feed";
 const Post: React.FC<{
   post: IPost;
   observer?: IntersectionObserver;
-  userAvatar: string;
+  userAvatar: string | undefined;
 }> = ({ post, observer, userAvatar }) => {
   const [postObj, setPostObj] = useState<IPost>(post);
   const postRef = useRef(null);

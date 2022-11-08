@@ -5,7 +5,6 @@ import User from "../models/user";
 import { getUser, passToErrorHandlerMiddleware } from "../utils/feed";
 import fs from "fs";
 import path from "path";
-import { fileURLToPath } from "url";
 
 export const userController = {
   getUser: async (req: Request, res: Response, next: NextFunction) => {

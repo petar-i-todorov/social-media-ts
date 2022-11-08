@@ -1,7 +1,8 @@
 export interface IUser {
   _id: string;
   name: string;
-  avatarUrl: string;
+  avatarUrl?: string;
+  quote?: string;
 }
 
 export interface IPost {

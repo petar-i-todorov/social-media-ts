@@ -6,12 +6,11 @@ import { ModalsManipulationContext } from "../../contexts/ModalsManipulationCont
 import { PostsContext } from "../../contexts/PostsContext";
 import PostSkeleton from "../../components/Post/PostSkeleton";
 import { BiLoaderAlt } from "react-icons/bi";
-import { BsGithub, BsLinkedin } from "react-icons/bs";
 
 const FeedPage: React.FC<{
   isNavigatingToFeed: boolean;
   setIsNavigatingToFeed: React.Dispatch<React.SetStateAction<boolean>>;
-  userAvatar: string;
+  userAvatar: string | undefined;
 }> = ({ isNavigatingToFeed, setIsNavigatingToFeed, userAvatar }) => {
   const [isIntersecting, setIsIntersecting] = useState(false);
   const { posts, setPosts, sortBy, setSortBy, devRole } =

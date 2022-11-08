@@ -17,7 +17,7 @@ const NavBar: React.FC<{
   setIsNavigatingToFeed: React.Dispatch<React.SetStateAction<boolean>>;
   areSuggestionsVisible: boolean;
   setAreSuggestionsVisible: React.Dispatch<React.SetStateAction<boolean>>;
-  userAvatar: string;
+  userAvatar: string | undefined;
 }> = ({
   setIsNavigatingToFeed,
   areSuggestionsVisible,
