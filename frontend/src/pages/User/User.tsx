@@ -22,10 +22,7 @@ import { AiOutlineLeft } from "react-icons/ai";
 import { AiOutlineRight } from "react-icons/ai";
 import { MdPhotoCamera } from "react-icons/md";
 
-const User: React.FC<{
-  user: IUser | null;
-  setUser: React.Dispatch<React.SetStateAction<IUser | null>>;
-}> = ({ user, setUser }) => {
+const User: React.FC<{ userAvatar: string | undefined }> = ({ userAvatar }) => {
   const postsPerPage = useRef(10);
   const firstFetching = useRef(true);
   const [quote, setQuote] = useState("");
@@ -44,6 +41,7 @@ const User: React.FC<{
   const [postsCount, setPostsCount] = useState<number>();
   const [currentPage, setCurrentPage] = useState(1);
   const [fetchedPosts, setFetchedPosts] = useState<IPost[]>([]);
+  const [user, setUser] = useState<IUser | null>(null);
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -292,7 +290,7 @@ const User: React.FC<{
             <span>Recent activity</span>
             {fetchedPosts.map((post: IPost) => {
               return (
-                <Post key={post._id} post={post} userAvatar={user.avatarUrl} />
+                <Post key={post._id} post={post} userAvatar={userAvatar} />
               );
             })}
             <section className={styles.pagination}>

@@ -134,7 +134,11 @@ const Post: React.FC<{
             }}
           />
           {moreOptionsVisibility && (
-            <MoreOptionsMenu isAuthor={isAuthor.current} postId={postObj._id} />
+            <MoreOptionsMenu
+              isAuthor={isAuthor.current}
+              postId={postObj._id}
+              sourceUrl={postObj.url}
+            />
           )}
         </div>
       </div>

@@ -5,11 +5,13 @@ import { useContext } from "react";
 import { PostIdContext } from "../../contexts/PostIdContext";
 import { ModalsManipulationContext } from "../../contexts/ModalsManipulationContext";
 import { FiEdit } from "react-icons/fi";
+import { IoOpenOutline } from "react-icons/io5";
 
 const MoreOptionsMenu: React.FC<{
   isAuthor: boolean;
   postId: string;
-}> = ({ isAuthor, postId }) => {
+  sourceUrl: string;
+}> = ({ isAuthor, postId, sourceUrl }) => {
   const { setPostId } = useContext(PostIdContext);
   const {
     setDeletePostVisibility,
@@ -33,6 +35,11 @@ const MoreOptionsMenu: React.FC<{
       >
         <span>Report</span> <MdReportProblem size="20px" color="orange" />
       </div>
+      <a href={sourceUrl} target="_blank">
+        <div className={styles.option}>
+          <span>Open</span> <IoOpenOutline size="20px" />
+        </div>
+      </a>
       {isAuthor && (
         <>
           <div className={styles.option}>

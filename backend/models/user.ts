@@ -30,10 +30,6 @@ const userSchema = new mongoose.Schema({
     required: false,
     type: String,
   },
-  prevAvatarUrl: {
-    required: false,
-    type: String,
-  },
 });
 
 export default mongoose.model("User", userSchema);

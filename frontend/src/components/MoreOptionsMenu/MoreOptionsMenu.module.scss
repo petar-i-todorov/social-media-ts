@@ -6,6 +6,12 @@
   box-shadow: lightgray 2px 2px 15px;
   width: 150px;
 
+  a {
+    &:visited {
+      color: black;
+    }
+  }
+
   .option {
     height: 40px;
     display: flex;
