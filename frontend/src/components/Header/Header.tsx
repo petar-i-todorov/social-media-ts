@@ -59,7 +59,9 @@ const NavBar: React.FC<{
             {areSuggestionsVisible && (
               <div className={styles.searchSuggestions}>
                 {searchSuggestions.find((suggestion) => {
-                  return suggestion.includes(searchText);
+                  return suggestion
+                    .toLowerCase()
+                    .includes(searchText.toLowerCase());
                 }) ? (
                   searchSuggestions.map((suggestion) => {
                     if (
