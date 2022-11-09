@@ -39,11 +39,16 @@
     }
     .appLogo {
       color: white;
-      font-family: "Handlee", cursive;
-      font-size: 25px;
       display: flex;
       justify-content: center;
       align-items: center;
+      .logoText {
+        font-family: "Handlee", cursive;
+        font-size: 25px;
+        @media (max-width: 768px) {
+          display: none;
+        }
+      }
     }
     .dropdownContainer {
       position: relative;
@@ -91,6 +96,9 @@
       padding: 0 10px;
       border-radius: 8px;
       position: relative;
+      @media (max-width: 768px) {
+        position: initial;
+      }
 
       .searchSuggestions {
         position: absolute;
@@ -102,6 +110,10 @@
         border-radius: 8px;
         display: flex;
         flex-direction: column;
+        @media (max-width: 768px) {
+          width: 100vw;
+          border-radius: 0%;
+        }
 
         .suggestion {
           padding: 5px 10px !important;

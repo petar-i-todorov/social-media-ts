@@ -1,9 +1,8 @@
 import styles from "./Header.module.scss";
 import { AiOutlineSearch } from "react-icons/ai";
 import { Link, Outlet, useNavigate } from "react-router-dom";
-import ThemeSwitcher from "../ThemeSwitcher/ThemeSwitcher";
 import FormMessage from "../FormMessage/FormMessage";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import { FlashMessageContext } from "../../contexts/FlashMessageFeedContext";
 import { FaUserCircle } from "react-icons/fa";
 import { VscTriangleDown } from "react-icons/vsc";
@@ -52,7 +51,7 @@ const NavBar: React.FC<{
             <Link to="">
               <span className={styles.appLogo}>
                 <GiRoundStar size="30" />
-                -the-source
+                <span className={styles.logoText}>-the-source</span>
               </span>
             </Link>
           </li>

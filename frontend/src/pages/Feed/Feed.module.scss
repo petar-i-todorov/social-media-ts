@@ -32,11 +32,17 @@
 
   .addBtn {
     width: 20%;
+    @media (max-width: 768px) {
+      width: 30%;
+    }
   }
 
   .sortDropdown {
     background: none;
     width: 20%;
+    @media (max-width: 768px) {
+      width: 30%;
+    }
     height: 50px;
     text-align: center;
     background-color: #1877f2;
