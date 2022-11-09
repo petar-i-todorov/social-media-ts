@@ -95,6 +95,9 @@
         }
       }
     }
+    .switchModeLogo {
+      cursor: pointer;
+    }
     .searchContainer {
       width: 30%;
       height: 80%;
@@ -112,6 +115,11 @@
         width: 100%;
       }
 
+      .searchSuggestions.darkMode {
+        background-color: black;
+        border: 1px solid gray;
+      }
+
       .searchSuggestions {
         position: absolute;
         top: 50px;
@@ -125,8 +133,13 @@
         @media (max-width: 768px) {
           width: 100vw;
           border-radius: 0%;
+          border: none !important;
+          border-bottom: 1px solid gray !important;
         }
 
+        .darkMode.suggestion {
+          color: rgba(245, 245, 245, 0.8);
+        }
         .suggestion {
           padding: 5px 10px !important;
           color: black;

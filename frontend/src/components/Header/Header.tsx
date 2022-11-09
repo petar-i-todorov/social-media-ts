@@ -61,7 +61,13 @@ const NavBar: React.FC<{
           </li>
           <li className={styles.searchContainer}>
             {areSuggestionsVisible && (
-              <div className={styles.searchSuggestions}>
+              <div
+                className={
+                  styles.searchSuggestions +
+                  " " +
+                  (isDarkMode && styles.darkMode)
+                }
+              >
                 {searchSuggestions.find((suggestion) => {
                   return suggestion
                     .toLowerCase()
@@ -76,7 +82,11 @@ const NavBar: React.FC<{
                       return (
                         <div
                           key={suggestion}
-                          className={styles.suggestion}
+                          className={
+                            styles.suggestion +
+                            " " +
+                            (isDarkMode && styles.darkMode)
+                          }
                           onClick={async () => {
                             setSearchText(suggestion);
                             setAreSuggestionsVisible(false);
@@ -262,6 +272,7 @@ const NavBar: React.FC<{
                 onClick={() => {
                   setIsDarkMode(false);
                 }}
+                className={styles.switchModeLogo}
               />
             ) : (
               <MdDarkMode
@@ -269,6 +280,7 @@ const NavBar: React.FC<{
                 onClick={() => {
                   setIsDarkMode(true);
                 }}
+                className={styles.switchModeLogo}
               />
             )}
           </li>
