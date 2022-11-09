@@ -11,7 +11,7 @@ import ReactDOM from "react-dom";
 import { ModalsManipulationContext } from "./contexts/ModalsManipulationContext";
 import { useEffect, useState } from "react";
 import { PostsContext } from "./contexts/PostsContext";
-import { IPost, IUser } from "./types/feed";
+import { IPost } from "./types/feed";
 import { PostIdContext } from "./contexts/PostIdContext";
 import ConfirmationModal from "./components/ConfirmationModalBuilder/ConfirmationModalBuilder";
 import ReportPost from "./components/ReportPost/ReportPost";
@@ -20,6 +20,7 @@ import en from "javascript-time-ago/locale/en.json";
 import { FlashMessageContext } from "./contexts/FlashMessageFeedContext";
 import User from "./pages/User/User";
 import Footer from "./components/Footer/Footer";
+import NavBar from "./components/NavBar/NavBar";
 
 function App() {
   useEffect(() => {
@@ -166,23 +167,28 @@ function App() {
                       <Route path="" element={<Footer />}>
                         <Route
                           path=""
-                          element={
-                            <FeedPage
-                              isNavigatingToFeed={isNavigatingToFeed}
-                              setIsNavigatingToFeed={setIsNavigatingToFeed}
-                              userAvatar={userAvatar}
-                            />
-                          }
-                        />
-                        <Route
-                          path="user/:userId"
-                          element={
-                            <User
-                              userAvatar={userAvatar}
-                              setUserAvatar={setUserAvatar}
-                            />
-                          }
-                        />
+                          element={<NavBar userAvatar={userAvatar} />}
+                        >
+                          <Route
+                            path=""
+                            element={
+                              <FeedPage
+                                isNavigatingToFeed={isNavigatingToFeed}
+                                setIsNavigatingToFeed={setIsNavigatingToFeed}
+                                userAvatar={userAvatar}
+                              />
+                            }
+                          />
+                          <Route
+                            path="user/:userId"
+                            element={
+                              <User
+                                userAvatar={userAvatar}
+                                setUserAvatar={setUserAvatar}
+                              />
+                            }
+                          />
+                        </Route>
                       </Route>
                     </Route>
                   </Routes>

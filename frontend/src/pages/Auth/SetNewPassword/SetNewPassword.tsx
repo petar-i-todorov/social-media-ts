@@ -72,7 +72,7 @@ const SetNewPasswordPage = () => {
             navigate("../../login", { relative: "path" });
           }}
         />
-        <h2>Set a new password</h2>
+        <h2 className={styles.title}>Set a new password</h2>
         <Input
           id="password"
           type="password"

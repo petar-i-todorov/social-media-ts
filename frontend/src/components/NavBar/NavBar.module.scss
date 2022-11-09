@@ -1,0 +1,59 @@
+.navBar {
+  @media (max-width: 576px) {
+    display: flex;
+  }
+  display: none;
+  width: 100%;
+  height: 50px;
+  align-items: center;
+  background-color: darkblue;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  z-index: 5;
+  justify-content: space-between;
+  padding: 0 10px;
+  color: white;
+  font-weight: bold;
+  .dropdownContainer {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    width: 110px;
+    cursor: pointer;
+    .dropdown.active {
+      opacity: 1;
+      transform: scaleY(1);
+    }
+    .dropdown {
+      position: absolute;
+      width: calc(100% + 10px);
+      border: 1px solid black;
+      border-bottom: none;
+      background-color: white;
+      color: black;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      top: calc((100% + 58px) * (-1));
+      right: -10px;
+      transform: scaleY(0);
+      .role {
+        text-align: center;
+        cursor: pointer;
+        padding: 5px 0;
+        width: 100%;
+        &:not(:last-child) {
+          border-bottom: 1px solid black;
+        }
+      }
+    }
+  }
+}
+
+.userAvatar {
+  border-radius: 50%;
+}

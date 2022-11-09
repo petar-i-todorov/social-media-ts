@@ -6,12 +6,18 @@
   justify-content: space-between;
   padding: 10px;
   gap: 10px;
+  @media (max-width: 400px) {
+    padding: 5px;
+  }
 
   .postInfo {
     display: flex;
     flex-direction: column;
     gap: 5px;
     width: 80%;
+    @media (max-width: 400px) {
+      width: 100%;
+    }
     h2 {
       text-align: center;
     }
@@ -35,7 +41,10 @@
     justify-content: space-between;
     align-items: center;
     .headerText {
-      text-align: center;
+      text-align: left;
+      @media (max-width: 370px) {
+        font-size: 13px;
+      }
       a {
         color: black;
         &:hover {
@@ -64,6 +73,10 @@
     justify-content: space-around;
     padding: 10px;
     gap: 10px;
+    @media (max-width: 400px) {
+      padding: 5px 0;
+      justify-content: space-between;
+    }
 
     .voteContainer {
       display: flex;
@@ -90,6 +103,9 @@
 
     .postSidebar {
       margin: auto 0;
+      @media (max-width: 400px) {
+        display: none;
+      }
       .other {
         display: flex;
         justify-content: center;

@@ -39,7 +39,7 @@ const Comment: React.FC<{
         <div className={styles.commentInfo}>
           <div className={styles.commentHeader}>
             <span className={styles.commentAuthor}>
-              {commentObj.creator.name}
+              {commentObj.creator.name}{" "}
             </span>
             <BsFillCircleFill size="5" color="gray" />{" "}
             <ReactTimeAgo date={new Date(commentObj.createdAt)} />

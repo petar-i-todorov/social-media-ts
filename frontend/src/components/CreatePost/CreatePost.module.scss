@@ -10,17 +10,27 @@
   width: 100%;
   height: 50px;
   justify-content: space-between;
+  @media (max-width: 470px) {
+    height: 35px;
+  }
 
   .option {
     display: flex;
     justify-content: center;
     align-items: center;
+    height: 100%;
     width: 50px;
     border: 1px solid black;
     border-radius: 5px;
     cursor: pointer;
-    font-size: 13px !important;
+    font-size: 13px;
     font-weight: bold !important;
+    @media (max-width: 576px) {
+      font-size: 10px;
+    }
+    @media (max-width: 470px) {
+      width: 35px;
+    }
   }
 
   .selected {

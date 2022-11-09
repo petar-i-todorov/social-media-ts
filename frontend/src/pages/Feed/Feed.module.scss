@@ -3,6 +3,9 @@
   @media (max-width: 992px) {
     padding: 70px 20px 0 20px;
   }
+  @media (max-width: 400px) {
+    padding: 55px 5px 0 5px;
+  }
   margin: 0 auto;
   padding: 70px 0 0;
   display: flex;
@@ -35,6 +38,12 @@
     @media (max-width: 768px) {
       width: 30%;
     }
+    @media (max-width: 576px) {
+      gap: 10px;
+    }
+    @media (max-width: 420px) {
+      font-size: 80%;
+    }
   }
 
   .sortDropdown {
@@ -56,6 +65,12 @@
     -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
+    @media (max-width: 450px) {
+      font-size: 80%;
+    }
+    @media (max-width: 360px) {
+      font-size: 70%;
+    }
 
     &::-ms-expand {
       display: none;
@@ -64,6 +79,9 @@
     option {
       background-color: white;
       color: black;
+      @media (max-width: 340px) {
+        font-size: 10px;
+      }
     }
   }
 }

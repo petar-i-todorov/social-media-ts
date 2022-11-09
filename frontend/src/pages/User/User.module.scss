@@ -34,6 +34,10 @@
       font-size: 70px;
       font-weight: 500;
       font-family: "Patrick Hand", cursive;
+      text-align: center;
+      @media (max-width: 576px) {
+        font-size: 40px;
+      }
     }
   }
   .userInfo {
@@ -118,6 +122,10 @@
       width: 50%;
       margin: 0 auto;
       align-items: center;
+      @media (max-width: 400px) {
+        width: 100%;
+        justify-content: space-between;
+      }
       button {
         width: 50px !important;
       }

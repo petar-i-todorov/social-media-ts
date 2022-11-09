@@ -11,7 +11,7 @@ import { DevRole } from "../../types/feed";
 import { devRoles, searchSuggestions } from "../../constants/feed";
 import { GiRoundStar } from "react-icons/gi";
 import { BiLoaderCircle } from "react-icons/bi";
-import { MdDarkMode, MdLightMode } from "react-icons/md";
+import { MdDarkMode } from "react-icons/md";
 
 const NavBar: React.FC<{
   setIsNavigatingToFeed: React.Dispatch<React.SetStateAction<boolean>>;

@@ -6,6 +6,10 @@
   display: flex;
   flex-direction: column;
   gap: 50px;
+  width: 576px;
+  @media (max-width: 576px) {
+    width: 100vw;
+  }
   @keyframes appearance {
     from {
       opacity: 0;
@@ -27,11 +31,17 @@
     padding: 30px;
     border-radius: 3px;
     box-shadow: 0 2px 4px rgb(0 0 0 / 0.1);
-    width: 500px;
+    width: 100%;
     display: flex;
     flex-direction: column;
     gap: 30px;
     position: relative;
+    @media (max-width: 576px) {
+      gap: 10px;
+    }
+    @media (max-width: 380px) {
+      padding: 30px 10px;
+    }
 
     .invalidSelect {
       border: 1px solid red;

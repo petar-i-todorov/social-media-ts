@@ -434,7 +434,7 @@ const AddPost: React.FC<{
               setIsOtherSelected(false);
             }}
           />
-          <span
+          <p
             className={
               styles.option +
               " " +
@@ -454,7 +454,7 @@ const AddPost: React.FC<{
             }}
           >
             OTHER
-          </span>
+          </p>
         </div>
         {isFormError && <FormMessage color="red">{formErrorText}</FormMessage>}
         <Button color="green" type="submit">
