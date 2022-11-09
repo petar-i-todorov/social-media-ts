@@ -1,5 +1,8 @@
 .feed {
-  width: 768px;
+  max-width: 768px;
+  @media (max-width: 992px) {
+    padding: 70px 20px 0 20px;
+  }
   margin: 0 auto;
   padding: 70px 0 0;
   display: flex;
@@ -70,5 +73,6 @@
   .skeleton {
     box-shadow: 2px 2px 5px rgb(0 0 0 / 10%);
     outline: 1px solid lightgray;
+    height: 284px;
   }
 }

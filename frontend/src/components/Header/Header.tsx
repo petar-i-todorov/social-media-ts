@@ -12,6 +12,7 @@ import { DevRole } from "../../types/feed";
 import { devRoles, searchSuggestions } from "../../constants/feed";
 import { GiRoundStar } from "react-icons/gi";
 import { BiLoaderCircle } from "react-icons/bi";
+import { MdDarkMode, MdLightMode } from "react-icons/md";
 
 const NavBar: React.FC<{
   setIsNavigatingToFeed: React.Dispatch<React.SetStateAction<boolean>>;
@@ -71,6 +72,7 @@ const NavBar: React.FC<{
                     ) {
                       return (
                         <div
+                          key={suggestion}
                           className={styles.suggestion}
                           onClick={async () => {
                             setSearchText(suggestion);
@@ -251,7 +253,7 @@ const NavBar: React.FC<{
             </div>
           </li>
           <li>
-            <ThemeSwitcher />
+            <MdDarkMode size="30" />
           </li>
         </ul>
         <FormMessage

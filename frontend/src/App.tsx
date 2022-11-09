@@ -70,7 +70,7 @@ function App() {
   const [devRole, setDevRole] = useState<"FRONTEND" | "BACKEND" | "DEVOPS">(
     "FRONTEND"
   );
-  const [userAvatar, setUserAvatar] = useState<string>("");
+  const [userAvatar, setUserAvatar] = useState("");
   useEffect(() => {
     const fetchAvatar = async () => {
       const res = await fetch(
@@ -176,7 +176,12 @@ function App() {
                         />
                         <Route
                           path="user/:userId"
-                          element={<User userAvatar={userAvatar} />}
+                          element={
+                            <User
+                              userAvatar={userAvatar}
+                              setUserAvatar={setUserAvatar}
+                            />
+                          }
                         />
                       </Route>
                     </Route>

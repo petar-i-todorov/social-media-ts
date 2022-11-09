@@ -1,5 +1,4 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
-import { PostsContext } from "../../contexts/PostsContext";
 import Button from "../Button/Button";
 import styles from "./Post.module.scss";
 import {

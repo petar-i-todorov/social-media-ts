@@ -2,7 +2,7 @@
 @import url("https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap");
 
 .userPage {
-  width: 768px;
+  max-width: 768px;
   margin: 0 auto;
   padding: 50px 0 20px 0;
   display: flex;
@@ -16,6 +16,11 @@
     flex-direction: column;
     gap: 10px;
     padding: 0 20px;
+    .skeleton {
+      box-shadow: 2px 2px 5px rgb(0 0 0 / 10%);
+      outline: 1px solid lightgray;
+      height: 284px;
+    }
   }
   .pageHeader {
     height: 200px;

@@ -22,7 +22,10 @@ import { AiOutlineLeft } from "react-icons/ai";
 import { AiOutlineRight } from "react-icons/ai";
 import { MdPhotoCamera } from "react-icons/md";
 
-const User: React.FC<{ userAvatar: string | undefined }> = ({ userAvatar }) => {
+const User: React.FC<{
+  userAvatar: string;
+  setUserAvatar: React.Dispatch<React.SetStateAction<string>>;
+}> = ({ userAvatar, setUserAvatar }) => {
   const postsPerPage = useRef(10);
   const firstFetching = useRef(true);
   const [quote, setQuote] = useState("");
@@ -93,9 +96,15 @@ const User: React.FC<{ userAvatar: string | undefined }> = ({ userAvatar }) => {
           <UserSkeleton />
           <div className={styles.skeletonsContainer}>
             Recent Activity
-            <PostSkeleton />
-            <PostSkeleton />
-            <PostSkeleton />
+            <div className={styles.skeleton}>
+              <PostSkeleton />
+            </div>
+            <div className={styles.skeleton}>
+              <PostSkeleton />
+            </div>
+            <div className={styles.skeleton}>
+              <PostSkeleton />
+            </div>
           </div>
         </>
       ) : user ? (
@@ -172,6 +181,7 @@ const User: React.FC<{ userAvatar: string | undefined }> = ({ userAvatar }) => {
                     if (response.status === 200) {
                       const { updatedUser } = await response.json();
                       setUser(updatedUser);
+                      setUserAvatar(updatedUser.avatarUrl);
                     } else if (response.status === 422) {
                       setFeedFlashMessageConfiguration({
                         text: "Please, check the file format of the avatar you're trying to upload. The only allowed formats are png, jpg and jpeg.",
