@@ -21,14 +21,9 @@ import { FlashMessageContext } from "./contexts/FlashMessageFeedContext";
 import User from "./pages/User/User";
 import Footer from "./components/Footer/Footer";
 import NavBar from "./components/NavBar/NavBar";
+import { SwitchThemeContext } from "./contexts/SwitchThemeContext";
 
 function App() {
-  useEffect(() => {
-    TimeAgo.addDefaultLocale(en);
-  }, []);
-  const [activeFlashTimeout, setActiveFlashTimeout] = useState<
-    number | NodeJS.Timeout
-  >(0);
   const [isNavigatingToFeed, setIsNavigatingToFeed] = useState(false); //prevent re-render of the feed on navigate
   const [isLoader, setIsLoader] = useState(false);
   const [addPostVisibility, setAddPostVisibility] = useState(false);
@@ -56,6 +51,8 @@ function App() {
       color: "red",
     });
   const [areSuggestionsVisible, setAreSuggestionsVisible] = useState(false);
+  const [userAvatar, setUserAvatar] = useState("");
+  const [isDarkMode, setIsDarkMode] = useState(false);
   useEffect(() => {
     const setEditPost = async () => {
       if (editPostVisibility) {
@@ -71,7 +68,12 @@ function App() {
   const [devRole, setDevRole] = useState<"FRONTEND" | "BACKEND" | "DEVOPS">(
     "FRONTEND"
   );
-  const [userAvatar, setUserAvatar] = useState("");
+  useEffect(() => {
+    TimeAgo.addDefaultLocale(en);
+  }, []);
+  const [activeFlashTimeout, setActiveFlashTimeout] = useState<
+    number | NodeJS.Timeout
+  >(0);
   useEffect(() => {
     const fetchAvatar = async () => {
       const res = await fetch(
@@ -99,231 +101,235 @@ function App() {
   }, [localStorage.getItem("userId")]);
   return (
     <BrowserRouter>
-      <FlashMessageContext.Provider
-        value={{
-          feedFlashMessageConfiguration,
-          isFeedFlashMessage,
-          setFeedFlashMessageConfiguration,
-          setIsFeedFlashMessage,
-          activeFlashTimeout,
-          setActiveFlashTimeout,
-          isLoader,
-          setIsLoader,
-        }}
-      >
-        <PostIdContext.Provider value={{ postId, setPostId }}>
-          <ModalsManipulationContext.Provider
-            value={{
-              addPostVisibility,
-              setAddPostVisibility,
-              deletePostVisibility,
-              setDeletePostVisibility,
-              reportPostVisibility,
-              setReportPostVisibility,
-              editPostVisibility,
-              setEditPostVisibility,
-            }}
-          >
-            <PostsContext.Provider
+      <SwitchThemeContext.Provider value={{ isDarkMode, setIsDarkMode }}>
+        <FlashMessageContext.Provider
+          value={{
+            feedFlashMessageConfiguration,
+            isFeedFlashMessage,
+            setFeedFlashMessageConfiguration,
+            setIsFeedFlashMessage,
+            activeFlashTimeout,
+            setActiveFlashTimeout,
+            isLoader,
+            setIsLoader,
+          }}
+        >
+          <PostIdContext.Provider value={{ postId, setPostId }}>
+            <ModalsManipulationContext.Provider
               value={{
-                posts,
-                setPosts,
-                sortBy,
-                setSortBy,
-                devRole,
-                setDevRole,
+                addPostVisibility,
+                setAddPostVisibility,
+                deletePostVisibility,
+                setDeletePostVisibility,
+                reportPostVisibility,
+                setReportPostVisibility,
+                editPostVisibility,
+                setEditPostVisibility,
               }}
             >
-              <div
-                className={styles.app}
-                id="app"
-                onClick={() => {
-                  setAreSuggestionsVisible(false);
+              <PostsContext.Provider
+                value={{
+                  posts,
+                  setPosts,
+                  sortBy,
+                  setSortBy,
+                  devRole,
+                  setDevRole,
                 }}
               >
-                <>
-                  <Routes>
-                    <Route path="login" element={<LoginPage />} />
-                    <Route path="signup" element={<SignupPage />} />
-                    <Route
-                      path="reset-password"
-                      element={<ResetPasswordPage />}
-                    />
-                    <Route
-                      path="reset/:token"
-                      element={<SetNewPasswordPage />}
-                    />
-                    <Route
-                      path=""
-                      element={
-                        <Header
-                          setIsNavigatingToFeed={setIsNavigatingToFeed}
-                          areSuggestionsVisible={areSuggestionsVisible}
-                          setAreSuggestionsVisible={setAreSuggestionsVisible}
-                          userAvatar={userAvatar}
-                        />
-                      }
-                    >
-                      <Route path="" element={<Footer />}>
-                        <Route
-                          path=""
-                          element={<NavBar userAvatar={userAvatar} />}
-                        >
+                <div
+                  className={styles.app + " " + (isDarkMode && styles.darkMode)}
+                  id="app"
+                  onClick={() => {
+                    setAreSuggestionsVisible(false);
+                  }}
+                >
+                  <>
+                    <Routes>
+                      <Route path="login" element={<LoginPage />} />
+                      <Route path="signup" element={<SignupPage />} />
+                      <Route
+                        path="reset-password"
+                        element={<ResetPasswordPage />}
+                      />
+                      <Route
+                        path="reset/:token"
+                        element={<SetNewPasswordPage />}
+                      />
+                      <Route
+                        path=""
+                        element={
+                          <Header
+                            setIsNavigatingToFeed={setIsNavigatingToFeed}
+                            areSuggestionsVisible={areSuggestionsVisible}
+                            setAreSuggestionsVisible={setAreSuggestionsVisible}
+                            userAvatar={userAvatar}
+                            isDarkMode={isDarkMode}
+                            setIsDarkMode={setIsDarkMode}
+                          />
+                        }
+                      >
+                        <Route path="" element={<Footer />}>
                           <Route
                             path=""
-                            element={
-                              <FeedPage
-                                isNavigatingToFeed={isNavigatingToFeed}
-                                setIsNavigatingToFeed={setIsNavigatingToFeed}
-                                userAvatar={userAvatar}
-                              />
-                            }
-                          />
-                          <Route
-                            path="user/:userId"
-                            element={
-                              <User
-                                userAvatar={userAvatar}
-                                setUserAvatar={setUserAvatar}
-                              />
-                            }
-                          />
+                            element={<NavBar userAvatar={userAvatar} />}
+                          >
+                            <Route
+                              path=""
+                              element={
+                                <FeedPage
+                                  isNavigatingToFeed={isNavigatingToFeed}
+                                  setIsNavigatingToFeed={setIsNavigatingToFeed}
+                                  userAvatar={userAvatar}
+                                />
+                              }
+                            />
+                            <Route
+                              path="user/:userId"
+                              element={
+                                <User
+                                  userAvatar={userAvatar}
+                                  setUserAvatar={setUserAvatar}
+                                />
+                              }
+                            />
+                          </Route>
                         </Route>
                       </Route>
-                    </Route>
-                  </Routes>
-                  {reportPostVisibility &&
-                    ReactDOM.createPortal(
-                      <ReportPost
-                        setClosingConfirmationVisibility={
-                          setConfirmClosingReportPostVisibility
-                        }
-                      />,
-                      document.getElementById("modal") as HTMLElement
-                    )}
-                  {addPostVisibility &&
-                    ReactDOM.createPortal(
-                      <AddPost
-                        setClosingConfirmationVisibility={
-                          setConfirmClosingAddPostVisibility
-                        }
-                      />,
-                      document.getElementById("modal") as HTMLElement
-                    )}
-                  {deletePostVisibility &&
-                    ReactDOM.createPortal(
-                      <ConfirmationModal
-                        question="Are you sure you want to delete this post?"
-                        onConfirmation={async () => {
-                          try {
-                            setIsLoader(true);
-                            const res = await fetch(
-                              `http://localhost:8080/posts/${postId}`,
-                              {
-                                method: "DELETE",
-                                headers: {
-                                  Authorization:
-                                    "Bearer " + localStorage.getItem("token"),
-                                },
-                              }
-                            );
-                            setIsLoader(false);
-                            if (res.status === 200) {
-                              setPosts((posts) =>
-                                posts.filter((post) => post._id !== postId)
+                    </Routes>
+                    {reportPostVisibility &&
+                      ReactDOM.createPortal(
+                        <ReportPost
+                          setClosingConfirmationVisibility={
+                            setConfirmClosingReportPostVisibility
+                          }
+                        />,
+                        document.getElementById("modal") as HTMLElement
+                      )}
+                    {addPostVisibility &&
+                      ReactDOM.createPortal(
+                        <AddPost
+                          setClosingConfirmationVisibility={
+                            setConfirmClosingAddPostVisibility
+                          }
+                        />,
+                        document.getElementById("modal") as HTMLElement
+                      )}
+                    {deletePostVisibility &&
+                      ReactDOM.createPortal(
+                        <ConfirmationModal
+                          question="Are you sure you want to delete this post?"
+                          onConfirmation={async () => {
+                            try {
+                              setIsLoader(true);
+                              const res = await fetch(
+                                `http://localhost:8080/posts/${postId}`,
+                                {
+                                  method: "DELETE",
+                                  headers: {
+                                    Authorization:
+                                      "Bearer " + localStorage.getItem("token"),
+                                  },
+                                }
                               );
-                              setDeletePostVisibility(false);
+                              setIsLoader(false);
+                              if (res.status === 200) {
+                                setPosts((posts) =>
+                                  posts.filter((post) => post._id !== postId)
+                                );
+                                setDeletePostVisibility(false);
+                                setIsFeedFlashMessage(true);
+                                setFeedFlashMessageConfiguration({
+                                  text: "Post was successfully deleted.",
+                                  color: "green",
+                                });
+                                setTimeout(() => {
+                                  setIsFeedFlashMessage(false);
+                                }, 5000);
+                              } else {
+                                const resData = await res.json();
+                                setIsFeedFlashMessage(true);
+                                setFeedFlashMessageConfiguration({
+                                  text: resData.message,
+                                  color: "red",
+                                });
+                                setTimeout(() => {
+                                  setIsFeedFlashMessage(false);
+                                }, 5000);
+                              }
+                            } catch (error) {
                               setIsFeedFlashMessage(true);
                               setFeedFlashMessageConfiguration({
-                                text: "Post was successfully deleted.",
-                                color: "green",
-                              });
-                              setTimeout(() => {
-                                setIsFeedFlashMessage(false);
-                              }, 5000);
-                            } else {
-                              const resData = await res.json();
-                              setIsFeedFlashMessage(true);
-                              setFeedFlashMessageConfiguration({
-                                text: resData.message,
+                                text: "Something went wrong. Please, try again later.",
                                 color: "red",
                               });
                               setTimeout(() => {
                                 setIsFeedFlashMessage(false);
                               }, 5000);
                             }
-                          } catch (error) {
-                            setIsFeedFlashMessage(true);
-                            setFeedFlashMessageConfiguration({
-                              text: "Something went wrong. Please, try again later.",
-                              color: "red",
-                            });
-                            setTimeout(() => {
-                              setIsFeedFlashMessage(false);
-                            }, 5000);
+                          }}
+                          setVisibility={setDeletePostVisibility}
+                        />,
+                        document.getElementById("modal") as HTMLElement
+                      )}
+                    {editPostVisibility &&
+                      postToEdit &&
+                      ReactDOM.createPortal(
+                        <AddPost
+                          editPost
+                          postToEdit={postToEdit}
+                          setClosingConfirmationVisibility={
+                            setConfirmClosingEditPostVisibility
                           }
-                        }}
-                        setVisibility={setDeletePostVisibility}
-                      />,
-                      document.getElementById("modal") as HTMLElement
-                    )}
-                  {editPostVisibility &&
-                    postToEdit &&
-                    ReactDOM.createPortal(
-                      <AddPost
-                        editPost
-                        postToEdit={postToEdit}
-                        setClosingConfirmationVisibility={
-                          setConfirmClosingEditPostVisibility
-                        }
-                      />,
-                      document.getElementById("modal") as HTMLElement
-                    )}
-                  {confirmClosingAddPostVisibility &&
-                    ReactDOM.createPortal(
-                      <ConfirmationModal
-                        question="Are you sure you want to close this modal?"
-                        onConfirmation={() => {
-                          setAddPostVisibility(false);
-                        }}
-                        setVisibility={setConfirmClosingAddPostVisibility}
-                      />,
-                      document.getElementById(
-                        "confirm-closing-modal"
-                      ) as HTMLElement
-                    )}
-                  {confirmClosingReportPostVisibility &&
-                    ReactDOM.createPortal(
-                      <ConfirmationModal
-                        question="Are you sure you want to close this modal?"
-                        onConfirmation={() => {
-                          setReportPostVisibility(false);
-                        }}
-                        setVisibility={setConfirmClosingReportPostVisibility}
-                      />,
-                      document.getElementById(
-                        "confirm-closing-modal"
-                      ) as HTMLElement
-                    )}
-                  {confirmClosingEditPostVisibility &&
-                    ReactDOM.createPortal(
-                      <ConfirmationModal
-                        question="Are you sure you want to close this modal?"
-                        onConfirmation={() => {
-                          setEditPostVisibility(false);
-                        }}
-                        setVisibility={setConfirmClosingEditPostVisibility}
-                      />,
-                      document.getElementById(
-                        "confirm-closing-modal"
-                      ) as HTMLElement
-                    )}
-                </>
-              </div>
-            </PostsContext.Provider>
-          </ModalsManipulationContext.Provider>
-        </PostIdContext.Provider>
-      </FlashMessageContext.Provider>
+                        />,
+                        document.getElementById("modal") as HTMLElement
+                      )}
+                    {confirmClosingAddPostVisibility &&
+                      ReactDOM.createPortal(
+                        <ConfirmationModal
+                          question="Are you sure you want to close this modal?"
+                          onConfirmation={() => {
+                            setAddPostVisibility(false);
+                          }}
+                          setVisibility={setConfirmClosingAddPostVisibility}
+                        />,
+                        document.getElementById(
+                          "confirm-closing-modal"
+                        ) as HTMLElement
+                      )}
+                    {confirmClosingReportPostVisibility &&
+                      ReactDOM.createPortal(
+                        <ConfirmationModal
+                          question="Are you sure you want to close this modal?"
+                          onConfirmation={() => {
+                            setReportPostVisibility(false);
+                          }}
+                          setVisibility={setConfirmClosingReportPostVisibility}
+                        />,
+                        document.getElementById(
+                          "confirm-closing-modal"
+                        ) as HTMLElement
+                      )}
+                    {confirmClosingEditPostVisibility &&
+                      ReactDOM.createPortal(
+                        <ConfirmationModal
+                          question="Are you sure you want to close this modal?"
+                          onConfirmation={() => {
+                            setEditPostVisibility(false);
+                          }}
+                          setVisibility={setConfirmClosingEditPostVisibility}
+                        />,
+                        document.getElementById(
+                          "confirm-closing-modal"
+                        ) as HTMLElement
+                      )}
+                  </>
+                </div>
+              </PostsContext.Provider>
+            </ModalsManipulationContext.Provider>
+          </PostIdContext.Provider>
+        </FlashMessageContext.Provider>
+      </SwitchThemeContext.Provider>
     </BrowserRouter>
   );
 }

@@ -1,6 +1,11 @@
 @import url("https://fonts.googleapis.com/css2?family=Handlee&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap");
 
+.darkMode.userPage {
+  box-shadow: none;
+  border: 1px solid gray;
+}
+
 .userPage {
   max-width: 768px;
   margin: 0 auto;
@@ -22,6 +27,9 @@
       height: 284px;
     }
   }
+  .darkMode.pageHeader {
+    border-bottom: 1px solid gray;
+  }
   .pageHeader {
     height: 200px;
     background-color: black;
@@ -39,6 +47,10 @@
         font-size: 40px;
       }
     }
+  }
+  .userInfo.darkMode {
+    box-shadow: none;
+    border: 1px solid gray;
   }
   .userInfo {
     display: flex;
@@ -74,6 +86,9 @@
         justify-content: center;
         align-items: center;
         background-color: lightgray;
+        .darkMode {
+          color: black;
+        }
       }
     }
     .userQuote {
@@ -86,6 +101,12 @@
       display: flex;
       flex-direction: column;
       gap: 10px;
+      .editArea.darkMode {
+        background-color: black;
+        color: rgba(255, 255, 255, 0.8);
+        outline: none;
+        border: 1px solid gray;
+      }
       .editArea {
         font-family: "Handlee", cursive;
         font-size: 20px;

@@ -1,7 +1,14 @@
 import styles from "./TextArea.module.scss";
 import { RiErrorWarningLine } from "react-icons/ri";
-import { ChangeEvent, MouseEventHandler, useEffect, useState } from "react";
+import {
+  ChangeEvent,
+  MouseEventHandler,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 import InputError from "../InputError/InputError";
+import { SwitchThemeContext } from "../../contexts/SwitchThemeContext";
 
 const TextArea: React.FC<{
   id?: string;
@@ -33,6 +40,7 @@ const TextArea: React.FC<{
   className,
 }) => {
   const [isFocused, setIsFocused] = useState(false);
+  const { isDarkMode } = useContext(SwitchThemeContext);
   useEffect(() => {
     if (isFocused && setIsValid) {
       setIsValid(true);
@@ -47,7 +55,9 @@ const TextArea: React.FC<{
           " " +
           (!isValid && styles.invalid) +
           " " +
-          (isFocused && styles.focused)
+          (isFocused && styles.focused) +
+          " " +
+          (isDarkMode && styles.darkMode)
         }
       >
         <textarea

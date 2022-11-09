@@ -1,3 +1,7 @@
+.post.darkMode {
+  outline-color: gray;
+}
+
 .post {
   display: flex;
   flex-direction: column;
@@ -34,6 +38,9 @@
         }
       }
     }
+    .darkMode.postDescritpion {
+      border: 1px solid gray;
+    }
   }
 
   .postHeader {
@@ -47,9 +54,13 @@
       }
       a {
         color: black;
+        transition: color, background-color 0.2s ease-in-out;
         &:hover {
           text-decoration: underline;
         }
+      }
+      a.darkMode {
+        color: rgba(245, 245, 245, 0.8);
       }
     }
     .moreOptionsContainer {
@@ -131,9 +142,16 @@
       padding: 5px;
       border-radius: 3px;
       border: 1px solid black;
+      transition: color, background-color 0.2s ease-in-out;
+
       &:focus {
         outline: none;
       }
+    }
+    .commentInput.darkMode {
+      background-color: black;
+      color: lightgray;
+      border: 1px solid gray;
     }
     .send {
       &:hover {
@@ -158,4 +176,10 @@
       cursor: pointer;
     }
   }
+}
+
+hr.darkMode {
+  background-color: gray;
+  border: none;
+  height: 2px;
 }

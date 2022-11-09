@@ -18,12 +18,14 @@ import { FaUserCircle } from "react-icons/fa";
 import { FlashMessageContext } from "../../contexts/FlashMessageFeedContext";
 import { Link } from "react-router-dom";
 import { IPost } from "../../types/feed";
+import { SwitchThemeContext } from "../../contexts/SwitchThemeContext";
 
 const Post: React.FC<{
   post: IPost;
   observer?: IntersectionObserver;
   userAvatar: string | undefined;
 }> = ({ post, observer, userAvatar }) => {
+  const { isDarkMode } = useContext(SwitchThemeContext);
   const [postObj, setPostObj] = useState<IPost>(post);
   const postRef = useRef(null);
   useEffect(() => {
@@ -107,13 +109,16 @@ const Post: React.FC<{
   return (
     <div
       ref={postRef}
-      className={styles.post}
+      className={styles.post + " " + (isDarkMode && styles.darkMode)}
       onClick={() => setMoreOptionsVisibility(false)}
     >
       <div className={styles.postHeader}>
         <div className={styles.headerText}>
           <span>Posted by </span>
-          <Link to={"/user/" + postObj.creator._id}>
+          <Link
+            to={"/user/" + postObj.creator._id}
+            className={(isDarkMode && styles.darkMode) || undefined}
+          >
             {postObj.creator.name}
           </Link>{" "}
           <ReactTimeAgo date={new Date(postObj.createdAt)} locale="en-US" />
@@ -141,7 +146,7 @@ const Post: React.FC<{
           )}
         </div>
       </div>
-      <hr />
+      <hr className={isDarkMode ? styles.darkMode : undefined} />
       <div className={styles.postContent}>
         <div className={styles.voteContainer}>
           <Button
@@ -228,7 +233,11 @@ const Post: React.FC<{
         </div>
         <div className={styles.postInfo}>
           <h2>{postObj.title}</h2>
-          <div className={styles.postDescritpion}>
+          <div
+            className={
+              styles.postDescritpion + " " + (isDarkMode && styles.darkMode)
+            }
+          >
             <p>
               {showMoreVisibility
                 ? postObj.description.substring(0, 250)
@@ -266,7 +275,7 @@ const Post: React.FC<{
       </div>
       {localStorage.getItem("userId") && (
         <>
-          <hr />
+          <hr className={isDarkMode ? styles.darkMode : undefined} />
           <section className={styles.writeComment}>
             <Link to={`/user/${localStorage.getItem("userId")}`}>
               {userAvatar ? (
@@ -281,7 +290,9 @@ const Post: React.FC<{
               )}
             </Link>
             <input
-              className={styles.commentInput}
+              className={
+                styles.commentInput + " " + (isDarkMode && styles.darkMode)
+              }
               type="text"
               placeholder="Write a comment..."
               value={commentText}

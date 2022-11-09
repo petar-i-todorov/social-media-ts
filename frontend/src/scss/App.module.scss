@@ -14,4 +14,12 @@ hr {
   position: relative;
   width: 100%;
   min-height: 100vh;
+  transition: color, background-color 0.2s ease-in-out;
+}
+
+.darkMode {
+  color: rgba(245, 245, 245, 0.8);
+  background-color: black;
+  border-color: gray;
+  outline-color: gray;
 }

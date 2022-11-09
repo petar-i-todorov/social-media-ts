@@ -11,18 +11,22 @@ import { DevRole } from "../../types/feed";
 import { devRoles, searchSuggestions } from "../../constants/feed";
 import { GiRoundStar } from "react-icons/gi";
 import { BiLoaderCircle } from "react-icons/bi";
-import { MdDarkMode } from "react-icons/md";
+import { MdDarkMode, MdLightMode } from "react-icons/md";
 
 const NavBar: React.FC<{
   setIsNavigatingToFeed: React.Dispatch<React.SetStateAction<boolean>>;
   areSuggestionsVisible: boolean;
   setAreSuggestionsVisible: React.Dispatch<React.SetStateAction<boolean>>;
   userAvatar: string | undefined;
+  isDarkMode: boolean;
+  setIsDarkMode: React.Dispatch<React.SetStateAction<boolean>>;
 }> = ({
   setIsNavigatingToFeed,
   areSuggestionsVisible,
   setAreSuggestionsVisible,
   userAvatar,
+  setIsDarkMode,
+  isDarkMode,
 }) => {
   const {
     isFeedFlashMessage,
@@ -252,7 +256,21 @@ const NavBar: React.FC<{
             </div>
           </li>
           <li>
-            <MdDarkMode size="30" />
+            {isDarkMode ? (
+              <MdLightMode
+                size="30"
+                onClick={() => {
+                  setIsDarkMode(false);
+                }}
+              />
+            ) : (
+              <MdDarkMode
+                size="30"
+                onClick={() => {
+                  setIsDarkMode(true);
+                }}
+              />
+            )}
           </li>
         </ul>
         <FormMessage

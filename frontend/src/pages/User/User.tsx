@@ -21,6 +21,7 @@ import PostSkeleton from "../../components/Post/PostSkeleton";
 import { AiOutlineLeft } from "react-icons/ai";
 import { AiOutlineRight } from "react-icons/ai";
 import { MdPhotoCamera } from "react-icons/md";
+import { SwitchThemeContext } from "../../contexts/SwitchThemeContext";
 
 const User: React.FC<{
   userAvatar: string;
@@ -45,6 +46,7 @@ const User: React.FC<{
   const [currentPage, setCurrentPage] = useState(1);
   const [fetchedPosts, setFetchedPosts] = useState<IPost[]>([]);
   const [user, setUser] = useState<IUser | null>(null);
+  const { isDarkMode } = useContext(SwitchThemeContext);
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -90,7 +92,7 @@ const User: React.FC<{
     fetchUser();
   }, [posts, params.userId]);
   return (
-    <div className={styles.userPage}>
+    <div className={styles.userPage + " " + (isDarkMode && styles.darkMode)}>
       {isLoading ? (
         <>
           <UserSkeleton />
@@ -109,11 +111,15 @@ const User: React.FC<{
         </>
       ) : user ? (
         <>
-          <header className={styles.pageHeader}>
+          <header
+            className={
+              styles.pageHeader + " " + (isDarkMode && styles.darkMode)
+            }
+          >
             <span className={styles.userName}>{user.name}</span>
           </header>
           <section
-            className={styles.userInfo}
+            className={styles.userInfo + " " + (isDarkMode && styles.darkMode)}
             onClick={() => {
               setUpdateQuoteMode(false);
             }}
@@ -130,7 +136,10 @@ const User: React.FC<{
                 />
                 <label htmlFor="avatar">
                   <div className={styles.uploadLogo}>
-                    <MdPhotoCamera size="25" />
+                    <MdPhotoCamera
+                      size="25"
+                      className={isDarkMode ? styles.darkMode : undefined}
+                    />
                   </div>
                   {user.avatarUrl ? (
                     <img
@@ -224,7 +233,9 @@ const User: React.FC<{
               {updateQuoteMode ? (
                 <>
                   <TextArea
-                    className={styles.editArea}
+                    className={
+                      styles.editArea + " " + (isDarkMode && styles.darkMode)
+                    }
                     label=""
                     isValid={true}
                     value={quote}

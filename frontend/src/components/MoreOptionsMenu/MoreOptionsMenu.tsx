@@ -6,6 +6,7 @@ import { PostIdContext } from "../../contexts/PostIdContext";
 import { ModalsManipulationContext } from "../../contexts/ModalsManipulationContext";
 import { FiEdit } from "react-icons/fi";
 import { IoOpenOutline } from "react-icons/io5";
+import { SwitchThemeContext } from "../../contexts/SwitchThemeContext";
 
 const MoreOptionsMenu: React.FC<{
   isAuthor: boolean;
@@ -18,9 +19,10 @@ const MoreOptionsMenu: React.FC<{
     setReportPostVisibility,
     setEditPostVisibility,
   } = useContext(ModalsManipulationContext);
+  const { isDarkMode } = useContext(SwitchThemeContext);
   return (
     <div
-      className={styles.moreOptionsMenu}
+      className={styles.moreOptionsMenu + " " + (isDarkMode && styles.darkMode)}
       onClick={(event) => {
         event.stopPropagation();
       }}
@@ -37,7 +39,11 @@ const MoreOptionsMenu: React.FC<{
       </div>
       <a href={sourceUrl} target="_blank">
         <div className={styles.option}>
-          <span>Open</span> <IoOpenOutline size="20px" />
+          <span className={isDarkMode ? styles.darkMode : undefined}>Open</span>{" "}
+          <IoOpenOutline
+            size="20px"
+            className={(isDarkMode && styles.darkMode) || undefined}
+          />
         </div>
       </a>
       {isAuthor && (
@@ -65,7 +71,7 @@ const MoreOptionsMenu: React.FC<{
               }}
             >
               Edit
-              <FiEdit size="18px" color="black" />
+              <FiEdit size="18px" color={isDarkMode ? "smokewhite" : "black"} />
             </span>
           </div>
         </>

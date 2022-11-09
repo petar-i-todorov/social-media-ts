@@ -1,4 +1,5 @@
-import React, { MouseEventHandler } from "react";
+import React, { MouseEventHandler, useContext } from "react";
+import { SwitchThemeContext } from "../../contexts/SwitchThemeContext";
 import styles from "./Button.module.scss";
 
 const Button: React.FC<{

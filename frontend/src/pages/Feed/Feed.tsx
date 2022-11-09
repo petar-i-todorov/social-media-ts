@@ -6,6 +6,8 @@ import { ModalsManipulationContext } from "../../contexts/ModalsManipulationCont
 import { PostsContext } from "../../contexts/PostsContext";
 import PostSkeleton from "../../components/Post/PostSkeleton";
 import { BiLoaderAlt } from "react-icons/bi";
+import { SwitchThemeContext } from "../../contexts/SwitchThemeContext";
+import appStyles from "../../scss/App.module.scss";
 
 const FeedPage: React.FC<{
   isNavigatingToFeed: boolean;
@@ -20,6 +22,7 @@ const FeedPage: React.FC<{
   const [isLoadingMore, setIsLoadingMore] = useState(false); //infinite scroll loader
   const [lastPostDate, setLastPostDate] = useState<null | string>(null);
   const [lastPostVotes, setLastPostVotes] = useState<null | number>(null);
+  const { isDarkMode } = useContext(SwitchThemeContext);
   const infiniteObserver = new IntersectionObserver((entries, observer) => {
     if (entries[0].isIntersecting) {
       observer.unobserve(entries[0].target);
@@ -67,7 +70,7 @@ const FeedPage: React.FC<{
   }, [posts]);
   return (
     <>
-      <main className={styles.feed}>
+      <main className={styles.feed + " " + (isDarkMode && appStyles.darkMode)}>
         <menu className={styles.feedMenu}>
           {localStorage.getItem("userId") && (
             <Button
