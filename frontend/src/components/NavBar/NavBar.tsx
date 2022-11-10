@@ -1,9 +1,10 @@
 import React, { useContext, useState } from "react";
+import { Link, Outlet } from "react-router-dom";
 import { FaUserCircle } from "react-icons/fa";
 import { VscTriangleUp } from "react-icons/vsc";
-import { Link, Outlet } from "react-router-dom";
 import { devRoles } from "../../constants/feed";
 import { PostsContext } from "../../contexts/PostsContext";
+import { SwitchThemeContext } from "../../contexts/SwitchThemeContext";
 import { DevRole } from "../../types/feed";
 import styles from "./NavBar.module.scss";
 
@@ -12,10 +13,11 @@ const NavBar: React.FC<{ userAvatar: string | undefined }> = ({
 }) => {
   const { devRole, setDevRole } = useContext(PostsContext);
   const [dropdownVisibility, setDropdownVisibility] = useState(false);
+  const { isDarkMode } = useContext(SwitchThemeContext);
   return (
     <>
       <Outlet />
-      <div className={styles.navBar}>
+      <div className={styles.navBar + " " + (isDarkMode && styles.darkMode)}>
         <Link
           to={
             localStorage.getItem("userId")
@@ -48,7 +50,11 @@ const NavBar: React.FC<{ userAvatar: string | undefined }> = ({
           />
           <div
             className={
-              styles.dropdown + " " + (dropdownVisibility && styles.active)
+              styles.dropdown +
+              " " +
+              (dropdownVisibility && styles.active) +
+              " " +
+              (isDarkMode && styles.darkMode)
             }
           >
             {(devRoles as DevRole[])
@@ -57,7 +63,9 @@ const NavBar: React.FC<{ userAvatar: string | undefined }> = ({
                 return (
                   <div
                     key={role}
-                    className={styles.role}
+                    className={
+                      styles.role + " " + (isDarkMode && styles.darkMode)
+                    }
                     onClick={() => {
                       setDevRole(role);
                     }}

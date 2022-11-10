@@ -9,6 +9,7 @@ export const devRoles = [FRONTEND, BACKEND, DEVOPS];
 export const searchSuggestions = [
   "Maximillian Schwarzmuller",
   "Bogdan Stashchuk",
+  "Remix",
   "React",
   "Angular",
   "Vue",

@@ -1,6 +1,5 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
-import Button from "../Button/Button";
-import styles from "./Post.module.scss";
+import { Link } from "react-router-dom";
 import {
   RiGithubFill,
   RiLinkedinBoxFill,
@@ -8,15 +7,16 @@ import {
   RiStackOverflowFill,
   RiYoutubeFill,
 } from "react-icons/ri";
+import { FaUserCircle } from "react-icons/fa";
+import ReactTimeAgo from "react-time-ago";
+import Button from "../Button/Button";
+import styles from "./Post.module.scss";
 import { SiUdemy } from "react-icons/si";
 import { BsThreeDots } from "react-icons/bs";
 import MoreOptionsMenu from "../MoreOptionsMenu/MoreOptionsMenu";
 import { IoSend } from "react-icons/io5";
 import Comment from "../Comment/Comment";
-import ReactTimeAgo from "react-time-ago";
-import { FaUserCircle } from "react-icons/fa";
 import { FlashMessageContext } from "../../contexts/FlashMessageFeedContext";
-import { Link } from "react-router-dom";
 import { IPost } from "../../types/feed";
 import { SwitchThemeContext } from "../../contexts/SwitchThemeContext";
 

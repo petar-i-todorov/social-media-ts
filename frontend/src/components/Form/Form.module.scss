@@ -1,3 +1,5 @@
+@import "../../scss/utils.module.scss";
+
 .nonAnimated {
   animation: none !important;
 }
@@ -21,6 +23,10 @@
     }
   }
   animation: appearance 1s;
+
+  .darkMode.form {
+    @extend %darkMode;
+  }
 
   .form {
     text-align: center;

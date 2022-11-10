@@ -1,3 +1,5 @@
+@import "../../scss/utils.module.scss";
+
 .other {
   display: flex;
   justify-content: center;
@@ -12,6 +14,10 @@
   justify-content: space-between;
   @media (max-width: 470px) {
     height: 35px;
+  }
+
+  .option.darkMode {
+    @extend %darkMode;
   }
 
   .option {

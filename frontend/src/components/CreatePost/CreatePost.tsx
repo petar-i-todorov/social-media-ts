@@ -19,6 +19,7 @@ import ModalBuilder from "../ModalBuilder/ModalBuilder";
 import { IPost } from "../../types/feed";
 import { PostIdContext } from "../../contexts/PostIdContext";
 import { FlashMessageContext } from "../../contexts/FlashMessageFeedContext";
+import { SwitchThemeContext } from "../../contexts/SwitchThemeContext";
 
 const AddPost: React.FC<{
   editPost?: boolean;
@@ -67,6 +68,8 @@ const AddPost: React.FC<{
   const [formErrorText, setFormErrorText] = useState("");
   const { postId } = useContext(PostIdContext);
   const { setPosts, posts } = useContext(PostsContext);
+  const { isDarkMode } = useContext(SwitchThemeContext);
+
   useEffect(() => {
     if (postToEdit) {
       setTitle(postToEdit.title);
@@ -315,7 +318,9 @@ const AddPost: React.FC<{
               " " +
               (isYoutubeSelected && styles.selected) +
               " " +
-              (isHighlighted && styles.invalid)
+              (isHighlighted && styles.invalid) +
+              " " +
+              (isDarkMode && styles.darkMode)
             }
             size="50"
             color="red"
@@ -336,7 +341,9 @@ const AddPost: React.FC<{
               " " +
               (isStackoverflowSelected && styles.selected) +
               " " +
-              (isHighlighted && styles.invalid)
+              (isHighlighted && styles.invalid) +
+              " " +
+              (isDarkMode && styles.darkMode)
             }
             size="50"
             color="orange"
@@ -357,7 +364,11 @@ const AddPost: React.FC<{
               " " +
               (isGithubSelected && styles.selected) +
               " " +
-              (isHighlighted && styles.invalid)
+              (isHighlighted && styles.invalid) +
+              " " +
+              (isDarkMode && styles.darkMode) +
+              " " +
+              (isDarkMode && styles.darkMode)
             }
             size="50"
             onClick={() => {
@@ -377,7 +388,9 @@ const AddPost: React.FC<{
               " " +
               (isRedditSelected && styles.selected) +
               " " +
-              (isHighlighted && styles.invalid)
+              (isHighlighted && styles.invalid) +
+              " " +
+              (isDarkMode && styles.darkMode)
             }
             size="50"
             color="red"
@@ -398,7 +411,9 @@ const AddPost: React.FC<{
               " " +
               (isLinkedinSelected && styles.selected) +
               " " +
-              (isHighlighted && styles.invalid)
+              (isHighlighted && styles.invalid) +
+              " " +
+              (isDarkMode && styles.darkMode)
             }
             size="50"
             color="blue"
@@ -419,7 +434,9 @@ const AddPost: React.FC<{
               " " +
               (isUdemySelected && styles.selected) +
               " " +
-              (isHighlighted && styles.invalid)
+              (isHighlighted && styles.invalid) +
+              " " +
+              (isDarkMode && styles.darkMode)
             }
             size="50"
             color="purple"
@@ -440,7 +457,9 @@ const AddPost: React.FC<{
               " " +
               (isOtherSelected && styles.selected) +
               " " +
-              (isHighlighted && styles.invalid)
+              (isHighlighted && styles.invalid) +
+              " " +
+              (isDarkMode && styles.darkMode)
             }
             onClick={() => {
               setIsHighlighted(false);

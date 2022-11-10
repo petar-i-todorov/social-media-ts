@@ -1,5 +1,3 @@
-import styles from "./TextArea.module.scss";
-import { RiErrorWarningLine } from "react-icons/ri";
 import {
   ChangeEvent,
   MouseEventHandler,
@@ -7,6 +5,8 @@ import {
   useEffect,
   useState,
 } from "react";
+import { RiErrorWarningLine } from "react-icons/ri";
+import styles from "./TextArea.module.scss";
 import InputError from "../InputError/InputError";
 import { SwitchThemeContext } from "../../contexts/SwitchThemeContext";
 
@@ -77,7 +77,13 @@ const TextArea: React.FC<{
               }
             }
           }}
-          className={styles.textarea + " " + className}
+          className={
+            styles.textarea +
+            " " +
+            className +
+            " " +
+            (isDarkMode && styles.darkMode)
+          }
           onBlur={() => {
             if (onBlur) {
               onBlur();

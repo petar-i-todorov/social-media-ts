@@ -1,7 +1,8 @@
-import React, { ChangeEvent, useEffect, useState } from "react";
-import styles from "./Input.module.scss";
+import React, { ChangeEvent, useContext, useEffect, useState } from "react";
 import { RiErrorWarningLine } from "react-icons/ri";
+import styles from "./Input.module.scss";
 import InputError from "../InputError/InputError";
+import { SwitchThemeContext } from "../../contexts/SwitchThemeContext";
 
 const Input: React.FC<{
   id: string;
@@ -36,6 +37,7 @@ const Input: React.FC<{
 }) => {
   const [isFocused, setIsFocused] = useState(false);
   const [isActive, setIsActive] = useState(false); //if focused or value !== ""; placeholder animation responsible
+  const { isDarkMode } = useContext(SwitchThemeContext);
   useEffect(() => {
     if (isFocused && setIsValid) {
       setIsValid(true);
@@ -49,11 +51,17 @@ const Input: React.FC<{
     }
   }, [isFocused, value]);
   return (
-    <div className={styles.mainContainer}>
+    <div
+      className={styles.mainContainer + " " + (isDarkMode && styles.darkMode)}
+    >
       <label htmlFor={id} className={isActive ? styles.active : ""}>
         {placeholder}
       </label>
-      <div className={styles.inputContainer}>
+      <div
+        className={
+          styles.inputContainer + " " + (isDarkMode && styles.darkMode)
+        }
+      >
         {!isValid ? (
           <span
             onClick={() => {
@@ -95,7 +103,7 @@ const Input: React.FC<{
           type={type}
           className={`${styles.input} ${!isValid && styles.invalid} ${
             isFocused && styles.focused
-          }`}
+          } ${isDarkMode && styles.darkMode}`}
           onBlur={() => {
             if (onBlur) {
               onBlur();

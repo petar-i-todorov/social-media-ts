@@ -5,22 +5,22 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { FaCircle } from "react-icons/fa";
 import { useParams } from "react-router-dom";
+import { TbEdit } from "react-icons/tb";
+import { FaCircle } from "react-icons/fa";
+import { AiOutlineLeft } from "react-icons/ai";
+import { AiOutlineRight } from "react-icons/ai";
+import { MdPhotoCamera } from "react-icons/md";
 import Post from "../../components/Post/Post";
 import { FlashMessageContext } from "../../contexts/FlashMessageFeedContext";
 import { PostsContext } from "../../contexts/PostsContext";
 import { IPost, IUser } from "../../types/feed";
 import styles from "./User.module.scss";
-import { TbEdit } from "react-icons/tb";
 import TextArea from "../../components/TextArea/TextArea";
 import Button from "../../components/Button/Button";
 import BouncingDotsLoader from "../../components/BouncingDotsLoader/BouncingDotsLoader";
 import UserSkeleton from "./UserSkeleton";
 import PostSkeleton from "../../components/Post/PostSkeleton";
-import { AiOutlineLeft } from "react-icons/ai";
-import { AiOutlineRight } from "react-icons/ai";
-import { MdPhotoCamera } from "react-icons/md";
 import { SwitchThemeContext } from "../../contexts/SwitchThemeContext";
 
 const User: React.FC<{
@@ -39,6 +39,7 @@ const User: React.FC<{
     setActiveFlashTimeout,
     setIsLoader,
   } = useContext(FlashMessageContext);
+
   const [updateQuoteMode, setUpdateQuoteMode] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -147,6 +148,7 @@ const User: React.FC<{
                       width="150"
                       height="150"
                       className={styles.userAvatar}
+                      alt="avatar"
                     />
                   ) : (
                     <FaCircle
@@ -163,6 +165,7 @@ const User: React.FC<{
                 width="150"
                 height="150"
                 className={styles.userAvatar}
+                alt="avatar"
               />
             ) : (
               <FaCircle size="150" color="gray" className={styles.userAvatar} />

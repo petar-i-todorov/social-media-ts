@@ -1,3 +1,9 @@
+@import "../../scss/utils.module.scss";
+
+.mainContainer.darkMode {
+  @extend %darkMode;
+}
+
 .mainContainer {
   display: flex;
   flex-direction: column;
@@ -45,6 +51,10 @@
       @media (max-width: 1080px) {
         cursor: default;
       }
+    }
+
+    .input.darkMode {
+      @extend %darkMode;
     }
 
     .input {

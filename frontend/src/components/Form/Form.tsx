@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useContext } from "react";
+import { SwitchThemeContext } from "../../contexts/SwitchThemeContext";
 import styles from "./Form.module.scss";
 
 const Form: React.FC<{
@@ -6,6 +7,7 @@ const Form: React.FC<{
   children: React.ReactNode;
   nonAnimated?: boolean;
 }> = ({ onSubmit, children, nonAnimated }) => {
+  const { isDarkMode } = useContext(SwitchThemeContext);
   return (
     <div
       className={
@@ -15,7 +17,7 @@ const Form: React.FC<{
       <form
         noValidate
         onSubmit={onSubmit}
-        className={styles.form}
+        className={styles.form + " " + (isDarkMode && styles.darkMode)}
         onClick={(event) => {
           event.stopPropagation();
         }}

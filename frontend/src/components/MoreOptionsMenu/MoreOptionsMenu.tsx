@@ -1,11 +1,11 @@
-import styles from "./MoreOptionsMenu.module.scss";
+import { useContext } from "react";
 import { MdDelete } from "react-icons/md";
 import { MdReportProblem } from "react-icons/md";
-import { useContext } from "react";
-import { PostIdContext } from "../../contexts/PostIdContext";
-import { ModalsManipulationContext } from "../../contexts/ModalsManipulationContext";
 import { FiEdit } from "react-icons/fi";
 import { IoOpenOutline } from "react-icons/io5";
+import styles from "./MoreOptionsMenu.module.scss";
+import { PostIdContext } from "../../contexts/PostIdContext";
+import { ModalsManipulationContext } from "../../contexts/ModalsManipulationContext";
 import { SwitchThemeContext } from "../../contexts/SwitchThemeContext";
 
 const MoreOptionsMenu: React.FC<{

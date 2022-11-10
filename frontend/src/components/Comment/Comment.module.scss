@@ -8,6 +8,9 @@
     .userAvatar {
       border-radius: 50%;
     }
+    .darkMode.commentInfo {
+      border: 1px solid gray;
+    }
     .commentInfo {
       display: flex;
       flex-direction: column;

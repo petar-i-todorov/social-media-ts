@@ -58,9 +58,7 @@ const LoginPage = () => {
                   localStorage.removeItem("token");
                   localStorage.removeItem("userId");
                 }, 3600000);
-                setTimeout(() => {
-                  navigate("..", { relative: "path" });
-                }, 4000);
+                navigate("..", { relative: "path" });
               } else {
                 setIsServerError(true);
                 setResponseMessage(resData.message);

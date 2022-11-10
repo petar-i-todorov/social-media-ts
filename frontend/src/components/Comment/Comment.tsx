@@ -1,12 +1,12 @@
 import React, { useContext, useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { AiFillDislike, AiFillLike } from "react-icons/ai";
 import { BsFillCircleFill } from "react-icons/bs";
-import styles from "./Comment.module.scss";
-import ReactTimeAgo from "react-time-ago";
 import { FaUserCircle } from "react-icons/fa";
+import ReactTimeAgo from "react-time-ago";
+import styles from "./Comment.module.scss";
 import { FlashMessageContext } from "../../contexts/FlashMessageFeedContext";
 import { IComment } from "../../types/feed";
-import { Link } from "react-router-dom";
 
 const Comment: React.FC<{
   comment: IComment;
@@ -36,7 +36,7 @@ const Comment: React.FC<{
             <FaUserCircle size="30.8" />
           )}
         </Link>
-        <div className={styles.commentInfo}>
+        <div className={styles.commentInfo + " " + styles.darkMode}>
           <div className={styles.commentHeader}>
             <span className={styles.commentAuthor}>
               {commentObj.creator.name}{" "}

@@ -1,5 +1,5 @@
-import { BsGithub, BsLinkedin } from "react-icons/bs";
 import { Outlet } from "react-router-dom";
+import { BsGithub, BsLinkedin } from "react-icons/bs";
 import styles from "./Footer.module.scss";
 
 const Footer = () => {

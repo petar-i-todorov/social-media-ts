@@ -1,11 +1,16 @@
 @import url("https://fonts.googleapis.com/css2?family=Handlee&display=swap");
+@import "../../scss/utils.module.scss";
+
+.header.darkMode {
+  background-color: darkblue;
+}
 
 .header {
   width: 100%;
   height: 50px;
   display: flex;
   align-items: center;
-  background-color: darkblue;
+  background-color: rgb(92, 92, 92);
   position: fixed;
   z-index: 5;
   justify-content: center;
@@ -71,6 +76,9 @@
         opacity: 1;
         transform: scaleY(1);
       }
+      .dropdown.darkMode {
+        @extend %darkMode;
+      }
       .dropdown {
         position: absolute;
         width: 100%;
@@ -84,6 +92,11 @@
         justify-content: center;
         top: 35px;
         transform: scaleY(0);
+
+        .role.darkMode {
+          @extend %darkMode;
+        }
+
         .role {
           text-align: center;
           cursor: pointer;

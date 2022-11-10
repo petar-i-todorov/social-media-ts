@@ -1,17 +1,17 @@
-import styles from "./Header.module.scss";
-import { AiOutlineSearch } from "react-icons/ai";
-import { Link, Outlet, useNavigate } from "react-router-dom";
-import FormMessage from "../FormMessage/FormMessage";
 import { useContext, useState } from "react";
-import { FlashMessageContext } from "../../contexts/FlashMessageFeedContext";
-import { FaUserCircle } from "react-icons/fa";
-import { VscTriangleDown } from "react-icons/vsc";
-import { PostsContext } from "../../contexts/PostsContext";
-import { DevRole } from "../../types/feed";
-import { devRoles, searchSuggestions } from "../../constants/feed";
+import { Link, Outlet, useNavigate } from "react-router-dom";
 import { GiRoundStar } from "react-icons/gi";
 import { BiLoaderCircle } from "react-icons/bi";
 import { MdDarkMode, MdLightMode } from "react-icons/md";
+import { AiOutlineSearch } from "react-icons/ai";
+import { FaUserCircle } from "react-icons/fa";
+import { VscTriangleDown } from "react-icons/vsc";
+import styles from "./Header.module.scss";
+import FormMessage from "../FormMessage/FormMessage";
+import { FlashMessageContext } from "../../contexts/FlashMessageFeedContext";
+import { PostsContext } from "../../contexts/PostsContext";
+import { DevRole } from "../../types/feed";
+import { devRoles, searchSuggestions } from "../../constants/feed";
 
 const NavBar: React.FC<{
   setIsNavigatingToFeed: React.Dispatch<React.SetStateAction<boolean>>;
@@ -45,7 +45,7 @@ const NavBar: React.FC<{
   return (
     <>
       <header
-        className={styles.header}
+        className={styles.header + " " + (isDarkMode && styles.darkMode)}
         onClick={() => {
           setAreSuggestionsVisible(false);
         }}
@@ -125,7 +125,9 @@ const NavBar: React.FC<{
                   })
                 ) : (
                   <div
-                    className={styles.suggestion}
+                    className={
+                      styles.suggestion + " " + (isDarkMode && styles.darkMode)
+                    }
                     onClick={async () => {
                       setAreSuggestionsVisible(false);
                       setIsLoader(true);
@@ -244,7 +246,11 @@ const NavBar: React.FC<{
               />
               <div
                 className={
-                  styles.dropdown + " " + (dropdownVisibility && styles.active)
+                  styles.dropdown +
+                  " " +
+                  (dropdownVisibility && styles.active) +
+                  " " +
+                  (isDarkMode && styles.darkMode)
                 }
               >
                 {(devRoles as DevRole[])
@@ -253,7 +259,9 @@ const NavBar: React.FC<{
                     return (
                       <div
                         key={role}
-                        className={styles.role}
+                        className={
+                          styles.role + " " + (isDarkMode && styles.darkMode)
+                        }
                         onClick={() => {
                           setDevRole(role);
                         }}

@@ -1,11 +1,11 @@
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { BiArrowBack } from "react-icons/bi";
 import BouncingDotsLoader from "../../../components/BouncingDotsLoader/BouncingDotsLoader";
 import Button from "../../../components/Button/Button";
 import FormMessage from "../../../components/FormMessage/FormMessage";
 import Input from "../../../components/Input/Input";
 import { isPassword } from "../../../utils/validation";
-import { BiArrowBack } from "react-icons/bi";
 import Form from "../../../components/Form/Form";
 import styles from "./SetNewPassword.module.scss";
 import AuthPage from "../AuthPageContainer/AuthPage";

@@ -1,11 +1,11 @@
 import { useContext, useEffect, useState } from "react";
+import { BiLoaderAlt } from "react-icons/bi";
 import Button from "../../components/Button/Button";
 import Post from "../../components/Post/Post";
 import styles from "./Feed.module.scss";
 import { ModalsManipulationContext } from "../../contexts/ModalsManipulationContext";
 import { PostsContext } from "../../contexts/PostsContext";
 import PostSkeleton from "../../components/Post/PostSkeleton";
-import { BiLoaderAlt } from "react-icons/bi";
 import { SwitchThemeContext } from "../../contexts/SwitchThemeContext";
 import appStyles from "../../scss/App.module.scss";
 

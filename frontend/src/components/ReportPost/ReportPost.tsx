@@ -1,8 +1,8 @@
 import React, { useContext, useEffect, useMemo, useState } from "react";
+import { TiTick } from "react-icons/ti";
 import Button from "../Button/Button";
 import ModalBuilder from "../ModalBuilder/ModalBuilder";
 import styles from "./ReportPost.module.scss";
-import { TiTick } from "react-icons/ti";
 import TextArea from "../TextArea/TextArea";
 import { PostIdContext } from "../../contexts/PostIdContext";
 import { ModalsManipulationContext } from "../../contexts/ModalsManipulationContext";
