@@ -1,24 +1,31 @@
-.comment {
+.container {
   display: flex;
   flex-direction: column;
   gap: 15px;
+
   .commentContent {
     display: flex;
     gap: 10px;
+
     .userAvatar {
       border-radius: 50%;
     }
+
     .darkMode.commentInfo {
       border: 1px solid gray;
     }
+
     .commentInfo {
+      width: 100%;
+
       display: flex;
       flex-direction: column;
       gap: 10px;
-      width: 100%;
+
       background-color: rgba(0, 0, 0, 0.1);
       padding: 10px;
       border-radius: 2px;
+
       .commentHeader {
         .commentAuthor {
           font-weight: bold;
@@ -29,14 +36,18 @@
   .votesContainer {
     display: flex;
     justify-content: space-between;
+
     padding: 0 15px;
+
     .commentVotes {
       display: flex;
       align-items: center;
       gap: 5px;
+
       .voteLogo {
         cursor: pointer;
       }
+
       .pressed {
         color: black;
         @keyframes press {
@@ -52,6 +63,7 @@
         }
         animation: press 500ms;
       }
+
       .nonPressed {
         color: lightgray;
       }

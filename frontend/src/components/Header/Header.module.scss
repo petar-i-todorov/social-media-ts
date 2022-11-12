@@ -8,12 +8,15 @@
 .header {
   width: 100%;
   height: 50px;
+
   display: flex;
   align-items: center;
-  background-color: rgb(92, 92, 92);
+  justify-content: center;
+
   position: fixed;
   z-index: 5;
-  justify-content: center;
+  background-color: rgb(92, 92, 92);
+
   @media (max-width: 576px) {
     padding: 0 10px;
   }
@@ -27,35 +30,45 @@
         transform: rotate(360deg);
       }
     }
+
     animation: loader 1s infinite;
+
     position: fixed;
     top: 70px;
   }
 
   .nav {
-    display: flex;
-    list-style: none;
-    justify-content: space-around;
-    align-items: center;
     width: 80%;
     height: 100%;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+
+    list-style: none;
     margin: 0 auto;
     color: white;
     font-weight: bold;
+
     @media (max-width: 992px) {
       width: 100%;
     }
+
     @media (max-width: 576px) {
       gap: 10px;
     }
+
     .appLogo {
-      color: white;
       display: flex;
       justify-content: center;
       align-items: center;
+
+      color: white;
+
       .logoText {
         font-family: "Handlee", cursive;
         font-size: 25px;
+
         @media (max-width: 768px) {
           display: none;
         }
@@ -65,32 +78,41 @@
       @media (max-width: 576px) {
         display: none;
       }
-      position: relative;
+
+      width: 110px;
+
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 5px;
-      width: 110px;
+
+      position: relative;
       cursor: pointer;
+
       .dropdown.active {
         opacity: 1;
         transform: scaleY(1);
       }
+
       .dropdown.darkMode {
         @extend %darkMode;
       }
+
       .dropdown {
-        position: absolute;
         width: 100%;
-        border: 1px solid black;
-        border-top: none;
-        background-color: white;
-        color: black;
+
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
+
+        position: absolute;
         top: 35px;
+
+        border: 1px solid black;
+        border-top: none;
+        background-color: white;
+        color: black;
         transform: scaleY(0);
 
         .role.darkMode {
@@ -98,32 +120,40 @@
         }
 
         .role {
+          width: 100%;
+
           text-align: center;
           cursor: pointer;
           padding: 5px 0;
-          width: 100%;
           &:not(:last-child) {
             border-bottom: 1px solid black;
           }
         }
       }
     }
+
     .switchModeLogo {
       cursor: pointer;
     }
+
     .searchContainer {
       width: 30%;
       height: 80%;
+
       display: flex;
       align-items: center;
       gap: 10px;
+
+      position: relative;
+
       background-color: white;
       padding: 0 10px;
       border-radius: 8px;
-      position: relative;
+
       @media (max-width: 768px) {
         position: initial;
       }
+
       @media (max-width: 576px) {
         width: 100%;
       }
@@ -134,17 +164,22 @@
       }
 
       .searchSuggestions {
+        width: 100%;
+
+        display: flex;
+        flex-direction: column;
+
         position: absolute;
         top: 50px;
         left: 0;
-        width: 100%;
+
         background-color: white;
         border: 1px solid black;
         border-radius: 8px;
-        display: flex;
-        flex-direction: column;
+
         @media (max-width: 768px) {
           width: 100vw;
+
           border-radius: 0%;
           border: none !important;
           border-bottom: 1px solid gray !important;
@@ -153,11 +188,12 @@
         .darkMode.suggestion {
           color: rgba(245, 245, 245, 0.8);
         }
+
         .suggestion {
           padding: 5px 10px !important;
           color: black;
-          padding: 5px 0;
           cursor: pointer;
+
           &:hover {
             background-color: lightgray;
           }
@@ -167,8 +203,10 @@
       .searchBar {
         width: 100%;
         height: 100%;
+
         border-radius: 8px;
         border: none;
+
         &:focus {
           outline: none;
         }
@@ -178,8 +216,9 @@
 }
 
 .userAvatar {
+  border-radius: 50%;
+
   @media (max-width: 576px) {
     display: none;
   }
-  border-radius: 50%;
 }

@@ -5,60 +5,78 @@
 }
 
 .navBar {
-  @media (max-width: 576px) {
-    display: flex;
-  }
-  display: none;
   width: 100%;
   height: 50px;
+
+  display: none;
   align-items: center;
-  background-color: rgb(92, 92, 92);
+  justify-content: space-between;
+
   position: fixed;
   bottom: 0;
   left: 0;
-  z-index: 5;
-  justify-content: space-between;
-  padding: 0 10px;
+
+  background-color: rgb(92, 92, 92);
   color: white;
   font-weight: bold;
+  padding: 0 10px;
+  z-index: 5;
+
+  @media (max-width: 576px) {
+    display: flex;
+  }
+
   .dropdownContainer {
-    position: relative;
+    width: 110px;
+
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 5px;
-    width: 110px;
+
+    position: relative;
+
     cursor: pointer;
+
     .dropdown.active {
       opacity: 1;
       transform: scaleY(1);
     }
+
     .dropdown.darkMode {
       @extend %darkMode;
       border-right: none;
     }
+
     .dropdown {
-      position: absolute;
       width: calc(100% + 10px);
-      border: 1px solid black;
-      border-bottom: none;
-      background-color: white;
-      color: black;
+
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
+
+      position: absolute;
       top: calc((100% + 58px) * (-1));
       right: -10px;
+
+      border: 1px solid black;
+      border-bottom: none;
+      background-color: white;
+      color: black;
       transform: scaleY(0);
+
       .role.darkMode {
         @extend %darkMode;
       }
+
       .role {
+        width: 100%;
+
         text-align: center;
         cursor: pointer;
         padding: 5px 0;
-        width: 100%;
+
         &:not(:last-child) {
           border-bottom: 1px solid black;
         }

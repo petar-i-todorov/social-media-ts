@@ -2,11 +2,12 @@
 
 .textAreaContainer {
   width: 100%;
+  height: 150px;
+
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  height: 150px;
   align-items: flex-start;
+  gap: 10px;
 
   .focused {
     border: 2px solid lightblue !important;
@@ -17,8 +18,9 @@
   }
 
   .textareaError {
-    top: 67px;
     height: 70px;
+
+    top: 67px;
   }
 
   .darkMode.pseudoTextarea {
@@ -28,23 +30,28 @@
   .pseudoTextarea {
     width: 100%;
     height: 100%;
+
     display: flex;
     flex-direction: column;
     align-items: flex-end;
-    border: 2px solid lightgray;
+
     position: relative;
+
+    border: 2px solid lightgray;
 
     .textarea.darkMode {
       @extend %darkMode;
     }
 
     .textarea {
-      resize: none;
       height: 100%;
       width: 100%;
+
+      resize: none;
       border: none;
       font-size: 15px;
       padding: 10px;
+
       &:focus {
         outline: none;
       }
@@ -59,6 +66,7 @@
 
 .desc {
   width: 100%;
+
   resize: none;
 }
 

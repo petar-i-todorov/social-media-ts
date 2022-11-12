@@ -1,7 +1,4 @@
 import React, { useContext, useEffect, useState } from "react";
-import Input from "../Input/Input";
-import styles from "./CreatePost.module.scss";
-import TextArea from "../TextArea/TextArea";
 import {
   RiGithubFill,
   RiLinkedinBoxFill,
@@ -10,6 +7,10 @@ import {
   RiYoutubeFill,
 } from "react-icons/ri";
 import { SiUdemy } from "react-icons/si";
+
+import Input from "../Input/Input";
+import styles from "./CreatePost.module.scss";
+import TextArea from "../TextArea/TextArea";
 import Button from "../Button/Button";
 import BouncingDotsLoader from "../BouncingDotsLoader/BouncingDotsLoader";
 import { ModalsManipulationContext } from "../../contexts/ModalsManipulationContext";

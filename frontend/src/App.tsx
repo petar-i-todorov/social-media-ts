@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import TimeAgo from "javascript-time-ago";
 import en from "javascript-time-ago/locale/en.json";
+
 import ResetPasswordPage from "./pages/Auth/ResetPassword/ResetPassword";
 import LoginPage from "./pages/Auth/Login/Login";
 import SignupPage from "./pages/Auth/Signup/Signup";

@@ -2,42 +2,53 @@
 
 .footer {
   max-width: 768px;
-  margin: 0 auto;
+
   display: flex;
   justify-content: space-between;
   align-items: center;
+
+  margin: 0 auto;
   padding: 9px 10px 10px;
   border-top: 1px solid lightgray;
+
   @media (max-width: 992px) {
     margin: 0 20px;
   }
+
   @media (max-width: 576px) {
     padding: 0px 0px 55px;
   }
+
   .icons {
     display: flex;
     gap: 10px;
+
     .icon {
       color: #959595;
       transition: 0.2s color ease-in-out;
     }
+
     .github {
       &:hover {
         color: black;
       }
     }
+
     .linkedin {
       &:hover {
         color: blue;
       }
     }
   }
+
   .text {
     font-family: "Inter", sans-serif;
+
     .title {
       font-size: 16px;
       color: #6d6d6d;
     }
+
     .subtitle {
       font-size: 14px;
       color: #959595;

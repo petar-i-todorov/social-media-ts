@@ -5,15 +5,17 @@
 }
 
 .mainContainer {
+  width: 100%;
+
   display: flex;
   flex-direction: column;
-  width: 100%;
 
   label {
     text-align: start;
     transform: translate(10px, 35px);
     transition: transform 0.2s;
     z-index: 1;
+
     &:hover {
       cursor: text;
     }
@@ -21,22 +23,27 @@
 
   .active {
     transform: translate(0) !important;
+
     &:hover {
       cursor: default;
     }
   }
 
   .inputContainer {
-    display: flex;
-    position: relative;
     width: 100%;
+
+    display: flex;
+
+    position: relative;
 
     .warningIconDefaultInput {
       position: absolute !important;
       left: 93%;
       top: 34%;
+
       z-index: 2;
       cursor: pointer;
+
       @media (max-width: 1080px) {
         cursor: default;
       }
@@ -46,8 +53,10 @@
       position: absolute !important;
       left: 85%;
       top: 34%;
+
       z-index: 2;
       cursor: pointer;
+
       @media (max-width: 1080px) {
         cursor: default;
       }
@@ -60,11 +69,13 @@
     .input {
       width: 100%;
       height: 50px;
+
       font-size: 17px;
       padding: 10px;
       border-radius: 3px;
       border: none;
       border-bottom: 3px solid lightgray;
+
       &:focus {
         outline: none;
       }

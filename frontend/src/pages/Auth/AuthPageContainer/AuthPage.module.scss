@@ -1,19 +1,22 @@
 .authPage {
-  padding: 20px 0;
   width: 100%;
   min-height: 100vh;
+
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
+  gap: 50px;
+
+  padding: 20px 0;
   background-image: url("../../../assets/background.png");
   background-size: cover;
-  flex-direction: column;
-  gap: 50px;
 
   .mainContainer {
     display: flex;
     flex-direction: column;
     gap: 50px;
+
     @keyframes appearance {
       from {
         opacity: 0;
@@ -33,15 +36,17 @@
 
       h2 {
         font-weight: 600;
+
         &:hover {
           cursor: default;
         }
       }
 
       span {
+        position: relative;
+
         font-weight: 400;
         font-size: 20px;
-        position: relative;
       }
 
       textarea {
@@ -50,24 +55,28 @@
 
       .lines {
         &::before {
-          content: "";
-          display: block;
           width: 170px;
           height: 2px;
-          background: lightgray;
+
           position: absolute;
           top: 14px;
           right: 60px;
-        }
-        &::after {
+
           content: "";
           display: block;
+          background: lightgray;
+        }
+        &::after {
           width: 170px;
           height: 2px;
-          background: lightgray;
+
           position: absolute;
           bottom: 10px;
           left: 60px;
+
+          content: "";
+          display: block;
+          background: lightgray;
         }
       }
 

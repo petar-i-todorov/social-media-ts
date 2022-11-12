@@ -5,12 +5,14 @@
 }
 
 .moreOptionsMenu {
+  width: 150px;
+
   position: absolute;
   right: 0;
   top: 0;
+
   background-color: white;
   box-shadow: lightgray 2px 2px 15px;
-  width: 150px;
   transition: color, background-color 0.2s ease-in-out;
 
   a {
@@ -21,22 +23,28 @@
 
   .option {
     height: 40px;
+
     display: flex;
-    gap: 5px;
     align-items: center;
     justify-content: center;
+    gap: 5px;
+
     font-size: 20px;
     cursor: pointer;
     border-radius: 3px;
+
     span {
       transition: color, background-color 0.2s ease-in-out;
     }
+
     span.darkMode {
       color: rgba(245, 245, 245, 0.8);
     }
+
     svg {
       transition: color, background-color 0.2s ease-in-out;
     }
+
     svg.darkMode {
       color: rgba(245, 245, 245, 0.8);
     }

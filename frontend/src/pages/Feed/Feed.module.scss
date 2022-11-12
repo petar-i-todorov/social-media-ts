@@ -1,21 +1,28 @@
 .feed {
+  min-height: calc(100vh - 60px);
   max-width: 768px;
-  margin: 0 auto;
-  padding: 70px 0 0;
+
   display: flex;
   flex-direction: column;
   gap: 20px;
+
   position: relative;
-  min-height: calc(100vh - 60px);
+
+  margin: 0 auto;
+  padding: 70px 0 0;
   background: rgba(0, 0, 0, 0);
+
   @media (max-width: 992px) {
     padding: 70px 20px 0 20px;
   }
+
   @media (max-width: 400px) {
     padding: 55px 5px 0 5px;
   }
 
   .loader {
+    margin: 0 auto;
+
     @keyframes loader {
       from {
         transform: rotate(0deg);
@@ -25,7 +32,6 @@
       }
     }
     animation: loader 1s infinite;
-    margin: 0 auto;
   }
 
   .feedMenu {
@@ -36,24 +42,25 @@
 
   .addBtn {
     width: 20%;
+
     @media (max-width: 768px) {
       width: 30%;
     }
+
     @media (max-width: 576px) {
       gap: 10px;
     }
+
     @media (max-width: 420px) {
       font-size: 80%;
     }
   }
 
   .sortDropdown {
-    background: none;
     width: 20%;
-    @media (max-width: 768px) {
-      width: 30%;
-    }
     height: 50px;
+
+    background: none;
     text-align: center;
     background-color: #1877f2;
     font-weight: bolder;
@@ -65,9 +72,15 @@
     -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
+
+    @media (max-width: 768px) {
+      width: 30%;
+    }
+
     @media (max-width: 450px) {
       font-size: 80%;
     }
+
     @media (max-width: 360px) {
       font-size: 70%;
     }
@@ -79,6 +92,7 @@
     option {
       background-color: white;
       color: black;
+
       @media (max-width: 340px) {
         font-size: 10px;
       }
@@ -94,9 +108,11 @@
   display: flex;
   flex-direction: column;
   gap: 20px;
+
   .skeleton {
+    height: 284px;
+
     box-shadow: 2px 2px 5px rgb(0 0 0 / 10%);
     outline: 1px solid lightgray;
-    height: 284px;
   }
 }

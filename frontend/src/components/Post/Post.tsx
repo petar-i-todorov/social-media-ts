@@ -9,6 +9,7 @@ import {
 } from "react-icons/ri";
 import { FaUserCircle } from "react-icons/fa";
 import ReactTimeAgo from "react-time-ago";
+
 import Button from "../Button/Button";
 import styles from "./Post.module.scss";
 import { SiUdemy } from "react-icons/si";

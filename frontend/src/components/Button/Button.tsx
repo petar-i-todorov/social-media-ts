@@ -1,32 +1,44 @@
-import React, { MouseEventHandler, useContext } from "react";
+import React, {
+  MouseEventHandler,
+  PropsWithChildren,
+  useEffect,
+  useMemo,
+} from "react";
+
 import styles from "./Button.module.scss";
 
-const Button: React.FC<{
+interface ButtonProps {
   color: "blue" | "green" | "red";
-  children: string | JSX.Element;
   onClick?: MouseEventHandler;
   type?: "submit";
   className?: string;
   isLocked?: boolean;
-}> = ({ children, color, type, onClick, className, isLocked }) => {
-  const styleColor =
-    color === "blue"
-      ? styles.blue
-      : color === "green"
-      ? styles.green
-      : styles.red;
+}
+
+const Button: React.FC<PropsWithChildren<ButtonProps>> = ({
+  className,
+  color,
+  type,
+  isLocked,
+  onClick,
+  children,
+}) => {
+  let colorStyle = useMemo(() => {
+    switch (color) {
+      case "blue":
+        return styles.blue;
+      case "green":
+        return styles.green;
+      default:
+        return styles.red;
+    }
+  }, [color]);
   return (
     <button
       type={type}
-      className={
-        styles.btn +
-        " " +
-        styleColor +
-        " " +
-        className +
-        " " +
-        (isLocked && styles.locked)
-      }
+      className={`${styles.btn} ${colorStyle} ${className} ${
+        isLocked && styles.locked
+      }`}
       onClick={onClick}
     >
       {children}

@@ -6,6 +6,7 @@ import { MdDarkMode, MdLightMode } from "react-icons/md";
 import { AiOutlineSearch } from "react-icons/ai";
 import { FaUserCircle } from "react-icons/fa";
 import { VscTriangleDown } from "react-icons/vsc";
+
 import styles from "./Header.module.scss";
 import FormMessage from "../FormMessage/FormMessage";
 import { FlashMessageContext } from "../../contexts/FlashMessageFeedContext";

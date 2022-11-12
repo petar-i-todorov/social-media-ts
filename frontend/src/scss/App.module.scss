@@ -13,9 +13,11 @@ hr {
 }
 
 .app {
-  position: relative;
   width: 100%;
   min-height: 100vh;
+
+  position: relative;
+
   transition: color, background-color 0.2s ease-in-out;
 }
 
