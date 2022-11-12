@@ -38,7 +38,7 @@ const MoreOptionsMenu: React.FC<{
       >
         <span>Report</span> <MdReportProblem size="20px" color="orange" />
       </div>
-      <a href={sourceUrl} target="_blank">
+      <a href={sourceUrl} target="_blank" rel="noreferrer">
         <div className={styles.option}>
           <span className={isDarkMode ? styles.darkMode : undefined}>Open</span>{" "}
           <IoOpenOutline

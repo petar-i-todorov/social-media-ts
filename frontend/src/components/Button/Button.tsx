@@ -1,9 +1,4 @@
-import React, {
-  MouseEventHandler,
-  PropsWithChildren,
-  useEffect,
-  useMemo,
-} from "react";
+import React, { MouseEventHandler, PropsWithChildren, useMemo } from "react";
 
 import styles from "./Button.module.scss";
 

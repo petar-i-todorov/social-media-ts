@@ -35,6 +35,7 @@ const Comment: React.FC<{
         width="30.8"
         height="30.8"
         src={`http://localhost:8080/${commentObj.creator.avatarUrl}`}
+        alt="avatar"
       />
     ) : (
       <FaUserCircle size="30.8" />

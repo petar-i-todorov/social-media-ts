@@ -122,6 +122,8 @@ const NavBar: React.FC<{
                           {suggestion}
                         </div>
                       );
+                    } else {
+                      return null;
                     }
                   })
                 ) : (
@@ -226,6 +228,7 @@ const NavBar: React.FC<{
                   width="35"
                   height="35"
                   className={styles.userAvatar}
+                  alt="avatar"
                 />
               ) : (
                 <FaUserCircle size="35" color="white" />

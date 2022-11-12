@@ -34,6 +34,7 @@ const Post: React.FC<{
       observer.observe(postRef.current);
     }
     setPostObj(post);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [post]);
   const {
     setIsFeedFlashMessage,
@@ -285,6 +286,7 @@ const Post: React.FC<{
                   width="35"
                   height="35"
                   className={styles.userAvatar}
+                  alt="avatar"
                 />
               ) : (
                 <FaUserCircle size="35" />

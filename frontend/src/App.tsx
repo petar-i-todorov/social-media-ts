@@ -1,5 +1,5 @@
 import ReactDOM from "react-dom";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import TimeAgo from "javascript-time-ago";
 import en from "javascript-time-ago/locale/en.json";
@@ -54,18 +54,21 @@ function App() {
   const [areSuggestionsVisible, setAreSuggestionsVisible] = useState(false);
   const [userAvatar, setUserAvatar] = useState("");
   const [isDarkMode, setIsDarkMode] = useState(false);
+
+  const setEditPost = useCallback(async () => {
+    if (editPostVisibility) {
+      const res = await fetch(`http://localhost:8080/posts/${postId}`);
+      const resData = await res.json();
+      setPostToEdit(resData.post);
+    } else {
+      setPostToEdit(null);
+    }
+  }, [editPostVisibility, postId]);
+
   useEffect(() => {
-    const setEditPost = async () => {
-      if (editPostVisibility) {
-        const res = await fetch(`http://localhost:8080/posts/${postId}`);
-        const resData = await res.json();
-        setPostToEdit(resData.post);
-      } else {
-        setPostToEdit(null);
-      }
-    };
     setEditPost();
-  }, [editPostVisibility]);
+  }, [setEditPost]);
+
   const [devRole, setDevRole] = useState<"FRONTEND" | "BACKEND" | "DEVOPS">(
     "FRONTEND"
   );
@@ -75,31 +78,31 @@ function App() {
   const [activeFlashTimeout, setActiveFlashTimeout] = useState<
     number | NodeJS.Timeout
   >(0);
-  useEffect(() => {
-    const fetchAvatar = async () => {
-      const res = await fetch(
-        `http://localhost:8080/users/${localStorage.getItem("userId")}/avatar`
-      );
-      if (res.status === 200) {
-        const { avatarUrl } = await res.json();
-        setUserAvatar(avatarUrl);
-      } else {
-        setFeedFlashMessageConfiguration({
-          text: "Something went wrong.",
-          color: "red",
-        });
-        setIsFeedFlashMessage(true);
-        clearTimeout(activeFlashTimeout);
-        const timeout = setTimeout(() => {
-          setIsFeedFlashMessage(false);
-        }, 5000);
-        setActiveFlashTimeout(timeout);
-      }
-    };
-    if (localStorage.getItem("userId")) {
-      fetchAvatar();
+
+  const fetchAvatar = useCallback(async () => {
+    const res = await fetch(
+      `http://localhost:8080/users/${localStorage.getItem("userId")}/avatar`
+    );
+    if (res.status === 200) {
+      const { avatarUrl } = await res.json();
+      setUserAvatar(avatarUrl);
+    } else {
+      setFeedFlashMessageConfiguration({
+        text: "Something went wrong.",
+        color: "red",
+      });
+      setIsFeedFlashMessage(true);
+      clearTimeout(activeFlashTimeout);
+      const timeout = setTimeout(() => {
+        setIsFeedFlashMessage(false);
+      }, 5000);
+      setActiveFlashTimeout(timeout);
     }
-  }, [localStorage.getItem("userId")]);
+  }, [activeFlashTimeout]);
+
+  useEffect(() => {
+    fetchAvatar();
+  }, [fetchAvatar]);
   return (
     <BrowserRouter>
       <SwitchThemeContext.Provider value={{ isDarkMode, setIsDarkMode }}>
