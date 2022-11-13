@@ -98,46 +98,60 @@ export const getPosts = async (getConfig: {
   } else {
     posts = Post.find({ devRole: devRole }).limit(10);
   }
-  return posts
-    .populate("creator")
-    .populate({
-      path: "comments",
-      model: "Comment",
-      options: {
-        sort: { createdAt: -1 },
-      },
-      populate: {
+  return posts.populate("creator").populate({
+    path: "comments",
+    model: "Comment",
+    options: {
+      sort: { createdAt: -1 },
+    },
+    populate: [
+      {
         path: "creator",
         model: "User",
       },
-    })
-    .populate("comments.votes");
+      {
+        path: "votes",
+        model: "CommentVote",
+      },
+    ],
+  });
 };
 
 export const getUser = async (userId: string) => {
-  return await User.findById(userId)
-    .populate({
-      path: "posts",
-      model: "Post",
-      options: {
-        limit: postsPerPage,
-        sort: {
-          createdAt: -1,
-        },
+  return await User.findById(userId).populate({
+    path: "posts",
+    model: "Post",
+    options: {
+      limit: postsPerPage,
+      sort: {
+        createdAt: -1,
       },
-      populate: {
+    },
+    populate: [
+      {
         path: "creator",
         model: "User",
       },
-    })
-    .populate({
-      path: "posts.comments.creator",
-      model: "User",
-    })
-    .populate({
-      path: "posts.comments.votes",
-      model: "CommentVote",
-    });
+      {
+        path: "comments",
+        model: "Comment",
+        populate: [
+          {
+            path: "creator",
+            model: "User",
+          },
+          {
+            path: "votes",
+            model: "CommentVote",
+          },
+        ],
+      },
+    ],
+  });
+  // .populate({
+  //   path: "posts.comments.votes",
+  //   model: "CommentVote",
+  // });
 };
 
 export const passToErrorHandlerMiddleware = (

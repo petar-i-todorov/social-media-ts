@@ -17,9 +17,9 @@ import { BsThreeDots } from "react-icons/bs";
 import MoreOptionsMenu from "../MoreOptionsMenu/MoreOptionsMenu";
 import { IoSend } from "react-icons/io5";
 import Comment from "../Comment/Comment";
-import { FlashMessageContext } from "../../contexts/FlashMessageFeedContext";
 import { IPost } from "../../types/feed";
 import { SwitchThemeContext } from "../../contexts/SwitchThemeContext";
+import { FlashMessageContext } from "../../contexts/FlashMessageFeedContext";
 
 const Post: React.FC<{
   post: IPost;
@@ -36,12 +36,6 @@ const Post: React.FC<{
     setPostObj(post);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [post]);
-  const {
-    setIsFeedFlashMessage,
-    setFeedFlashMessageConfiguration,
-    activeFlashTimeout,
-    setActiveFlashTimeout,
-  } = useContext(FlashMessageContext);
   const [areCommentsVisible, setAreCommentsVisible] = useState(false);
   const [isUpvoteLocked, setIsUpvoteLocked] = useState(false);
   const [isDownvoteLocked, setIsDownvoteLocked] = useState(false);
@@ -73,6 +67,10 @@ const Post: React.FC<{
   const [showMoreVisibility, setShowMoreVisibility] = useState(
     postObj.description.length > 250
   );
+
+  const { setIsFeedFlashMessage, setFeedFlashMessageConfiguration } =
+    useContext(FlashMessageContext);
+
   const writeComment = async () => {
     if (commentText.length > 0) {
       const res = await fetch(
@@ -100,14 +98,10 @@ const Post: React.FC<{
           text: "Something went wrong. Please, try again later.",
           color: "red",
         });
-        clearTimeout(activeFlashTimeout);
-        const timeout = setTimeout(() => {
-          setIsFeedFlashMessage(false);
-        }, 5000);
-        setActiveFlashTimeout(timeout);
       }
     }
   };
+
   return (
     <div
       ref={postRef}
@@ -181,11 +175,6 @@ const Post: React.FC<{
                   color: "red",
                 });
                 setIsFeedFlashMessage(true);
-                clearTimeout(activeFlashTimeout);
-                const timeout = setTimeout(() => {
-                  setIsFeedFlashMessage(false);
-                }, 5000);
-                setActiveFlashTimeout(timeout);
               }
             }}
           >
@@ -222,11 +211,6 @@ const Post: React.FC<{
                   color: "red",
                 });
                 setIsFeedFlashMessage(true);
-                clearTimeout(activeFlashTimeout);
-                const timeout = setTimeout(() => {
-                  setIsFeedFlashMessage(false);
-                }, 5000);
-                setActiveFlashTimeout(timeout);
               }
             }}
           >

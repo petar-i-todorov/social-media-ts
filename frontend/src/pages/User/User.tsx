@@ -64,6 +64,7 @@ const User: React.FC<{
             setIsLoading(false);
             firstFetching.current = false;
           })();
+        console.log(resData.user);
         setUser(resData.user);
         setQuote(resData.user.quote);
         setPostsCount(resData.postsCount);

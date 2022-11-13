@@ -24,9 +24,47 @@ import Footer from "./components/Footer/Footer";
 import NavBar from "./components/NavBar/NavBar";
 import { SwitchThemeContext } from "./contexts/SwitchThemeContext";
 
+export const useClearFlash = () => {
+  const [isFeedFlashMessage, setIsFeedFlashMessage] = useState(false);
+  const [feedFlashMessageConfiguration, setFeedFlashMessageConfiguration] =
+    useState<{ text: string; color: "red" | "green" }>({
+      text: "",
+      color: "red",
+    });
+  const [activeFlashTimeout, setActiveFlashTimeout] = useState<
+    number | NodeJS.Timeout
+  >(0);
+
+  useEffect(() => {
+    if (isFeedFlashMessage) {
+      clearTimeout(activeFlashTimeout);
+      const timeout = setTimeout(() => {
+        setIsFeedFlashMessage(false);
+      }, 5000);
+      setActiveFlashTimeout(timeout);
+    }
+  }, [isFeedFlashMessage]);
+
+  return {
+    activeFlashTimeout,
+    setActiveFlashTimeout,
+    isFeedFlashMessage,
+    setIsFeedFlashMessage,
+    feedFlashMessageConfiguration,
+    setFeedFlashMessageConfiguration,
+  };
+};
+
 function App() {
+  const {
+    setFeedFlashMessageConfiguration,
+    feedFlashMessageConfiguration,
+    isFeedFlashMessage,
+    setIsFeedFlashMessage,
+    activeFlashTimeout,
+    setActiveFlashTimeout,
+  } = useClearFlash();
   const [isNavigatingToFeed, setIsNavigatingToFeed] = useState(false); //prevent re-render of the feed on navigate
-  const [isLoader, setIsLoader] = useState(false);
   const [addPostVisibility, setAddPostVisibility] = useState(false);
   const [deletePostVisibility, setDeletePostVisibility] = useState(false);
   const [posts, setPosts] = useState<IPost[]>([]);
@@ -45,15 +83,10 @@ function App() {
   const [editPostVisibility, setEditPostVisibility] = useState(false);
   const [postToEdit, setPostToEdit] = useState<IPost | null>(null);
   const [sortBy, setSortBy] = useState<"RECENCY" | "VOTES">("RECENCY");
-  const [isFeedFlashMessage, setIsFeedFlashMessage] = useState(false);
-  const [feedFlashMessageConfiguration, setFeedFlashMessageConfiguration] =
-    useState<{ text: string; color: "red" | "green" }>({
-      text: "",
-      color: "red",
-    });
   const [areSuggestionsVisible, setAreSuggestionsVisible] = useState(false);
   const [userAvatar, setUserAvatar] = useState("");
   const [isDarkMode, setIsDarkMode] = useState(false);
+  const [isLoader, setIsLoader] = useState(false);
 
   const setEditPost = useCallback(async () => {
     if (editPostVisibility) {
@@ -75,9 +108,6 @@ function App() {
   useEffect(() => {
     TimeAgo.addDefaultLocale(en);
   }, []);
-  const [activeFlashTimeout, setActiveFlashTimeout] = useState<
-    number | NodeJS.Timeout
-  >(0);
 
   const fetchAvatar = useCallback(async () => {
     const res = await fetch(
@@ -103,6 +133,7 @@ function App() {
   useEffect(() => {
     fetchAvatar();
   }, [fetchAvatar]);
+
   return (
     <BrowserRouter>
       <SwitchThemeContext.Provider value={{ isDarkMode, setIsDarkMode }}>

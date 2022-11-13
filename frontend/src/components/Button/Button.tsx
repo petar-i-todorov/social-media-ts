@@ -18,7 +18,7 @@ const Button: React.FC<PropsWithChildren<ButtonProps>> = ({
   onClick,
   children,
 }) => {
-  let colorStyle = useMemo(() => {
+  const colorStyle = useMemo(() => {
     switch (color) {
       case "blue":
         return styles.blue;
