@@ -23,3 +23,11 @@ export const searchSuggestions = [
   "CSS",
   "SCSS",
 ];
+
+export const YOUTUBE = "YOUTUBE";
+export const GITHUB = "GITHUB";
+export const UDEMY = "UDEMY";
+export const LINKEDIN = "LINKEDIN";
+export const REDDIT = "REDDIT";
+export const STACKOVERFLOW = "STACKOVERFLOW";
+export const OTHER = "OTHER";

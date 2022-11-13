@@ -5,20 +5,21 @@ export interface IUser {
   quote?: string;
 }
 
+export type Platform =
+  | "YOUTUBE"
+  | "GITHUB"
+  | "STACKOVERFLOW"
+  | "LINKEDIN"
+  | "UDEMY"
+  | "REDDIT"
+  | "OTHER";
+
 export interface IPost {
   _id: string;
   title: string;
   devRole: "Frontend" | "Backend" | "DevOps";
   description: string;
-  platform:
-    | "YOUTUBE"
-    | "FACEBOOK"
-    | "STACKOVERFLOW"
-    | "UDEMY"
-    | "GITHUB"
-    | "REDDIT"
-    | "LINKEDIN"
-    | "OTHER";
+  platform: Platform;
   url: string;
   upvotes: number;
   upvotedBy: string[];

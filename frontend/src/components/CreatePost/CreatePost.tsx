@@ -1,4 +1,11 @@
-import React, { useContext, useEffect, useState } from "react";
+import {
+  useContext,
+  useEffect,
+  useState,
+  Dispatch,
+  FC,
+  SetStateAction,
+} from "react";
 import {
   RiGithubFill,
   RiLinkedinBoxFill,
@@ -17,25 +24,32 @@ import { ModalsManipulationContext } from "../../contexts/ModalsManipulationCont
 import { PostsContext } from "../../contexts/PostsContext";
 import FormMessage from "../FormMessage/FormMessage";
 import ModalBuilder from "../ModalBuilder/ModalBuilder";
-import { IPost } from "../../types/feed";
+import { IPost, Platform } from "../../types/feed";
 import { PostIdContext } from "../../contexts/PostIdContext";
 import { FlashMessageContext } from "../../contexts/FlashMessageFeedContext";
 import { SwitchThemeContext } from "../../contexts/SwitchThemeContext";
+import {
+  GITHUB,
+  LINKEDIN,
+  OTHER,
+  REDDIT,
+  STACKOVERFLOW,
+  UDEMY,
+  YOUTUBE,
+} from "../../constants/feed";
+import { updatePost } from "./utils";
 
-const AddPost: React.FC<{
+interface CreatePostProps {
   editPost?: boolean;
   postToEdit?: IPost;
-  setClosingConfirmationVisibility: React.Dispatch<
-    React.SetStateAction<boolean>
-  >;
-}> = ({ setClosingConfirmationVisibility, editPost, postToEdit }) => {
-  const { devRole } = useContext(PostsContext);
-  const {
-    setFeedFlashMessageConfiguration,
-    setIsFeedFlashMessage,
-    activeFlashTimeout,
-    setActiveFlashTimeout,
-  } = useContext(FlashMessageContext);
+  setClosingConfirmationVisibility: Dispatch<SetStateAction<boolean>>;
+}
+
+const CreatePost: FC<CreatePostProps> = ({
+  setClosingConfirmationVisibility,
+  editPost,
+  postToEdit,
+}) => {
   const [title, setTitle] = useState("");
   const [isTitleValid, setIsTitleValid] = useState(true);
   const [titleErrorMessage, setTitleErrorMessage] = useState("");
@@ -53,22 +67,19 @@ const AddPost: React.FC<{
   const [urlErrorMessage, setUrlErrorMessage] = useState("");
   const [isUrlErrorMessageVisible, setIsUrlErrorMessageVisible] =
     useState(false);
-  const [isYoutubeSelected, setIsYoutubeSelected] = useState(false);
-  const [isStackoverflowSelected, setIsStackoverflowSelected] = useState(false);
-  const [isGithubSelected, setIsGithubSelected] = useState(false);
-  const [isRedditSelected, setIsRedditSelected] = useState(false);
-  const [isLinkedinSelected, setIsLinkedinSelected] = useState(false);
-  const [isUdemySelected, setIsUdemySelected] = useState(false);
-  const [isOtherSelected, setIsOtherSelected] = useState(false);
+  const [selectedOption, setSelectedOption] = useState<Platform>();
   const [isHighlighted, setIsHighlighted] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isFormError, setIsFormError] = useState(false);
+  const [formErrorText, setFormErrorText] = useState("");
+
+  const { setFeedFlashMessageConfiguration, setIsFeedFlashMessage } =
+    useContext(FlashMessageContext);
+  const { postId } = useContext(PostIdContext);
+  const { setPosts, posts, devRole } = useContext(PostsContext);
   const { setAddPostVisibility, setEditPostVisibility } = useContext(
     ModalsManipulationContext
   );
-  const [isFormError, setIsFormError] = useState(false);
-  const [formErrorText, setFormErrorText] = useState("");
-  const { postId } = useContext(PostIdContext);
-  const { setPosts, posts } = useContext(PostsContext);
   const { isDarkMode } = useContext(SwitchThemeContext);
 
   useEffect(() => {
@@ -76,23 +87,10 @@ const AddPost: React.FC<{
       setTitle(postToEdit.title);
       setDescription(postToEdit.description);
       setUrl(postToEdit.url);
-      if (postToEdit.platform === "YOUTUBE") {
-        setIsYoutubeSelected(true);
-      } else if (postToEdit.platform === "UDEMY") {
-        setIsUdemySelected(true);
-      } else if (postToEdit.platform === "LINKEDIN") {
-        setIsLinkedinSelected(true);
-      } else if (postToEdit.platform === "STACKOVERFLOW") {
-        setIsStackoverflowSelected(true);
-      } else if (postToEdit.platform === "GITHUB") {
-        setIsGithubSelected(true);
-      } else if (postToEdit.platform === "REDDIT") {
-        setIsRedditSelected(true);
-      } else {
-        setIsOtherSelected(true);
-      }
+      setSelectedOption(postToEdit.platform);
     }
   }, []);
+
   return (
     <ModalBuilder
       onOverlayClick={() => {
@@ -114,51 +112,21 @@ const AddPost: React.FC<{
           setUrlErrorMessage("Invalid Url.");
           setIsUrlValid(false);
           setIsUrlErrorMessageVisible(true);
-        } else if (
-          !isYoutubeSelected &&
-          !isStackoverflowSelected &&
-          !isGithubSelected &&
-          !isRedditSelected &&
-          !isLinkedinSelected &&
-          !isUdemySelected &&
-          !isOtherSelected
-        ) {
+        } else if (!selectedOption) {
           setIsHighlighted(true);
         } else {
           setIsLoading(true);
-          const platform = isYoutubeSelected
-            ? "YOUTUBE"
-            : isStackoverflowSelected
-            ? "STACKOVERFLOW"
-            : isGithubSelected
-            ? "GITHUB"
-            : isRedditSelected
-            ? "REDDIT"
-            : isLinkedinSelected
-            ? "LINKEDIN"
-            : isUdemySelected
-            ? "UDEMY"
-            : "OTHER";
+          const platform = selectedOption;
           try {
             if (editPost && postToEdit) {
-              const res = await fetch(
-                `http://localhost:8080/posts/${postToEdit._id}`,
-                {
-                  method: "PATCH",
-                  headers: {
-                    "Content-Type": "application/json",
-                    Authorization: "Bearer " + localStorage.getItem("token"),
-                  },
-                  body: JSON.stringify({
-                    id: postId,
-                    title: title,
-                    description: description,
-                    url: url,
-                    devRole: devRole,
-                    platform: platform,
-                  }),
-                }
-              );
+              const res = await updatePost({
+                id: postId,
+                title,
+                description,
+                devRole,
+                platform,
+                url,
+              });
               setIsLoading(false);
               setEditPostVisibility(false);
               if (res.status === 200) {
@@ -174,22 +142,12 @@ const AddPost: React.FC<{
                   text: resData.message,
                   color: "green",
                 });
-                clearTimeout(activeFlashTimeout);
-                const timeout = setTimeout(() => {
-                  setIsFeedFlashMessage(false);
-                }, 5000);
-                setActiveFlashTimeout(timeout);
               } else {
                 setIsFeedFlashMessage(true);
                 setFeedFlashMessageConfiguration({
                   text: "Something went wrong. Please, try again later.",
                   color: "red",
                 });
-                clearTimeout(activeFlashTimeout);
-                const timeout = setTimeout(() => {
-                  setIsFeedFlashMessage(false);
-                }, 5000);
-                setActiveFlashTimeout(timeout);
               }
             } else {
               const res = await fetch("http://localhost:8080/posts/new", {
@@ -217,11 +175,6 @@ const AddPost: React.FC<{
                   text: "Post was successfully created.",
                   color: "green",
                 });
-                clearTimeout(activeFlashTimeout);
-                const timeout = setTimeout(() => {
-                  setIsFeedFlashMessage(false);
-                }, 5000);
-                setActiveFlashTimeout(timeout);
               } else {
                 const resData = await res.json();
                 setFormErrorText(resData.message);
@@ -234,11 +187,6 @@ const AddPost: React.FC<{
               text: "Something went wrong. Please, try again later.",
               color: "red",
             });
-            clearTimeout(activeFlashTimeout);
-            const timeout = setTimeout(() => {
-              setIsFeedFlashMessage(false);
-            }, 5000);
-            setActiveFlashTimeout(timeout);
           }
         }
       }}
@@ -314,163 +262,91 @@ const AddPost: React.FC<{
         <span>Source' social media</span>
         <div className={styles.optionsContainer}>
           <RiYoutubeFill
-            className={
-              styles.option +
-              " " +
-              (isYoutubeSelected && styles.selected) +
-              " " +
-              (isHighlighted && styles.invalid) +
-              " " +
-              (isDarkMode && styles.darkMode)
-            }
+            className={`${styles.option} ${
+              selectedOption === YOUTUBE && styles.selected
+            } ${isHighlighted && styles.invalid} ${
+              isDarkMode && styles.darkMode
+            }`}
             size="50"
             color="red"
             onClick={() => {
               setIsHighlighted(false);
-              setIsYoutubeSelected(true);
-              setIsUdemySelected(false);
-              setIsStackoverflowSelected(false);
-              setIsGithubSelected(false);
-              setIsRedditSelected(false);
-              setIsLinkedinSelected(false);
-              setIsOtherSelected(false);
+              setSelectedOption(YOUTUBE);
             }}
           />
           <RiStackOverflowFill
-            className={
-              styles.option +
-              " " +
-              (isStackoverflowSelected && styles.selected) +
-              " " +
-              (isHighlighted && styles.invalid) +
-              " " +
-              (isDarkMode && styles.darkMode)
-            }
+            className={`${styles.option} ${
+              selectedOption === STACKOVERFLOW && styles.selected
+            } ${isHighlighted && styles.invalid} ${
+              isDarkMode && styles.darkMode
+            }`}
             size="50"
             color="orange"
             onClick={() => {
               setIsHighlighted(false);
-              setIsStackoverflowSelected(true);
-              setIsYoutubeSelected(false);
-              setIsUdemySelected(false);
-              setIsGithubSelected(false);
-              setIsRedditSelected(false);
-              setIsLinkedinSelected(false);
-              setIsOtherSelected(false);
+              setSelectedOption(STACKOVERFLOW);
             }}
           />
           <RiGithubFill
-            className={
-              styles.option +
-              " " +
-              (isGithubSelected && styles.selected) +
-              " " +
-              (isHighlighted && styles.invalid) +
-              " " +
-              (isDarkMode && styles.darkMode) +
-              " " +
-              (isDarkMode && styles.darkMode)
-            }
+            className={`${styles.option} ${
+              selectedOption === GITHUB && styles.selected
+            } ${isHighlighted && styles.invalid} ${
+              isDarkMode && styles.darkMode
+            }`}
             size="50"
             onClick={() => {
               setIsHighlighted(false);
-              setIsGithubSelected(true);
-              setIsYoutubeSelected(false);
-              setIsUdemySelected(false);
-              setIsStackoverflowSelected(false);
-              setIsRedditSelected(false);
-              setIsLinkedinSelected(false);
-              setIsOtherSelected(false);
+              setSelectedOption(GITHUB);
             }}
           />
           <RiRedditFill
-            className={
-              styles.option +
-              " " +
-              (isRedditSelected && styles.selected) +
-              " " +
-              (isHighlighted && styles.invalid) +
-              " " +
-              (isDarkMode && styles.darkMode)
-            }
+            className={`${styles.option} ${
+              selectedOption === REDDIT && styles.selected
+            } ${isHighlighted && styles.invalid} ${
+              isDarkMode && styles.darkMode
+            }`}
             size="50"
             color="red"
             onClick={() => {
               setIsHighlighted(false);
-              setIsRedditSelected(true);
-              setIsYoutubeSelected(false);
-              setIsUdemySelected(false);
-              setIsStackoverflowSelected(false);
-              setIsGithubSelected(false);
-              setIsLinkedinSelected(false);
-              setIsOtherSelected(false);
+              setSelectedOption(REDDIT);
             }}
           />
           <RiLinkedinBoxFill
-            className={
-              styles.option +
-              " " +
-              (isLinkedinSelected && styles.selected) +
-              " " +
-              (isHighlighted && styles.invalid) +
-              " " +
-              (isDarkMode && styles.darkMode)
-            }
+            className={`${styles.option} ${
+              selectedOption === LINKEDIN && styles.selected
+            } ${isHighlighted && styles.invalid} ${
+              isDarkMode && styles.darkMode
+            }`}
             size="50"
             color="blue"
             onClick={() => {
               setIsHighlighted(false);
-              setIsLinkedinSelected(true);
-              setIsYoutubeSelected(false);
-              setIsUdemySelected(false);
-              setIsStackoverflowSelected(false);
-              setIsGithubSelected(false);
-              setIsRedditSelected(false);
-              setIsOtherSelected(false);
+              setSelectedOption(LINKEDIN);
             }}
           />
           <SiUdemy
-            className={
-              styles.option +
-              " " +
-              (isUdemySelected && styles.selected) +
-              " " +
-              (isHighlighted && styles.invalid) +
-              " " +
-              (isDarkMode && styles.darkMode)
-            }
+            className={`${styles.option} ${
+              selectedOption === UDEMY && styles.selected
+            } ${isHighlighted && styles.invalid} ${
+              isDarkMode && styles.darkMode
+            }`}
             size="50"
             color="purple"
             onClick={() => {
               setIsHighlighted(false);
-              setIsUdemySelected(true);
-              setIsYoutubeSelected(false);
-              setIsStackoverflowSelected(false);
-              setIsGithubSelected(false);
-              setIsRedditSelected(false);
-              setIsLinkedinSelected(false);
-              setIsOtherSelected(false);
+              setSelectedOption(UDEMY);
             }}
           />
           <p
-            className={
-              styles.option +
-              " " +
-              (isOtherSelected && styles.selected) +
-              " " +
-              (isHighlighted && styles.invalid) +
-              " " +
-              (isDarkMode && styles.darkMode)
-            }
+            className={`${styles.option} ${
+              selectedOption === OTHER && styles.selected
+            } ${isHighlighted && styles.invalid} ${
+              isDarkMode && styles.darkMode
+            }`}
             onClick={() => {
               setIsHighlighted(false);
-              setIsOtherSelected(true);
-              setIsYoutubeSelected(false);
-              setIsUdemySelected(false);
-              setIsStackoverflowSelected(false);
-              setIsGithubSelected(false);
-              setIsRedditSelected(false);
-              setIsLinkedinSelected(false);
+              setSelectedOption(OTHER);
             }}
           >
             OTHER
@@ -485,4 +361,4 @@ const AddPost: React.FC<{
   );
 };
 
-export default AddPost;
+export default CreatePost;

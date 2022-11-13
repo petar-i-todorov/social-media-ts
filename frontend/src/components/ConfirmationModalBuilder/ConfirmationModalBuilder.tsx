@@ -1,12 +1,13 @@
-import React, { MouseEventHandler } from "react";
+import { Dispatch, FC, MouseEventHandler, SetStateAction } from "react";
+
 import Button from "../Button/Button";
 import ModalBuilder from "../ModalBuilder/ModalBuilder";
 import styles from "./ConfirmationModalBuilder.module.scss";
 
-const Confirm: React.FC<{
+const Confirm: FC<{
   question: string;
   onConfirmation: MouseEventHandler;
-  setVisibility: React.Dispatch<React.SetStateAction<boolean>>;
+  setVisibility: Dispatch<SetStateAction<boolean>>;
 }> = ({ question, onConfirmation, setVisibility }) => {
   return (
     <ModalBuilder
