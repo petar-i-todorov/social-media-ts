@@ -142,6 +142,86 @@ const CreatePost: FC<CreatePostProps> = ({
     }
   }, [postToEdit]);
 
+  const editPostFunction = useCallback(async () => {
+    const res = await updatePost({
+      id: postId,
+      title,
+      description,
+      devRole,
+      platform: selectedOption,
+      url,
+    });
+    setIsLoading(false);
+    setEditPostVisibility(false);
+    if (res.status === 200) {
+      const resData = await res.json();
+      const indexOfUpdatedPost = posts
+        .map((post) => post._id)
+        .indexOf(resData.updatedPost._id.toString());
+      const updatedPosts = JSON.parse(JSON.stringify(posts));
+      updatedPosts[indexOfUpdatedPost] = resData.updatedPost;
+      setPosts(updatedPosts);
+      setIsFeedFlashMessage(true);
+      setFeedFlashMessageConfiguration({
+        text: resData.message,
+        color: "green",
+      });
+    } else {
+      setIsFeedFlashMessage(true);
+      setFeedFlashMessageConfiguration({
+        text: "Something went wrong. Please, try again later.",
+        color: "red",
+      });
+    }
+  }, [
+    description,
+    devRole,
+    postId,
+    posts,
+    selectedOption,
+    setEditPostVisibility,
+    setFeedFlashMessageConfiguration,
+    setIsFeedFlashMessage,
+    setPosts,
+    title,
+    url,
+  ]);
+
+  const createPostFunction = useCallback(async () => {
+    const res = await createPost({
+      title,
+      description,
+      url,
+      platform: selectedOption,
+      devRole,
+    });
+    setIsLoading(false);
+    if (res.status === 200 || res.status === 201) {
+      const resData = await res.json();
+      setPosts((posts) => [resData.createdPost, ...posts]);
+      setAddPostVisibility(false);
+      setIsFeedFlashMessage(true);
+      setFeedFlashMessageConfiguration({
+        text: "Post was successfully created.",
+        color: "green",
+      });
+    } else {
+      const resData = await res.json();
+      setFormErrorText(resData.message);
+      setIsFormError(true);
+    }
+  }, [
+    description,
+    devRole,
+    selectedOption,
+    setAddPostVisibility,
+    setFeedFlashMessageConfiguration,
+    setIsFeedFlashMessage,
+    setPosts,
+    title,
+    url,
+  ]);
+
   const onFormSubmit = useCallback(async () => {
     if (title.length < 5) {
       setIsTitleErrorMessageVisible(true);
@@ -153,62 +233,11 @@ const CreatePost: FC<CreatePostProps> = ({
       setIsHighlighted(true);
     } else {
       setIsLoading(true);
-      const platform = selectedOption;
       try {
         if (editPost && postToEdit) {
-          const res = await updatePost({
-            id: postId,
-            title,
-            description,
-            devRole,
-            platform,
-            url,
-          });
-          setIsLoading(false);
-          setEditPostVisibility(false);
-          if (res.status === 200) {
-            const resData = await res.json();
-            const indexOfUpdatedPost = posts
-              .map((post) => post._id)
-              .indexOf(resData.updatedPost._id.toString());
-            const updatedPosts = JSON.parse(JSON.stringify(posts));
-            updatedPosts[indexOfUpdatedPost] = resData.updatedPost;
-            setPosts(updatedPosts);
-            setIsFeedFlashMessage(true);
-            setFeedFlashMessageConfiguration({
-              text: resData.message,
-              color: "green",
-            });
-          } else {
-            setIsFeedFlashMessage(true);
-            setFeedFlashMessageConfiguration({
-              text: "Something went wrong. Please, try again later.",
-              color: "red",
-            });
-          }
+          editPostFunction();
         } else {
-          const res = await createPost({
-            title,
-            description,
-            url,
-            platform,
-            devRole,
-          });
-          setIsLoading(false);
-          if (res.status === 200 || res.status === 201) {
-            const resData = await res.json();
-            setPosts((posts) => [resData.createdPost, ...posts]);
-            setAddPostVisibility(false);
-            setIsFeedFlashMessage(true);
-            setFeedFlashMessageConfiguration({
-              text: "Post was successfully created.",
-              color: "green",
-            });
-          } else {
-            const resData = await res.json();
-            setFormErrorText(resData.message);
-            setIsFormError(true);
-          }
+          createPostFunction();
         }
       } catch (err) {
         setIsFeedFlashMessage(true);
@@ -219,23 +248,19 @@ const CreatePost: FC<CreatePostProps> = ({
       }
     }
   }, [
-    description,
-    devRole,
-    editPost,
-    postId,
-    posts,
-    postToEdit,
+    title.length,
+    description.length,
+    url.length,
     selectedOption,
-    setAddPostVisibility,
-    setEditPostVisibility,
-    setFeedFlashMessageConfiguration,
-    setIsDescriptionErrorMessageVisible,
-    setIsFeedFlashMessage,
     setIsTitleErrorMessageVisible,
+    setIsDescriptionErrorMessageVisible,
     setIsUrlErrorMessageVisible,
-    setPosts,
-    title,
-    url,
+    editPost,
+    postToEdit,
+    editPostFunction,
+    createPostFunction,
+    setIsFeedFlashMessage,
+    setFeedFlashMessageConfiguration,
   ]);
 
   return (

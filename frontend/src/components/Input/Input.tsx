@@ -42,7 +42,7 @@ const Input: React.FC<{
     if (isFocused && setIsValid) {
       setIsValid(true);
     }
-  }, [isFocused]);
+  }, [isFocused, setIsValid]);
   useEffect(() => {
     if (isFocused || value !== "") {
       setIsActive(true);

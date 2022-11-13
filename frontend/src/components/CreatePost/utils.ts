@@ -5,7 +5,7 @@ interface PostArgument {
   description: string;
   url: string;
   devRole: DevRole;
-  platform: Platform;
+  platform: Platform | undefined;
 }
 
 interface PostArgumentWithId extends PostArgument {
