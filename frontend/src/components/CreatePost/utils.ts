@@ -1,7 +1,6 @@
 import { DevRole, Platform } from "../../types/feed";
 
 interface PostArgument {
-  id: string;
   title: string;
   description: string;
   url: string;
@@ -9,7 +8,13 @@ interface PostArgument {
   platform: Platform;
 }
 
-type EditPostFunction = (arg: PostArgument) => Promise<Response>;
+interface PostArgumentWithId extends PostArgument {
+  id: string;
+}
+
+type EditPostFunction = (arg: PostArgumentWithId) => Promise<Response>;
+
+type CreatePostFunction = (arg: PostArgument) => Promise<Response>;
 
 export const updatePost: EditPostFunction = ({
   id,
@@ -26,7 +31,30 @@ export const updatePost: EditPostFunction = ({
       Authorization: "Bearer " + localStorage.getItem("token"),
     },
     body: JSON.stringify({
-      id,
+      title,
+      description,
+      url,
+      devRole,
+      platform,
+    }),
+  });
+};
+
+export const createPost: CreatePostFunction = ({
+  title,
+  description,
+  url,
+  devRole,
+  platform,
+}) => {
+  return fetch("http://localhost:8080/posts/new", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: "Bearer " + localStorage.getItem("token"),
+    },
+    body: JSON.stringify({
+      creator: localStorage.getItem("userId"),
       title,
       description,
       url,

@@ -5,18 +5,9 @@ import {
   Dispatch,
   FC,
   SetStateAction,
+  useCallback,
 } from "react";
-import {
-  RiGithubFill,
-  RiLinkedinBoxFill,
-  RiRedditFill,
-  RiStackOverflowFill,
-  RiYoutubeFill,
-} from "react-icons/ri";
-import { SiUdemy } from "react-icons/si";
-
 import Input from "../Input/Input";
-import styles from "./CreatePost.module.scss";
 import TextArea from "../TextArea/TextArea";
 import Button from "../Button/Button";
 import BouncingDotsLoader from "../BouncingDotsLoader/BouncingDotsLoader";
@@ -27,17 +18,8 @@ import ModalBuilder from "../ModalBuilder/ModalBuilder";
 import { IPost, Platform } from "../../types/feed";
 import { PostIdContext } from "../../contexts/PostIdContext";
 import { FlashMessageContext } from "../../contexts/FlashMessageFeedContext";
-import { SwitchThemeContext } from "../../contexts/SwitchThemeContext";
-import {
-  GITHUB,
-  LINKEDIN,
-  OTHER,
-  REDDIT,
-  STACKOVERFLOW,
-  UDEMY,
-  YOUTUBE,
-} from "../../constants/feed";
-import { updatePost } from "./utils";
+import { createPost, updatePost } from "./utils";
+import SourceOptions from "../SourceOptions/SourceOptions";
 
 interface CreatePostProps {
   editPost?: boolean;
@@ -45,28 +27,77 @@ interface CreatePostProps {
   setClosingConfirmationVisibility: Dispatch<SetStateAction<boolean>>;
 }
 
-const CreatePost: FC<CreatePostProps> = ({
-  setClosingConfirmationVisibility,
-  editPost,
-  postToEdit,
-}) => {
-  const [title, setTitle] = useState("");
+const useValidate = () => {
   const [isTitleValid, setIsTitleValid] = useState(true);
   const [titleErrorMessage, setTitleErrorMessage] = useState("");
   const [isTitleErrorMessageVisible, setIsTitleErrorMessageVisible] =
     useState(false);
-  const [description, setDescription] = useState("");
+
+  useEffect(() => {
+    if (isTitleErrorMessageVisible) {
+      setTitleErrorMessage("Title has to be at least 5 symbols.");
+      setIsTitleValid(false);
+    }
+  }, [isTitleErrorMessageVisible]);
+
   const [isDescriptionValid, setIsDescriptionValid] = useState(true);
   const [descriptionErrorMessage, setDescriptionErrorMessage] = useState("");
   const [
     isDescriptionErrorMessageVisible,
     setIsDescriptionErrorMessageVisible,
   ] = useState(false);
-  const [url, setUrl] = useState("");
+
+  useEffect(() => {
+    if (isDescriptionErrorMessageVisible) {
+      setDescriptionErrorMessage(
+        "Description has to be at least 20 symbols. Please, describe the course with more details."
+      );
+      setIsDescriptionValid(false);
+    }
+  }, [isDescriptionErrorMessageVisible]);
+
   const [isUrlValid, setIsUrlValid] = useState(true);
   const [urlErrorMessage, setUrlErrorMessage] = useState("");
   const [isUrlErrorMessageVisible, setIsUrlErrorMessageVisible] =
     useState(false);
+
+  useEffect(() => {
+    if (isUrlErrorMessageVisible) {
+      setUrlErrorMessage("Invalid Url.");
+      setIsUrlValid(false);
+    }
+  }, [isUrlErrorMessageVisible]);
+
+  return {
+    descriptionErrorMessage,
+    isDescriptionErrorMessageVisible,
+    isDescriptionValid,
+    isTitleErrorMessageVisible,
+    isTitleValid,
+    isUrlErrorMessageVisible,
+    isUrlValid,
+    setDescriptionErrorMessage,
+    setIsDescriptionErrorMessageVisible,
+    setIsDescriptionValid,
+    setIsTitleErrorMessageVisible,
+    setIsTitleValid,
+    setIsUrlErrorMessageVisible,
+    setIsUrlValid,
+    setTitleErrorMessage,
+    setUrlErrorMessage,
+    titleErrorMessage,
+    urlErrorMessage,
+  };
+};
+
+const CreatePost: FC<CreatePostProps> = ({
+  setClosingConfirmationVisibility,
+  editPost,
+  postToEdit,
+}) => {
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [url, setUrl] = useState("");
   const [selectedOption, setSelectedOption] = useState<Platform>();
   const [isHighlighted, setIsHighlighted] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -80,7 +111,27 @@ const CreatePost: FC<CreatePostProps> = ({
   const { setAddPostVisibility, setEditPostVisibility } = useContext(
     ModalsManipulationContext
   );
-  const { isDarkMode } = useContext(SwitchThemeContext);
+
+  const { isTitleValid, setIsTitleValid } = useValidate();
+
+  const {
+    descriptionErrorMessage,
+    isDescriptionErrorMessageVisible,
+    isDescriptionValid,
+    isTitleErrorMessageVisible,
+    isUrlErrorMessageVisible,
+    isUrlValid,
+    setDescriptionErrorMessage,
+    setIsDescriptionErrorMessageVisible,
+    setIsDescriptionValid,
+    setIsTitleErrorMessageVisible,
+    setIsUrlErrorMessageVisible,
+    setIsUrlValid,
+    setTitleErrorMessage,
+    setUrlErrorMessage,
+    titleErrorMessage,
+    urlErrorMessage,
+  } = useValidate();
 
   useEffect(() => {
     if (postToEdit) {
@@ -89,107 +140,110 @@ const CreatePost: FC<CreatePostProps> = ({
       setUrl(postToEdit.url);
       setSelectedOption(postToEdit.platform);
     }
-  }, []);
+  }, [postToEdit]);
 
-  return (
-    <ModalBuilder
-      onOverlayClick={() => {
-        setClosingConfirmationVisibility(true);
-      }}
-      onFormSubmit={async (event) => {
-        event.preventDefault();
-        if (title.length < 5) {
-          setTitleErrorMessage("Title has to be at least 5 symbols.");
-          setIsTitleErrorMessageVisible(true);
-          setIsTitleValid(false);
-        } else if (description.length < 20) {
-          setDescriptionErrorMessage(
-            "Description has to be at least 20 symbols. Please, describe the course with more details."
-          );
-          setIsDescriptionErrorMessageVisible(true);
-          setIsDescriptionValid(false);
-        } else if (url.length < 10) {
-          setUrlErrorMessage("Invalid Url.");
-          setIsUrlValid(false);
-          setIsUrlErrorMessageVisible(true);
-        } else if (!selectedOption) {
-          setIsHighlighted(true);
-        } else {
-          setIsLoading(true);
-          const platform = selectedOption;
-          try {
-            if (editPost && postToEdit) {
-              const res = await updatePost({
-                id: postId,
-                title,
-                description,
-                devRole,
-                platform,
-                url,
-              });
-              setIsLoading(false);
-              setEditPostVisibility(false);
-              if (res.status === 200) {
-                const resData = await res.json();
-                const indexOfUpdatedPost = posts
-                  .map((post) => post._id)
-                  .indexOf(resData.updatedPost._id.toString());
-                const updatedPosts = JSON.parse(JSON.stringify(posts));
-                updatedPosts[indexOfUpdatedPost] = resData.updatedPost;
-                setPosts(updatedPosts);
-                setIsFeedFlashMessage(true);
-                setFeedFlashMessageConfiguration({
-                  text: resData.message,
-                  color: "green",
-                });
-              } else {
-                setIsFeedFlashMessage(true);
-                setFeedFlashMessageConfiguration({
-                  text: "Something went wrong. Please, try again later.",
-                  color: "red",
-                });
-              }
-            } else {
-              const res = await fetch("http://localhost:8080/posts/new", {
-                method: "POST",
-                headers: {
-                  "Content-Type": "application/json",
-                  Authorization: "Bearer " + localStorage.getItem("token"),
-                },
-                body: JSON.stringify({
-                  creator: localStorage.getItem("userId"),
-                  title: title,
-                  description: description,
-                  url: url,
-                  devRole: devRole,
-                  platform: platform,
-                }),
-              });
-              setIsLoading(false);
-              if (res.status === 200 || res.status === 201) {
-                const resData = await res.json();
-                setPosts((posts) => [resData.createdPost, ...posts]);
-                setAddPostVisibility(false);
-                setIsFeedFlashMessage(true);
-                setFeedFlashMessageConfiguration({
-                  text: "Post was successfully created.",
-                  color: "green",
-                });
-              } else {
-                const resData = await res.json();
-                setFormErrorText(resData.message);
-                setIsFormError(true);
-              }
-            }
-          } catch (err) {
+  const onFormSubmit = useCallback(async () => {
+    if (title.length < 5) {
+      setIsTitleErrorMessageVisible(true);
+    } else if (description.length < 20) {
+      setIsDescriptionErrorMessageVisible(true);
+    } else if (url.length < 10) {
+      setIsUrlErrorMessageVisible(true);
+    } else if (!selectedOption) {
+      setIsHighlighted(true);
+    } else {
+      setIsLoading(true);
+      const platform = selectedOption;
+      try {
+        if (editPost && postToEdit) {
+          const res = await updatePost({
+            id: postId,
+            title,
+            description,
+            devRole,
+            platform,
+            url,
+          });
+          setIsLoading(false);
+          setEditPostVisibility(false);
+          if (res.status === 200) {
+            const resData = await res.json();
+            const indexOfUpdatedPost = posts
+              .map((post) => post._id)
+              .indexOf(resData.updatedPost._id.toString());
+            const updatedPosts = JSON.parse(JSON.stringify(posts));
+            updatedPosts[indexOfUpdatedPost] = resData.updatedPost;
+            setPosts(updatedPosts);
+            setIsFeedFlashMessage(true);
+            setFeedFlashMessageConfiguration({
+              text: resData.message,
+              color: "green",
+            });
+          } else {
             setIsFeedFlashMessage(true);
             setFeedFlashMessageConfiguration({
               text: "Something went wrong. Please, try again later.",
               color: "red",
             });
           }
+        } else {
+          const res = await createPost({
+            title,
+            description,
+            url,
+            platform,
+            devRole,
+          });
+          setIsLoading(false);
+          if (res.status === 200 || res.status === 201) {
+            const resData = await res.json();
+            setPosts((posts) => [resData.createdPost, ...posts]);
+            setAddPostVisibility(false);
+            setIsFeedFlashMessage(true);
+            setFeedFlashMessageConfiguration({
+              text: "Post was successfully created.",
+              color: "green",
+            });
+          } else {
+            const resData = await res.json();
+            setFormErrorText(resData.message);
+            setIsFormError(true);
+          }
         }
+      } catch (err) {
+        setIsFeedFlashMessage(true);
+        setFeedFlashMessageConfiguration({
+          text: "Something went wrong. Please, try again later.",
+          color: "red",
+        });
+      }
+    }
+  }, [
+    description,
+    devRole,
+    editPost,
+    postId,
+    posts,
+    postToEdit,
+    selectedOption,
+    setAddPostVisibility,
+    setEditPostVisibility,
+    setFeedFlashMessageConfiguration,
+    setIsDescriptionErrorMessageVisible,
+    setIsFeedFlashMessage,
+    setIsTitleErrorMessageVisible,
+    setIsUrlErrorMessageVisible,
+    setPosts,
+    title,
+    url,
+  ]);
+
+  return (
+    <ModalBuilder
+      onOverlayClick={() => {
+        setClosingConfirmationVisibility(true);
       }}
+      onFormSubmit={onFormSubmit}
     >
       <>
         <h2>Source info</h2>
@@ -205,8 +259,7 @@ const CreatePost: FC<CreatePostProps> = ({
           isErrorMessageVisible={isTitleErrorMessageVisible}
           setIsErrorMessageVisible={setIsTitleErrorMessageVisible}
           onChange={(event) => {
-            const target = event.target as HTMLInputElement;
-            setTitle(target.value);
+            setTitle((event.target as HTMLInputElement).value);
           }}
           onBlur={() => {
             if (title.length < 5) {
@@ -216,17 +269,16 @@ const CreatePost: FC<CreatePostProps> = ({
           }}
         />
         <TextArea
-          id="description"
-          label="Description"
-          value={description}
-          isValid={isDescriptionValid}
-          setIsValid={setIsDescriptionValid}
           errorMessage={descriptionErrorMessage}
+          id="description"
           isErrorMessageVisible={isDescriptionErrorMessageVisible}
+          isValid={isDescriptionValid}
+          label="Description"
           setIsErrorMessageVisible={setIsDescriptionErrorMessageVisible}
+          setIsValid={setIsDescriptionValid}
+          value={description}
           onChange={(event) => {
-            const target = event.target as HTMLInputElement;
-            setDescription(target.value);
+            setDescription((event.target as HTMLInputElement).value);
           }}
           onBlur={() => {
             if (description.length < 20) {
@@ -249,8 +301,7 @@ const CreatePost: FC<CreatePostProps> = ({
           isErrorMessageVisible={isUrlErrorMessageVisible}
           setIsErrorMessageVisible={setIsUrlErrorMessageVisible}
           onChange={(event) => {
-            const target = event.target as HTMLInputElement;
-            setUrl(target.value);
+            setUrl((event.target as HTMLInputElement).value);
           }}
           onBlur={() => {
             if (url.length < 10) {
@@ -259,99 +310,12 @@ const CreatePost: FC<CreatePostProps> = ({
             }
           }}
         />
-        <span>Source' social media</span>
-        <div className={styles.optionsContainer}>
-          <RiYoutubeFill
-            className={`${styles.option} ${
-              selectedOption === YOUTUBE && styles.selected
-            } ${isHighlighted && styles.invalid} ${
-              isDarkMode && styles.darkMode
-            }`}
-            size="50"
-            color="red"
-            onClick={() => {
-              setIsHighlighted(false);
-              setSelectedOption(YOUTUBE);
-            }}
-          />
-          <RiStackOverflowFill
-            className={`${styles.option} ${
-              selectedOption === STACKOVERFLOW && styles.selected
-            } ${isHighlighted && styles.invalid} ${
-              isDarkMode && styles.darkMode
-            }`}
-            size="50"
-            color="orange"
-            onClick={() => {
-              setIsHighlighted(false);
-              setSelectedOption(STACKOVERFLOW);
-            }}
-          />
-          <RiGithubFill
-            className={`${styles.option} ${
-              selectedOption === GITHUB && styles.selected
-            } ${isHighlighted && styles.invalid} ${
-              isDarkMode && styles.darkMode
-            }`}
-            size="50"
-            onClick={() => {
-              setIsHighlighted(false);
-              setSelectedOption(GITHUB);
-            }}
-          />
-          <RiRedditFill
-            className={`${styles.option} ${
-              selectedOption === REDDIT && styles.selected
-            } ${isHighlighted && styles.invalid} ${
-              isDarkMode && styles.darkMode
-            }`}
-            size="50"
-            color="red"
-            onClick={() => {
-              setIsHighlighted(false);
-              setSelectedOption(REDDIT);
-            }}
-          />
-          <RiLinkedinBoxFill
-            className={`${styles.option} ${
-              selectedOption === LINKEDIN && styles.selected
-            } ${isHighlighted && styles.invalid} ${
-              isDarkMode && styles.darkMode
-            }`}
-            size="50"
-            color="blue"
-            onClick={() => {
-              setIsHighlighted(false);
-              setSelectedOption(LINKEDIN);
-            }}
-          />
-          <SiUdemy
-            className={`${styles.option} ${
-              selectedOption === UDEMY && styles.selected
-            } ${isHighlighted && styles.invalid} ${
-              isDarkMode && styles.darkMode
-            }`}
-            size="50"
-            color="purple"
-            onClick={() => {
-              setIsHighlighted(false);
-              setSelectedOption(UDEMY);
-            }}
-          />
-          <p
-            className={`${styles.option} ${
-              selectedOption === OTHER && styles.selected
-            } ${isHighlighted && styles.invalid} ${
-              isDarkMode && styles.darkMode
-            }`}
-            onClick={() => {
-              setIsHighlighted(false);
-              setSelectedOption(OTHER);
-            }}
-          >
-            OTHER
-          </p>
-        </div>
+        <SourceOptions
+          isHighlighted={isHighlighted}
+          setIsHighlighted={setIsHighlighted}
+          selectedOption={selectedOption}
+          setSelectedOption={setSelectedOption}
+        />
         {isFormError && <FormMessage color="red">{formErrorText}</FormMessage>}
         <Button color="green" type="submit">
           {isLoading ? <BouncingDotsLoader text="Submitting" /> : "Submit"}

@@ -17,7 +17,7 @@ export type Platform =
 export interface IPost {
   _id: string;
   title: string;
-  devRole: "Frontend" | "Backend" | "DevOps";
+  devRole: "FRONTEND" | "BACKEND" | "DEVOPS";
   description: string;
   platform: Platform;
   url: string;
