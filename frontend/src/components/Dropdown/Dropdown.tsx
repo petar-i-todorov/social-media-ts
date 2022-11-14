@@ -21,7 +21,7 @@ const Dropdown: FC<DropdownProps> = ({ reversed }) => {
   }`;
   return (
     <div
-      className={styles.dropdownContainer}
+      className={`${styles.dropdownContainer} ${reversed && styles.reversed}`}
       onClick={() => {
         setDropdownVisibility((state) => !state);
       }}

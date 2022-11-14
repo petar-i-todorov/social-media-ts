@@ -1,6 +1,13 @@
-import React, { useContext, useEffect, useMemo, useState } from "react";
+import {
+  Dispatch,
+  FC,
+  SetStateAction,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import { TiTick } from "react-icons/ti";
-
 import Button from "../Button/Button";
 import ModalBuilder from "../ModalBuilder/ModalBuilder";
 import styles from "./ReportPost.module.scss";
@@ -8,17 +15,15 @@ import TextArea from "../TextArea/TextArea";
 import { PostIdContext } from "../../contexts/PostIdContext";
 import { ModalsManipulationContext } from "../../contexts/ModalsManipulationContext";
 import { FlashMessageContext } from "../../contexts/FlashMessageFeedContext";
+import { defaultFlashMessageConfig } from "../../constants/feed";
+import { reportPost } from "../../api/posts";
 
-const ReportPost: React.FC<{
-  setClosingConfirmationVisibility: React.Dispatch<
-    React.SetStateAction<boolean>
-  >;
+const ReportPost: FC<{
+  setClosingConfirmationVisibility: Dispatch<SetStateAction<boolean>>;
 }> = ({ setClosingConfirmationVisibility }) => {
   const {
     setIsFeedFlashMessage,
     setFeedFlashMessageConfiguration,
-    activeFlashTimeout,
-    setActiveFlashTimeout,
     setIsLoader,
   } = useContext(FlashMessageContext);
   const { postId } = useContext(PostIdContext);
@@ -70,32 +75,11 @@ const ReportPost: React.FC<{
           setIsError(true);
         } else {
           setIsLoader(true);
-          const res = await fetch(
-            `http://localhost:8080/posts/report/${postId}`,
-            {
-              method: "POST",
-              body: JSON.stringify({
-                reportType: reportType,
-                reportMessage: reportMessage || null,
-              }),
-              headers: {
-                "Content-Type": "application/json",
-                Authorization: "Bearer " + localStorage.getItem("token"),
-              },
-            }
-          );
+          const res = await reportPost({ postId, reportMessage, reportType });
           setIsLoader(false);
           if (res.status !== 200) {
             setIsFeedFlashMessage(true);
-            setFeedFlashMessageConfiguration({
-              text: "Something went wrong. Please, try again later.",
-              color: "red",
-            });
-            clearTimeout(activeFlashTimeout);
-            const timeout = setTimeout(() => {
-              setIsFeedFlashMessage(false);
-            }, 5000);
-            setActiveFlashTimeout(timeout);
+            setFeedFlashMessageConfiguration(defaultFlashMessageConfig);
           } else {
             const resData = await res.json();
             setReportPostVisibility(false);
@@ -104,11 +88,6 @@ const ReportPost: React.FC<{
               color: "green",
             });
             setIsFeedFlashMessage(true);
-            clearTimeout(activeFlashTimeout);
-            const timeout = setTimeout(() => {
-              setIsFeedFlashMessage(false);
-            }, 5000);
-            setActiveFlashTimeout(timeout);
           }
         }
       }}
@@ -125,7 +104,7 @@ const ReportPost: React.FC<{
             }
           }}
         >
-          <div className={styles.checkBox + " " + (isError && styles.invalid)}>
+          <div className={`${styles.checkBox} ${isError && styles.invalid}`}>
             {inappropriateLanguageChosen && <TiTick size="23"></TiTick>}
           </div>
           <span>Inappropriate language</span>
@@ -155,7 +134,7 @@ const ReportPost: React.FC<{
             }
           }}
         >
-          <div className={styles.checkBox + " " + (isError && styles.invalid)}>
+          <div className={`${styles.checkBox} ${isError && styles.invalid}`}>
             {scamChosen && <TiTick size="23"></TiTick>}
           </div>
           <span>Scam</span>
@@ -170,7 +149,7 @@ const ReportPost: React.FC<{
             }
           }}
         >
-          <div className={styles.checkBox + " " + (isError && styles.invalid)}>
+          <div className={`${styles.checkBox} ${isError && styles.invalid}`}>
             {otherChosen && <TiTick size="23"></TiTick>}
           </div>
           <span>Other</span>
@@ -180,8 +159,7 @@ const ReportPost: React.FC<{
         label="Describe the problem (optional):"
         isValid={true}
         onChange={(event) => {
-          const target = event.target as HTMLTextAreaElement;
-          setReportMessage(target.value);
+          setReportMessage((event.target as HTMLTextAreaElement).value);
         }}
       />
       <Button color="green" type="submit">

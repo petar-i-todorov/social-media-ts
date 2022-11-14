@@ -20,6 +20,7 @@ import { PostIdContext } from "../../contexts/PostIdContext";
 import { FlashMessageContext } from "../../contexts/FlashMessageFeedContext";
 import { createPost, updatePost } from "./utils";
 import SourceOptions from "../SourceOptions/SourceOptions";
+import { defaultFlashMessageConfig } from "../../constants/feed";
 
 interface CreatePostProps {
   editPost?: boolean;
@@ -168,10 +169,7 @@ const CreatePost: FC<CreatePostProps> = ({
       });
     } else {
       setIsFeedFlashMessage(true);
-      setFeedFlashMessageConfiguration({
-        text: "Something went wrong. Please, try again later.",
-        color: "red",
-      });
+      setFeedFlashMessageConfiguration(defaultFlashMessageConfig);
     }
   }, [
     description,
@@ -241,10 +239,7 @@ const CreatePost: FC<CreatePostProps> = ({
         }
       } catch (err) {
         setIsFeedFlashMessage(true);
-        setFeedFlashMessageConfiguration({
-          text: "Something went wrong. Please, try again later.",
-          color: "red",
-        });
+        setFeedFlashMessageConfiguration(defaultFlashMessageConfig);
       }
     }
   }, [

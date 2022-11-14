@@ -1,6 +1,7 @@
 import { Dispatch, FC, SetStateAction, useContext, useState } from "react";
 import { AiOutlineSearch } from "react-icons/ai";
 import { useNavigate } from "react-router-dom";
+import { defaultFlashMessageConfig } from "../../constants/feed";
 import { FlashMessageContext } from "../../contexts/FlashMessageFeedContext";
 import { PostsContext } from "../../contexts/PostsContext";
 import SearchSuggestions from "../SearchSuggestions/SearchSuggestions";
@@ -70,10 +71,7 @@ const SearchBar: FC<SearchBarProps> = ({
               navigate("/");
               setPosts([]);
             } else {
-              setFeedFlashMessageConfiguration({
-                text: "Something went wrong. Please, try again later.",
-                color: "red",
-              });
+              setFeedFlashMessageConfiguration(defaultFlashMessageConfig);
               setIsFeedFlashMessage(true);
             }
           }

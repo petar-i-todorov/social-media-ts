@@ -1,6 +1,9 @@
 import { useContext, FC, Dispatch, SetStateAction } from "react";
 import { useNavigate } from "react-router-dom";
-import { searchSuggestions } from "../../constants/feed";
+import {
+  defaultFlashMessageConfig,
+  searchSuggestions,
+} from "../../constants/feed";
 import { FlashMessageContext } from "../../contexts/FlashMessageFeedContext";
 import { PostsContext } from "../../contexts/PostsContext";
 import { SwitchThemeContext } from "../../contexts/SwitchThemeContext";
@@ -60,10 +63,7 @@ const SearchSuggestions: FC<SearchSuggestionsProps> = ({
                     navigate("/");
                     setPosts([]);
                   } else {
-                    setFeedFlashMessageConfiguration({
-                      text: "Something went wrong. Please, try again later.",
-                      color: "red",
-                    });
+                    setFeedFlashMessageConfiguration(defaultFlashMessageConfig);
                     setIsFeedFlashMessage(true);
                   }
                 }}
@@ -95,10 +95,7 @@ const SearchSuggestions: FC<SearchSuggestionsProps> = ({
               navigate("/");
               setPosts([]);
             } else {
-              setFeedFlashMessageConfiguration({
-                text: "Something went wrong. Please, try again later.",
-                color: "red",
-              });
+              setFeedFlashMessageConfiguration(defaultFlashMessageConfig);
               setIsFeedFlashMessage(true);
             }
           }}

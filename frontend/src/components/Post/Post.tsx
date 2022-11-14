@@ -1,34 +1,77 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
-import { Link } from "react-router-dom";
 import {
-  RiGithubFill,
-  RiLinkedinBoxFill,
-  RiRedditFill,
-  RiStackOverflowFill,
-  RiYoutubeFill,
-} from "react-icons/ri";
-import { FaUserCircle } from "react-icons/fa";
+  FC,
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
+import { Link } from "react-router-dom";
 import ReactTimeAgo from "react-time-ago";
-
 import Button from "../Button/Button";
 import styles from "./Post.module.scss";
-import { SiUdemy } from "react-icons/si";
-import { BsThreeDots } from "react-icons/bs";
-import MoreOptionsMenu from "../MoreOptionsMenu/MoreOptionsMenu";
 import { IoSend } from "react-icons/io5";
 import Comment from "../Comment/Comment";
 import { IPost } from "../../types/feed";
 import { SwitchThemeContext } from "../../contexts/SwitchThemeContext";
 import { FlashMessageContext } from "../../contexts/FlashMessageFeedContext";
+import { defaultFlashMessageConfig } from "../../constants/feed";
+import { commentPost, downvotePost, upvotePost } from "../../api/posts";
+import Avatar from "../Avatar/Avatar";
+import MoreOptions from "../MoreOptions/MoreOptions";
+import SourcePlatform from "../SourcePlatform/SourcePlatform";
 
-const Post: React.FC<{
+interface PostProps {
   post: IPost;
   observer?: IntersectionObserver;
   userAvatar: string | undefined;
-}> = ({ post, observer, userAvatar }) => {
+}
+
+const Post: FC<PostProps> = ({ post, observer, userAvatar }) => {
   const { isDarkMode } = useContext(SwitchThemeContext);
+  const { setIsFeedFlashMessage, setFeedFlashMessageConfiguration } =
+    useContext(FlashMessageContext);
+
   const [postObj, setPostObj] = useState<IPost>(post);
+  const [showMoreVisibility, setShowMoreVisibility] = useState(
+    postObj.description.length > 250
+  );
+  const [areCommentsVisible, setAreCommentsVisible] = useState(false);
+  const [isUpvoteLocked, setIsUpvoteLocked] = useState(false);
+  const [isDownvoteLocked, setIsDownvoteLocked] = useState(false);
+  const [moreOptionsVisibility, setMoreOptionsVisibility] = useState(false);
+  const [commentText, setCommentText] = useState("");
+
   const postRef = useRef(null);
+
+  const onUpvoteClick = useCallback(async () => {
+    const response = await upvotePost(postObj._id);
+    const resData = await response.json();
+    if (response.status === 200) {
+      setPostObj(resData.updatedPost);
+    } else {
+      setFeedFlashMessageConfiguration({
+        text: resData.message,
+        color: "red",
+      });
+      setIsFeedFlashMessage(true);
+    }
+  }, [postObj._id, setFeedFlashMessageConfiguration, setIsFeedFlashMessage]);
+
+  const onDownvoteClick = useCallback(async () => {
+    const response = await downvotePost(postObj._id);
+    const resData = await response.json();
+    if (response.status === 200) {
+      setPostObj(resData.updatedPost);
+    } else {
+      setFeedFlashMessageConfiguration({
+        text: resData.message,
+        color: "red",
+      });
+      setIsFeedFlashMessage(true);
+    }
+  }, [postObj._id, setFeedFlashMessageConfiguration, setIsFeedFlashMessage]);
+
   useEffect(() => {
     if (observer && postRef.current) {
       observer.observe(postRef.current);
@@ -36,14 +79,7 @@ const Post: React.FC<{
     setPostObj(post);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [post]);
-  const [areCommentsVisible, setAreCommentsVisible] = useState(false);
-  const [isUpvoteLocked, setIsUpvoteLocked] = useState(false);
-  const [isDownvoteLocked, setIsDownvoteLocked] = useState(false);
-  const [moreOptionsVisibility, setMoreOptionsVisibility] = useState(false);
-  const isAuthor = useRef(
-    postObj.creator._id === localStorage.getItem("userId")
-  );
-  const [commentText, setCommentText] = useState("");
+
   useEffect(() => {
     if (
       postObj.upvotedBy.find(
@@ -64,29 +100,13 @@ const Post: React.FC<{
       setIsDownvoteLocked(false);
     }
   }, [postObj.upvotedBy, postObj.downvotedBy]);
-  const [showMoreVisibility, setShowMoreVisibility] = useState(
-    postObj.description.length > 250
-  );
 
-  const { setIsFeedFlashMessage, setFeedFlashMessageConfiguration } =
-    useContext(FlashMessageContext);
-
-  const writeComment = async () => {
+  const writeCommentHandler = async () => {
     if (commentText.length > 0) {
-      const res = await fetch(
-        `http://localhost:8080/posts/addComment/${postObj._id}`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: "Bearer " + localStorage.getItem("token"),
-          },
-          body: JSON.stringify({
-            text: commentText,
-            creatorId: localStorage.getItem("userId"),
-          }),
-        }
-      );
+      const res = await commentPost({
+        postId: postObj._id,
+        comment: commentText,
+      });
       setCommentText("");
       if (res.status === 200 || res.status === 201) {
         const resData = await res.json();
@@ -94,10 +114,7 @@ const Post: React.FC<{
         !areCommentsVisible && setAreCommentsVisible(true);
       } else {
         setIsFeedFlashMessage(true);
-        setFeedFlashMessageConfiguration({
-          text: "Something went wrong. Please, try again later.",
-          color: "red",
-        });
+        setFeedFlashMessageConfiguration(defaultFlashMessageConfig);
       }
     }
   };
@@ -105,7 +122,7 @@ const Post: React.FC<{
   return (
     <div
       ref={postRef}
-      className={styles.post + " " + (isDarkMode && styles.darkMode)}
+      className={`${styles.post} ${isDarkMode && styles.darkMode}`}
       onClick={() => setMoreOptionsVisibility(false)}
     >
       <div className={styles.postHeader}>
@@ -119,64 +136,22 @@ const Post: React.FC<{
           </Link>{" "}
           <ReactTimeAgo date={new Date(postObj.createdAt)} locale="en-US" />
         </div>
-        <div className={styles.moreOptionsContainer}>
-          <BsThreeDots
-            size="30"
-            color="gray"
-            className={styles.threeDots}
-            onClick={(event) => {
-              event.stopPropagation();
-              if (!moreOptionsVisibility) {
-                setMoreOptionsVisibility(true);
-              } else {
-                setMoreOptionsVisibility(false);
-              }
-            }}
-          />
-          {moreOptionsVisibility && (
-            <MoreOptionsMenu
-              isAuthor={isAuthor.current}
-              postId={postObj._id}
-              sourceUrl={postObj.url}
-            />
-          )}
-        </div>
+        <MoreOptions
+          moreOptionsVisibility={moreOptionsVisibility}
+          setMoreOptionsVisibility={setMoreOptionsVisibility}
+          post={postObj}
+        />
       </div>
       <hr className={isDarkMode ? styles.darkMode : undefined} />
       <div className={styles.postContent}>
         <div className={styles.voteContainer}>
           <Button
             color="green"
-            className={
-              styles.voteBtn + " " + (isUpvoteLocked && styles.greenLocked)
-            }
+            className={`${styles.voteBtn} ${
+              isUpvoteLocked && styles.greenLocked
+            }`}
             isLocked={isUpvoteLocked}
-            onClick={async () => {
-              const response = await fetch(
-                `http://localhost:8080/posts/upvote/${postObj._id}`,
-                {
-                  method: "PATCH",
-                  headers: {
-                    "Content-Type": "application/json",
-                    Authorization: "Bearer " + localStorage.getItem("token"),
-                  },
-                  body: JSON.stringify({
-                    postId: postObj._id,
-                    userId: localStorage.getItem("userId"),
-                  }),
-                }
-              );
-              const resData = await response.json();
-              if (response.status === 200) {
-                setPostObj(resData.updatedPost);
-              } else {
-                setFeedFlashMessageConfiguration({
-                  text: resData.message,
-                  color: "red",
-                });
-                setIsFeedFlashMessage(true);
-              }
-            }}
+            onClick={onUpvoteClick}
           >
             +
           </Button>
@@ -184,35 +159,10 @@ const Post: React.FC<{
           <Button
             isLocked={isDownvoteLocked}
             color="red"
-            className={
-              styles.voteBtn + " " + (isUpvoteLocked && styles.redLocked)
-            }
-            onClick={async () => {
-              const response = await fetch(
-                `http://localhost:8080/posts/downvote/${postObj._id}`,
-                {
-                  method: "PATCH",
-                  headers: {
-                    "Content-Type": "application/json",
-                    Authorization: "Bearer " + localStorage.getItem("token"),
-                  },
-                  body: JSON.stringify({
-                    postId: postObj._id,
-                    userId: localStorage.getItem("userId"),
-                  }),
-                }
-              );
-              const resData = await response.json();
-              if (response.status === 200) {
-                setPostObj(resData.updatedPost);
-              } else {
-                setFeedFlashMessageConfiguration({
-                  text: resData.message,
-                  color: "red",
-                });
-                setIsFeedFlashMessage(true);
-              }
-            }}
+            className={`${styles.voteBtn} ${
+              isUpvoteLocked && styles.redLocked
+            }`}
+            onClick={onDownvoteClick}
           >
             -
           </Button>
@@ -220,14 +170,14 @@ const Post: React.FC<{
         <div className={styles.postInfo}>
           <h2>{postObj.title}</h2>
           <div
-            className={
-              styles.postDescritpion + " " + (isDarkMode && styles.darkMode)
-            }
+            className={`${styles.postDescritpion} ${
+              isDarkMode && styles.darkMode
+            }`}
           >
             <p>
               {showMoreVisibility
                 ? postObj.description.substring(0, 250)
-                : postObj.description}{" "}
+                : postObj.description}
               {showMoreVisibility && (
                 <span
                   className={styles.showMore}
@@ -242,59 +192,40 @@ const Post: React.FC<{
           </div>
         </div>
         <div className={styles.postSidebar}>
-          {postObj.platform === "UDEMY" ? (
-            <SiUdemy size="60" color="purple" />
-          ) : postObj.platform === "STACKOVERFLOW" ? (
-            <RiStackOverflowFill size="60" color="orange" />
-          ) : postObj.platform === "GITHUB" ? (
-            <RiGithubFill size="60" color="black" />
-          ) : postObj.platform === "YOUTUBE" ? (
-            <RiYoutubeFill size="60" color="red" />
-          ) : postObj.platform === "REDDIT" ? (
-            <RiRedditFill size="60" color="red" />
-          ) : postObj.platform === "LINKEDIN" ? (
-            <RiLinkedinBoxFill size="60" color="blue" />
-          ) : (
-            <span className={styles.other}>OTHER</span>
-          )}
+          <SourcePlatform platform={postObj.platform} size={65} />
         </div>
       </div>
       {localStorage.getItem("userId") && (
         <>
           <hr className={isDarkMode ? styles.darkMode : undefined} />
           <section className={styles.writeComment}>
-            <Link to={`/user/${localStorage.getItem("userId")}`}>
-              {userAvatar ? (
-                <img
-                  src={`http://localhost:8080/${userAvatar}`}
-                  width="35"
-                  height="35"
-                  className={styles.userAvatar}
-                  alt="avatar"
-                />
-              ) : (
-                <FaUserCircle size="35" />
-              )}
-            </Link>
+            <Avatar
+              url={userAvatar}
+              size={35}
+              linkTo={`/user/${localStorage.getItem("userId")}`}
+            />
             <input
-              className={
-                styles.commentInput + " " + (isDarkMode && styles.darkMode)
-              }
+              className={`${styles.commentInput} ${
+                isDarkMode && styles.darkMode
+              }`}
               type="text"
               placeholder="Write a comment..."
               value={commentText}
               onKeyUp={async (event) => {
                 if (event.key === "Enter") {
-                  writeComment();
+                  writeCommentHandler();
                 }
               }}
               onChange={(event) => {
-                const target = event.target as HTMLInputElement;
-                setCommentText(target.value);
+                setCommentText((event.target as HTMLInputElement).value);
               }}
             />
             <div className={styles.send}>
-              <IoSend size="35" color="lightblue" onClick={writeComment} />
+              <IoSend
+                size="35"
+                color="lightblue"
+                onClick={writeCommentHandler}
+              />
             </div>
           </section>
         </>
@@ -303,7 +234,7 @@ const Post: React.FC<{
         <div className={styles.showComments}>
           <span
             onClick={() => {
-              setAreCommentsVisible(!areCommentsVisible);
+              setAreCommentsVisible((state) => !state);
             }}
           >
             {!areCommentsVisible

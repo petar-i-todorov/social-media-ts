@@ -77,23 +77,6 @@
         color: rgba(245, 245, 245, 0.8);
       }
     }
-    .moreOptionsContainer {
-      position: relative;
-
-      .threeDots {
-        cursor: pointer;
-        border-radius: 50%;
-        transition: background-color 0.4s ease-in-out;
-
-        &:hover {
-          background-color: lightgray;
-        }
-
-        &:active {
-          background-color: darkgray;
-        }
-      }
-    }
   }
 
   .postContent {

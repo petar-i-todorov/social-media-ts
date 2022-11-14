@@ -34,3 +34,11 @@ export const OTHER = "OTHER";
 
 export const LEFT = "LEFT";
 export const RIGHT = "RIGHT";
+
+export const defaultFlashMessageConfig: {
+  text: string;
+  color: "red" | "green";
+} = {
+  text: "Something went wrong. Please, try again later.",
+  color: "red",
+};

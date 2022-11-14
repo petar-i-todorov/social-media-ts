@@ -1,5 +1,6 @@
 import { useContext, FC, Dispatch, SetStateAction } from "react";
 import { AiFillDislike, AiFillLike } from "react-icons/ai";
+import { defaultFlashMessageConfig } from "../../constants/feed";
 
 import { FlashMessageContext } from "../../contexts/FlashMessageFeedContext";
 import { IComment } from "../../types/feed";
@@ -33,10 +34,7 @@ const CommentVote: FC<CommentVoteProps> = ({
       setComment(resData.updatedComment);
     } else {
       setIsFeedFlashMessage(true);
-      setFeedFlashMessageConfiguration({
-        text: "Something went wrong. Please, try again later.",
-        color: "red",
-      });
+      setFeedFlashMessageConfiguration(defaultFlashMessageConfig);
     }
   };
 

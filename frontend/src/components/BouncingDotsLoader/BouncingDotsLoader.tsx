@@ -1,7 +1,11 @@
-import React from "react";
+import { FC } from "react";
 import styles from "./BouncingDotsLoader.module.scss";
 
-const BouncingDotsLoader: React.FC<{ text: string }> = ({ text }) => {
+interface BouncingDotsLoaderProps {
+  text: string;
+}
+
+const BouncingDotsLoader: FC<BouncingDotsLoaderProps> = ({ text }) => {
   return (
     <div className={styles.dotsContainer}>
       {text}

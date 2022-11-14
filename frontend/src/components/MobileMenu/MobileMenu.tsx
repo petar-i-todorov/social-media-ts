@@ -1,21 +1,15 @@
-import { FC, useContext, useState } from "react";
+import { FC, useContext } from "react";
 import { Outlet } from "react-router-dom";
-import { VscTriangleUp } from "react-icons/vsc";
-import { devRoles } from "../../constants/feed";
-import { PostsContext } from "../../contexts/PostsContext";
 import { SwitchThemeContext } from "../../contexts/SwitchThemeContext";
-import { DevRole } from "../../types/feed";
 import styles from "./MobileMenu.module.scss";
 import Avatar from "../Avatar/Avatar";
+import Dropdown from "../Dropdown/Dropdown";
 
 interface MobileMenuProps {
   userAvatar: string | undefined;
 }
 
 const MobileMenu: FC<MobileMenuProps> = ({ userAvatar }) => {
-  const [dropdownVisibility, setDropdownVisibility] = useState(false);
-
-  const { devRole, setDevRole } = useContext(PostsContext);
   const { isDarkMode } = useContext(SwitchThemeContext);
 
   return (
@@ -31,6 +25,7 @@ const MobileMenu: FC<MobileMenuProps> = ({ userAvatar }) => {
               : "/login"
           }
         />
+        <Dropdown reversed />
       </div>
     </>
   );

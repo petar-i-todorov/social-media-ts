@@ -92,7 +92,16 @@ const User: React.FC<{
       }
     };
     fetchUser();
-  }, [posts, params.userId]);
+  }, [
+    posts,
+    params.userId,
+    setIsLoader,
+    postsCount,
+    setFeedFlashMessageConfiguration,
+    setIsFeedFlashMessage,
+    activeFlashTimeout,
+    setActiveFlashTimeout,
+  ]);
   return (
     <div className={styles.userPage + " " + (isDarkMode && styles.darkMode)}>
       {isLoading ? (

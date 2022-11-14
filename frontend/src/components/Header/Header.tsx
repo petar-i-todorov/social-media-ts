@@ -6,7 +6,7 @@ import FormMessage from "../FormMessage/FormMessage";
 import { FlashMessageContext } from "../../contexts/FlashMessageFeedContext";
 import Avatar from "../Avatar/Avatar";
 import ThemeSwitcher from "../ThemeSwitcher/ThemeSwitcher";
-import AppLogo from "../Logo/AppLogo";
+import AppLogo from "../AppLogo/AppLogo";
 import SearchBar from "../SearchBar/SearchBar";
 import Dropdown from "../Dropdown/Dropdown";
 
