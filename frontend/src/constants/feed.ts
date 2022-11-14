@@ -31,3 +31,6 @@ export const LINKEDIN = "LINKEDIN";
 export const REDDIT = "REDDIT";
 export const STACKOVERFLOW = "STACKOVERFLOW";
 export const OTHER = "OTHER";
+
+export const LEFT = "LEFT";
+export const RIGHT = "RIGHT";

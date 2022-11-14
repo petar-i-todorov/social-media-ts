@@ -1,0 +1,59 @@
+@import "../../scss/utils.module.scss";
+
+.dropdownContainer {
+  @media (max-width: 576px) {
+    display: none;
+  }
+
+  width: 110px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+
+  position: relative;
+  cursor: pointer;
+
+  .dropdown.active {
+    opacity: 1;
+    transform: scaleY(1);
+  }
+
+  .dropdown.darkMode {
+    @extend %darkMode;
+  }
+
+  .dropdown {
+    width: 100%;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    position: absolute;
+    top: 35px;
+
+    border: 1px solid black;
+    border-top: none;
+    background-color: white;
+    color: black;
+    transform: scaleY(0);
+
+    .role.darkMode {
+      @extend %darkMode;
+    }
+
+    .role {
+      width: 100%;
+
+      text-align: center;
+      cursor: pointer;
+      padding: 5px 0;
+      &:not(:last-child) {
+        border-bottom: 1px solid black;
+      }
+    }
+  }
+}

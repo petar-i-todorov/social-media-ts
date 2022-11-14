@@ -10,6 +10,7 @@ import { isPassword } from "../../../utils/validation";
 import Form from "../../../components/Form/Form";
 import styles from "./SetNewPassword.module.scss";
 import AuthPage from "../AuthPageContainer/AuthPage";
+import { RIGHT } from "../../../constants/feed";
 
 const SetNewPasswordPage = () => {
   const [password, setPassword] = useState("");
@@ -79,7 +80,7 @@ const SetNewPasswordPage = () => {
           type="password"
           placeholder="Password"
           value={password}
-          errorPosition="right"
+          errorPosition={RIGHT}
           isValid={isValid}
           setIsValid={setIsValid}
           errorMessage={errorMessage}

@@ -3,7 +3,6 @@ import { useCallback, useEffect, useState } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import TimeAgo from "javascript-time-ago";
 import en from "javascript-time-ago/locale/en.json";
-
 import ResetPasswordPage from "./pages/Auth/ResetPassword/ResetPassword";
 import LoginPage from "./pages/Auth/Login/Login";
 import SignupPage from "./pages/Auth/Signup/Signup";
@@ -21,7 +20,7 @@ import ReportPost from "./components/ReportPost/ReportPost";
 import { FlashMessageContext } from "./contexts/FlashMessageFeedContext";
 import User from "./pages/User/User";
 import Footer from "./components/Footer/Footer";
-import NavBar from "./components/NavBar/NavBar";
+import NavBar from "./components/MobileMenu/MobileMenu";
 import { SwitchThemeContext } from "./contexts/SwitchThemeContext";
 
 export const useClearFlash = () => {

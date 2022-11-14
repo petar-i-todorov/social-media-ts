@@ -1,8 +1,6 @@
 import React, { useContext, useEffect, useMemo, useState } from "react";
-import { Link } from "react-router-dom";
 import { BsFillCircleFill } from "react-icons/bs";
 import ReactTimeAgo from "react-time-ago";
-
 import styles from "./Comment.module.scss";
 import { IComment } from "../../types/feed";
 import { SwitchThemeContext } from "../../contexts/SwitchThemeContext";
@@ -89,9 +87,11 @@ const Comment: React.FC<{
   return (
     <div className={styles.container}>
       <div className={styles.commentContent}>
-        <Link to={`/user/${commentObj.creator._id}`}>
-          <Avatar size={30.8} url={commentObj.creator.avatarUrl} />
-        </Link>
+        <Avatar
+          size={30.8}
+          url={commentObj.creator.avatarUrl}
+          linkTo={`/user/${commentObj.creator._id}`}
+        />
         <div
           className={`${styles.commentInfo} ${isDarkMode && styles.darkMode}`}
         >

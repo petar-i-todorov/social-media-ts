@@ -1,19 +1,24 @@
-import { useContext } from "react";
+import { FC, useContext } from "react";
 import { MdDelete } from "react-icons/md";
 import { MdReportProblem } from "react-icons/md";
 import { FiEdit } from "react-icons/fi";
 import { IoOpenOutline } from "react-icons/io5";
-
 import styles from "./MoreOptionsMenu.module.scss";
 import { PostIdContext } from "../../contexts/PostIdContext";
 import { ModalsManipulationContext } from "../../contexts/ModalsManipulationContext";
 import { SwitchThemeContext } from "../../contexts/SwitchThemeContext";
 
-const MoreOptionsMenu: React.FC<{
+interface MoreOptionsMenuProps {
   isAuthor: boolean;
   postId: string;
   sourceUrl: string;
-}> = ({ isAuthor, postId, sourceUrl }) => {
+}
+
+const MoreOptionsMenu: FC<MoreOptionsMenuProps> = ({
+  isAuthor,
+  postId,
+  sourceUrl,
+}) => {
   const { setPostId } = useContext(PostIdContext);
   const {
     setDeletePostVisibility,
@@ -21,9 +26,10 @@ const MoreOptionsMenu: React.FC<{
     setEditPostVisibility,
   } = useContext(ModalsManipulationContext);
   const { isDarkMode } = useContext(SwitchThemeContext);
+
   return (
     <div
-      className={styles.moreOptionsMenu + " " + (isDarkMode && styles.darkMode)}
+      className={`${styles.moreOptionsMenu} ${isDarkMode && styles.darkMode}`}
       onClick={(event) => {
         event.stopPropagation();
       }}

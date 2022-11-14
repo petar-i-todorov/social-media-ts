@@ -1,16 +1,20 @@
-import React from "react";
-
+import { FC } from "react";
+import { LEFT } from "../../constants/feed";
+import { ErrorPosition } from "../../types/feed";
 import styles from "./InputError.module.scss";
 
-const InputError: React.FC<{
+interface InputErrorProps {
   error: string;
-  position: "left" | "right";
+  position: ErrorPosition;
   className?: string;
-}> = ({ error, position, className }) => {
-  const positionStyle = position === "left" ? styles.left : styles.right;
+}
+
+const InputError: FC<InputErrorProps> = ({ error, position, className }) => {
   return (
     <div
-      className={styles.validationError + " " + positionStyle + " " + className}
+      className={`${styles.validationError} ${
+        position === LEFT ? styles.left : styles.right
+      } ${className}`}
     >
       {error}
     </div>

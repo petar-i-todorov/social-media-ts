@@ -10,6 +10,7 @@ import { RiErrorWarningLine } from "react-icons/ri";
 import styles from "./TextArea.module.scss";
 import InputError from "../InputError/InputError";
 import { SwitchThemeContext } from "../../contexts/SwitchThemeContext";
+import { RIGHT } from "../../constants/feed";
 
 const TextArea: React.FC<{
   id?: string;
@@ -106,7 +107,7 @@ const TextArea: React.FC<{
         {isErrorMessageVisible && (
           <InputError
             error={errorMessage || ""}
-            position="right"
+            position={RIGHT}
             className={styles.textareaError}
           ></InputError>
         )}

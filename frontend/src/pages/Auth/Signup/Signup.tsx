@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-
 import { isEmail, isPassword } from "../../../utils/validation";
 import BouncingDotsLoader from "../../../components/BouncingDotsLoader/BouncingDotsLoader";
 import Button from "../../../components/Button/Button";
@@ -9,6 +8,7 @@ import Input from "../../../components/Input/Input";
 import Form from "../../../components/Form/Form";
 import styles from "./Signup.module.scss";
 import AuthPage from "../AuthPageContainer/AuthPage";
+import { LEFT, RIGHT } from "../../../constants/feed";
 
 const SignupPage = () => {
   const [firstName, setFirstName] = useState("");
@@ -104,7 +104,7 @@ const SignupPage = () => {
             isErrorMessageVisible={isFirstNameErrorVisible}
             setIsErrorMessageVisible={setIsFirstNameErrorVisible}
             errorMessage={firstNameErrorMessage}
-            errorPosition="left"
+            errorPosition={LEFT}
             onChange={(event) => {
               const target = event.target as HTMLInputElement;
               setFirstName(target.value);
@@ -128,7 +128,7 @@ const SignupPage = () => {
             isErrorMessageVisible={isLastNameErrorVisible}
             setIsErrorMessageVisible={setIsLastNameErrorVisible}
             errorMessage={lastNameErrorMessage}
-            errorPosition="right"
+            errorPosition={RIGHT}
             onChange={(event) => {
               const target = event.target as HTMLInputElement;
               setLastName(target.value);
@@ -166,7 +166,7 @@ const SignupPage = () => {
               setEmailIsValid(false);
             }
           }}
-          errorPosition="right"
+          errorPosition={RIGHT}
         />
         <Input
           isValid={passwordIsValid}
@@ -195,7 +195,7 @@ const SignupPage = () => {
               setPasswordIsValid(false);
             }
           }}
-          errorPosition="right"
+          errorPosition={RIGHT}
         />
         <Input
           isValid={confirmPasswordIsValid}
@@ -212,7 +212,7 @@ const SignupPage = () => {
           type="password"
           placeholder="Confirm password"
           value={confirmPassword}
-          errorPosition="right"
+          errorPosition={RIGHT}
           onBlur={() => {
             if (password !== confirmPassword) {
               setConfirmPasswordErrorMessage("Passwords don't match.");

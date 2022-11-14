@@ -1,48 +1,63 @@
-import React, { ChangeEvent, useContext, useEffect, useState } from "react";
+import React, {
+  ChangeEventHandler,
+  Dispatch,
+  FocusEventHandler,
+  HTMLInputTypeAttribute,
+  SetStateAction,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 import { RiErrorWarningLine } from "react-icons/ri";
 import styles from "./Input.module.scss";
 import InputError from "../InputError/InputError";
 import { SwitchThemeContext } from "../../contexts/SwitchThemeContext";
+import { ErrorPosition } from "../../types/feed";
+import { LEFT } from "../../constants/feed";
 
-const Input: React.FC<{
-  id: string;
-  type: string;
-  placeholder: string;
-  split?: boolean;
-  value: string;
-  errorPosition: "left" | "right";
-  isValid: boolean;
-  setIsValid: (arg: boolean) => void;
+interface InputProps {
   errorMessage: string;
-  setErrorMessage?: (arg: string) => void;
+  errorPosition: ErrorPosition;
+  id: string;
   isErrorMessageVisible: boolean;
-  setIsErrorMessageVisible: (arg: boolean) => void;
-  onChange: (e: ChangeEvent) => void;
-  onBlur: () => void;
-}> = ({
-  id,
-  type,
-  placeholder,
-  split,
-  onChange,
-  value,
-  onBlur,
-  errorPosition,
+  isValid: boolean;
+  onBlur: FocusEventHandler;
+  onChange: ChangeEventHandler;
+  placeholder: string;
+  setErrorMessage?: Dispatch<SetStateAction<string>>;
+  setIsErrorMessageVisible: Dispatch<SetStateAction<boolean>>;
+  setIsValid: Dispatch<SetStateAction<boolean>>;
+  split?: boolean;
+  type: HTMLInputTypeAttribute;
+  value: string;
+}
+
+const Input: React.FC<InputProps> = ({
   errorMessage,
+  errorPosition,
+  id,
   isErrorMessageVisible,
-  setIsErrorMessageVisible,
+  isValid, //responsible for css
+  onBlur,
+  onChange,
+  placeholder,
   setErrorMessage,
-  isValid, //css invalid input responsible
+  setIsErrorMessageVisible,
   setIsValid,
+  split,
+  type,
+  value,
 }) => {
   const [isFocused, setIsFocused] = useState(false);
-  const [isActive, setIsActive] = useState(false); //if focused or value !== ""; placeholder animation responsible
+  const [isActive, setIsActive] = useState(false); //responsible for placeholder animation
   const { isDarkMode } = useContext(SwitchThemeContext);
+
   useEffect(() => {
     if (isFocused && setIsValid) {
       setIsValid(true);
     }
   }, [isFocused, setIsValid]);
+
   useEffect(() => {
     if (isFocused || value !== "") {
       setIsActive(true);
@@ -51,28 +66,20 @@ const Input: React.FC<{
     }
   }, [isFocused, value]);
   return (
-    <div
-      className={styles.mainContainer + " " + (isDarkMode && styles.darkMode)}
-    >
-      <label htmlFor={id} className={isActive ? styles.active : ""}>
+    <div className={`${styles.mainContainer} ${isDarkMode && styles.darkMode}`}>
+      <label htmlFor={id} className={(isActive && styles.active) || undefined}>
         {placeholder}
       </label>
       <div
-        className={
-          styles.inputContainer + " " + (isDarkMode && styles.darkMode)
-        }
+        className={`${styles.inputContainer} ${isDarkMode && styles.darkMode}`}
       >
-        {!isValid ? (
+        {!isValid && (
           <span
             onClick={() => {
               if (isErrorMessageVisible) {
-                if (setIsErrorMessageVisible) {
-                  setIsErrorMessageVisible(false);
-                }
+                setIsErrorMessageVisible(false);
               } else {
-                if (setIsErrorMessageVisible) {
-                  setIsErrorMessageVisible(true);
-                }
+                setIsErrorMessageVisible(true);
               }
             }}
             className={
@@ -83,8 +90,6 @@ const Input: React.FC<{
           >
             <RiErrorWarningLine color="red" />
           </span>
-        ) : (
-          ""
         )}
         <input
           id={id}
@@ -104,9 +109,9 @@ const Input: React.FC<{
           className={`${styles.input} ${!isValid && styles.invalid} ${
             isFocused && styles.focused
           } ${isDarkMode && styles.darkMode}`}
-          onBlur={() => {
+          onBlur={(event) => {
             if (onBlur) {
-              onBlur();
+              onBlur(event);
             }
             setIsFocused(false);
           }}
@@ -125,7 +130,7 @@ const Input: React.FC<{
         {isErrorMessageVisible && (
           <InputError
             error={errorMessage || ""}
-            position={errorPosition || "left"}
+            position={errorPosition || LEFT}
           ></InputError>
         )}
       </div>

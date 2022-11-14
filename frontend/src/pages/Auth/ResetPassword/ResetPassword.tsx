@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-
 import Button from "../../../components/Button/Button";
 import Input from "../../../components/Input/Input";
 import BouncingDotsLoader from "../../../components/BouncingDotsLoader/BouncingDotsLoader";
@@ -9,6 +8,7 @@ import { isEmail } from "../../../utils/validation";
 import Form from "../../../components/Form/Form";
 import styles from "./ResetPassword.module.scss";
 import AuthPage from "../AuthPageContainer/AuthPage";
+import { RIGHT } from "../../../constants/feed";
 
 const ResetPasswordPage = () => {
   const [email, setEmail] = useState("");
@@ -68,7 +68,7 @@ const ResetPasswordPage = () => {
           }}
           isValid={isEmailValid}
           value={email}
-          errorPosition="right"
+          errorPosition={RIGHT}
           setIsValid={setIsEmailValid}
           errorMessage={emailErrorMessage}
           isErrorMessageVisible={isEmailErrorMessageVisible}

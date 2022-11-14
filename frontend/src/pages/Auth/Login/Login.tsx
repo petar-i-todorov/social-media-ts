@@ -9,6 +9,7 @@ import Input from "../../../components/Input/Input";
 import FormMessage from "../../../components/FormMessage/FormMessage";
 import Form from "../../../components/Form/Form";
 import AuthPage from "../AuthPageContainer/AuthPage";
+import { RIGHT } from "../../../constants/feed";
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
@@ -70,7 +71,7 @@ const LoginPage = () => {
           <>
             <h2>Log in</h2>
             <Input
-              errorPosition="right"
+              errorPosition={RIGHT}
               isErrorMessageVisible={isEmailErrorMessageVisible}
               setIsErrorMessageVisible={setIsEmailErrorVisible}
               errorMessage={emailErrorMessage}
@@ -92,7 +93,7 @@ const LoginPage = () => {
               }}
             />
             <Input
-              errorPosition="right"
+              errorPosition={RIGHT}
               isErrorMessageVisible={isPasswordErrorMessageVisible}
               setIsErrorMessageVisible={setIsPasswordErrorVisible}
               errorMessage={passwordErrorMessage}
