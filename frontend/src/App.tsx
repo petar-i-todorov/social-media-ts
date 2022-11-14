@@ -128,7 +128,12 @@ function App() {
       }, 5000);
       setActiveFlashTimeout(timeout);
     }
-  }, [activeFlashTimeout]);
+  }, [
+    activeFlashTimeout,
+    setActiveFlashTimeout,
+    setFeedFlashMessageConfiguration,
+    setIsFeedFlashMessage,
+  ]);
 
   useEffect(() => {
     fetchAvatar();
@@ -200,7 +205,6 @@ function App() {
                             setAreSuggestionsVisible={setAreSuggestionsVisible}
                             userAvatar={userAvatar}
                             isDarkMode={isDarkMode}
-                            setIsDarkMode={setIsDarkMode}
                           />
                         }
                       >

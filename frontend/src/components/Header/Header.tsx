@@ -1,52 +1,52 @@
-import { useContext, useState } from "react";
+import { useContext, useState, FC, Dispatch, SetStateAction } from "react";
 import { Link, Outlet, useNavigate } from "react-router-dom";
 import { GiRoundStar } from "react-icons/gi";
 import { BiLoaderCircle } from "react-icons/bi";
-import { MdDarkMode, MdLightMode } from "react-icons/md";
 import { AiOutlineSearch } from "react-icons/ai";
-import { FaUserCircle } from "react-icons/fa";
 import { VscTriangleDown } from "react-icons/vsc";
-
 import styles from "./Header.module.scss";
 import FormMessage from "../FormMessage/FormMessage";
 import { FlashMessageContext } from "../../contexts/FlashMessageFeedContext";
 import { PostsContext } from "../../contexts/PostsContext";
 import { DevRole } from "../../types/feed";
-import { devRoles, searchSuggestions } from "../../constants/feed";
+import { devRoles } from "../../constants/feed";
+import Avatar from "../Avatar/Avatar";
+import ThemeSwitcher from "../ThemeSwitcher/ThemeSwitcher";
+import SearchSuggestions from "../SearchSuggestions/SearchSuggestions";
 
-const NavBar: React.FC<{
-  setIsNavigatingToFeed: React.Dispatch<React.SetStateAction<boolean>>;
+interface HeaderProps {
   areSuggestionsVisible: boolean;
-  setAreSuggestionsVisible: React.Dispatch<React.SetStateAction<boolean>>;
-  userAvatar: string | undefined;
   isDarkMode: boolean;
-  setIsDarkMode: React.Dispatch<React.SetStateAction<boolean>>;
-}> = ({
-  setIsNavigatingToFeed,
+  setAreSuggestionsVisible: Dispatch<SetStateAction<boolean>>;
+  setIsNavigatingToFeed: Dispatch<SetStateAction<boolean>>;
+  userAvatar: string | undefined;
+}
+
+const Header: FC<HeaderProps> = ({
   areSuggestionsVisible,
-  setAreSuggestionsVisible,
-  userAvatar,
-  setIsDarkMode,
   isDarkMode,
+  setAreSuggestionsVisible,
+  setIsNavigatingToFeed,
+  userAvatar,
 }) => {
   const {
-    isFeedFlashMessage,
     feedFlashMessageConfiguration,
+    isFeedFlashMessage,
     isLoader,
     setFeedFlashMessageConfiguration,
     setIsFeedFlashMessage,
-    setActiveFlashTimeout,
-    activeFlashTimeout,
     setIsLoader,
   } = useContext(FlashMessageContext);
   const { devRole, setDevRole, sortBy, setPosts } = useContext(PostsContext);
+
   const [dropdownVisibility, setDropdownVisibility] = useState(false);
   const [searchText, setSearchText] = useState("");
+
   const navigate = useNavigate();
   return (
     <>
       <header
-        className={styles.header + " " + (isDarkMode && styles.darkMode)}
+        className={`${styles.header} ${isDarkMode && styles.darkMode}`}
         onClick={() => {
           setAreSuggestionsVisible(false);
         }}
@@ -62,109 +62,12 @@ const NavBar: React.FC<{
           </li>
           <li className={styles.searchContainer}>
             {areSuggestionsVisible && (
-              <div
-                className={
-                  styles.searchSuggestions +
-                  " " +
-                  (isDarkMode && styles.darkMode)
-                }
-              >
-                {searchSuggestions.find((suggestion) => {
-                  return suggestion
-                    .toLowerCase()
-                    .includes(searchText.toLowerCase());
-                }) ? (
-                  searchSuggestions.map((suggestion) => {
-                    if (
-                      suggestion
-                        .toLowerCase()
-                        .includes(searchText.toLowerCase())
-                    ) {
-                      return (
-                        <div
-                          key={suggestion}
-                          className={
-                            styles.suggestion +
-                            " " +
-                            (isDarkMode && styles.darkMode)
-                          }
-                          onClick={async () => {
-                            setSearchText(suggestion);
-                            setAreSuggestionsVisible(false);
-                            setIsLoader(true);
-                            const response = await fetch(
-                              `http://localhost:8080/posts?sortBy=${sortBy}&devRole=${devRole}&substring=${suggestion}`
-                            );
-                            setIsLoader(false);
-                            if (response.status === 200) {
-                              setIsNavigatingToFeed(true);
-                              navigate("/");
-                              const posts = await response.json();
-                              setPosts(posts);
-                            } else if (response.status === 404) {
-                              setIsNavigatingToFeed(true);
-                              navigate("/");
-                              setPosts([]);
-                            } else {
-                              setFeedFlashMessageConfiguration({
-                                text: "Something went wrong. Please, try again later.",
-                                color: "red",
-                              });
-                              setIsFeedFlashMessage(true);
-                              clearTimeout(activeFlashTimeout);
-                              const timeout = setTimeout(() => {
-                                setIsFeedFlashMessage(false);
-                              }, 5000);
-                              setActiveFlashTimeout(timeout);
-                            }
-                          }}
-                        >
-                          {suggestion}
-                        </div>
-                      );
-                    } else {
-                      return null;
-                    }
-                  })
-                ) : (
-                  <div
-                    className={
-                      styles.suggestion + " " + (isDarkMode && styles.darkMode)
-                    }
-                    onClick={async () => {
-                      setAreSuggestionsVisible(false);
-                      setIsLoader(true);
-                      const response = await fetch(
-                        `http://localhost:8080/posts?sortBy=${sortBy}&devRole=${devRole}&substring=${searchText}`
-                      );
-                      setIsLoader(false);
-                      if (response.status === 200) {
-                        setIsNavigatingToFeed(true);
-                        navigate("/");
-                        const posts = await response.json();
-                        setPosts(posts);
-                      } else if (response.status === 404) {
-                        setIsNavigatingToFeed(true);
-                        navigate("/");
-                        setPosts([]);
-                      } else {
-                        setFeedFlashMessageConfiguration({
-                          text: "Something went wrong. Please, try again later.",
-                          color: "red",
-                        });
-                        setIsFeedFlashMessage(true);
-                        clearTimeout(activeFlashTimeout);
-                        const timeout = setTimeout(() => {
-                          setIsFeedFlashMessage(false);
-                        }, 5000);
-                        setActiveFlashTimeout(timeout);
-                      }
-                    }}
-                  >
-                    {searchText}
-                  </div>
-                )}
-              </div>
+              <SearchSuggestions
+                searchText={searchText}
+                setAreSuggestionsVisible={setAreSuggestionsVisible}
+                setIsNavigatingToFeed={setIsNavigatingToFeed}
+                setSearchText={setSearchText}
+              />
             )}
             <AiOutlineSearch size="30" color="black" />
             <input
@@ -204,11 +107,6 @@ const NavBar: React.FC<{
                       color: "red",
                     });
                     setIsFeedFlashMessage(true);
-                    clearTimeout(activeFlashTimeout);
-                    const timeout = setTimeout(() => {
-                      setIsFeedFlashMessage(false);
-                    }, 5000);
-                    setActiveFlashTimeout(timeout);
                   }
                 }
               }}
@@ -222,17 +120,7 @@ const NavBar: React.FC<{
                   : "/login"
               }
             >
-              {userAvatar ? (
-                <img
-                  src={`http://localhost:8080/${userAvatar}`}
-                  width="35"
-                  height="35"
-                  className={styles.userAvatar}
-                  alt="avatar"
-                />
-              ) : (
-                <FaUserCircle size="35" color="white" />
-              )}
+              <Avatar url={userAvatar} size={35} />
             </Link>
           </li>
           <li>
@@ -244,18 +132,14 @@ const NavBar: React.FC<{
             >
               {devRole}{" "}
               <VscTriangleDown
-                className={
-                  styles.triangle + " " + (dropdownVisibility && styles.active)
-                }
+                className={`${styles.triangle} ${
+                  dropdownVisibility && styles.active
+                }`}
               />
               <div
-                className={
-                  styles.dropdown +
-                  " " +
-                  (dropdownVisibility && styles.active) +
-                  " " +
-                  (isDarkMode && styles.darkMode)
-                }
+                className={`${styles.dropdown} 
+                  ${dropdownVisibility && styles.active}
+                  ${isDarkMode && styles.darkMode}`}
               >
                 {(devRoles as DevRole[])
                   .filter((role) => role !== devRole)
@@ -278,23 +162,7 @@ const NavBar: React.FC<{
             </div>
           </li>
           <li>
-            {isDarkMode ? (
-              <MdLightMode
-                size="30"
-                onClick={() => {
-                  setIsDarkMode(false);
-                }}
-                className={styles.switchModeLogo}
-              />
-            ) : (
-              <MdDarkMode
-                size="30"
-                onClick={() => {
-                  setIsDarkMode(true);
-                }}
-                className={styles.switchModeLogo}
-              />
-            )}
+            <ThemeSwitcher />
           </li>
         </ul>
         <FormMessage
@@ -312,4 +180,4 @@ const NavBar: React.FC<{
   );
 };
 
-export default NavBar;
+export default Header;

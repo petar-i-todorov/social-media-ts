@@ -1,25 +1,23 @@
-import React from "react";
-
+import React, { PropsWithChildren } from "react";
 import styles from "./FormMessage.module.scss";
 
-const FormMessage: React.FC<{
-  children: string;
+interface FormMessageProps {
   color: "green" | "red";
   flash?: boolean;
   flashVisibility?: boolean;
-}> = ({ children, color, flash, flashVisibility }) => {
-  const messageColor = color === "green" ? styles.green : styles.red;
+}
+
+const FormMessage: React.FC<PropsWithChildren<FormMessageProps>> = ({
+  children,
+  color,
+  flash,
+  flashVisibility,
+}) => {
   return (
     <div
-      className={
-        styles.formMessage +
-        " " +
-        messageColor +
-        " " +
-        (flash
-          ? styles.flash + " " + (flashVisibility ? styles.flashVisible : null)
-          : null)
-      }
+      className={`${styles.formMessage} ${
+        color === "green" ? styles.green : styles.red
+      } ${flash && styles.flash}  ${flashVisibility && styles.flashVisible}`}
     >
       {children}
     </div>
