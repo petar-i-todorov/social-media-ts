@@ -6,22 +6,15 @@ import styles from "./ThemeSwitcher.module.scss";
 const ThemeSwitcher = () => {
   const { isDarkMode, setIsDarkMode } = useContext(SwitchThemeContext);
 
+  const switcherProps = {
+    size: 30,
+    className: styles.switchModeLogo,
+  };
+
   return isDarkMode ? (
-    <MdLightMode
-      size="30"
-      onClick={() => {
-        setIsDarkMode(false);
-      }}
-      className={styles.switchModeLogo}
-    />
+    <MdLightMode {...switcherProps} onClick={() => setIsDarkMode(false)} />
   ) : (
-    <MdDarkMode
-      size="30"
-      onClick={() => {
-        setIsDarkMode(true);
-      }}
-      className={styles.switchModeLogo}
-    />
+    <MdDarkMode {...switcherProps} onClick={() => setIsDarkMode(true)} />
   );
 };
 

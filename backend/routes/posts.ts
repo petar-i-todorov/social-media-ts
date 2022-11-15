@@ -22,7 +22,7 @@ router.post(
       value === "REDDIT" ||
       value === "GITHUB" ||
       value === "LINKEDIN" ||
-      value === "FACEBOOK" ||
+      value === "YOUTUBE" ||
       value === "UDEMY" ||
       value === "STACKOVERFLOW" ||
       value === "OTHER"

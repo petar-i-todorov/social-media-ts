@@ -1,3 +1,19 @@
+import { DevRole, SortBy } from "../types/feed";
+
+interface GetPostsArguments {
+  sortBy: SortBy;
+  devRole: DevRole;
+  substring: string;
+}
+
+type GetPosts = (config: GetPostsArguments) => Promise<Response>;
+
+export const getPosts: GetPosts = ({ sortBy, devRole, substring }) => {
+  return fetch(
+    `http://localhost:8080/posts?sortBy=${sortBy}&devRole=${devRole}&substring=${substring}`
+  );
+};
+
 interface CommentPostArguments {
   postId: string;
   comment: string;

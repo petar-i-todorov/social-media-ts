@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { FC, MouseEventHandler } from "react";
 import {
   RiGithubFill,
   RiLinkedinBoxFill,
@@ -21,25 +21,64 @@ import styles from "./SourcePlatform.module.scss";
 interface SourcePlatformProps {
   platform: Platform;
   size: number;
+  className?: string;
+  onClick?: MouseEventHandler;
 }
 
-const SourcePlatform: FC<SourcePlatformProps> = ({ platform, size }) => {
+const SourcePlatform: FC<SourcePlatformProps> = ({
+  platform,
+  size,
+  className,
+  onClick,
+}) => {
   return (
     <div>
       {platform === UDEMY ? (
-        <SiUdemy size={size} color="purple" />
+        <SiUdemy
+          className={className}
+          color="purple"
+          onClick={onClick}
+          size={size}
+        />
       ) : platform === STACKOVERFLOW ? (
-        <RiStackOverflowFill size={size} color="orange" />
+        <RiStackOverflowFill
+          className={className}
+          color="orange"
+          onClick={onClick}
+          size={size}
+        />
       ) : platform === GITHUB ? (
-        <RiGithubFill size={size} color="black" />
+        <RiGithubFill
+          className={className}
+          color="black"
+          onClick={onClick}
+          size={size}
+        />
       ) : platform === YOUTUBE ? (
-        <RiYoutubeFill size={size} color="red" />
+        <RiYoutubeFill
+          className={className}
+          color="red"
+          onClick={onClick}
+          size={size}
+        />
       ) : platform === REDDIT ? (
-        <RiRedditFill size={size} color="red" />
+        <RiRedditFill
+          className={className}
+          color="red"
+          onClick={onClick}
+          size={size}
+        />
       ) : platform === LINKEDIN ? (
-        <RiLinkedinBoxFill size={size} color="blue" />
+        <RiLinkedinBoxFill
+          className={className}
+          color="blue"
+          onClick={onClick}
+          size={size}
+        />
       ) : (
-        <span className={styles.other}>OTHER</span>
+        <span className={`${styles.other} ${className}`} onClick={onClick}>
+          OTHER
+        </span>
       )}
     </div>
   );

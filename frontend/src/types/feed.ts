@@ -47,3 +47,5 @@ export interface ICommentVote {
 export type DevRole = "FRONTEND" | "BACKEND" | "DEVOPS";
 
 export type ErrorPosition = "LEFT" | "RIGHT";
+
+export type SortBy = "RECENCY" | "VOTES";

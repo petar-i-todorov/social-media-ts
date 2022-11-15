@@ -40,6 +40,32 @@ const ReportPost: FC<{
     return true;
   }, [chosenOptions]);
 
+  const onFormSubmit = async () => {
+    if (!canProceed) {
+      setIsError(true);
+    } else {
+      setIsLoader(true);
+      const res = await reportPost({
+        postId,
+        reportMessage,
+        reportType: chosenOptions.join(", "),
+      });
+      setIsLoader(false);
+      if (res.status !== 200) {
+        setIsFeedFlashMessage(true);
+        setFeedFlashMessageConfiguration(defaultFlashMessageConfig);
+      } else {
+        const resData = await res.json();
+        setReportPostVisibility(false);
+        setFeedFlashMessageConfiguration({
+          text: resData.message,
+          color: "green",
+        });
+        setIsFeedFlashMessage(true);
+      }
+    }
+  };
+
   useEffect(() => {
     if (chosenOptions.length) {
       setIsError(false);
@@ -50,31 +76,7 @@ const ReportPost: FC<{
       onOverlayClick={() => {
         setClosingConfirmationVisibility(true);
       }}
-      onFormSubmit={async () => {
-        if (!canProceed) {
-          setIsError(true);
-        } else {
-          setIsLoader(true);
-          const res = await reportPost({
-            postId,
-            reportMessage,
-            reportType: chosenOptions.join(", "),
-          });
-          setIsLoader(false);
-          if (res.status !== 200) {
-            setIsFeedFlashMessage(true);
-            setFeedFlashMessageConfiguration(defaultFlashMessageConfig);
-          } else {
-            const resData = await res.json();
-            setReportPostVisibility(false);
-            setFeedFlashMessageConfiguration({
-              text: resData.message,
-              color: "green",
-            });
-            setIsFeedFlashMessage(true);
-          }
-        }
-      }}
+      onFormSubmit={onFormSubmit}
     >
       <h2>What's wrong with this post?</h2>
       <div className={styles.options}>

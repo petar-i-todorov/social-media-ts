@@ -1,3 +1,5 @@
+import { Platform } from "../types/feed";
+
 export const FRONTEND = "FRONTEND";
 
 export const BACKEND = "BACKEND";
@@ -32,6 +34,16 @@ export const REDDIT = "REDDIT";
 export const STACKOVERFLOW = "STACKOVERFLOW";
 export const OTHER = "OTHER";
 
+export const PLATFORMS: Platform[] = [
+  YOUTUBE,
+  GITHUB,
+  UDEMY,
+  LINKEDIN,
+  REDDIT,
+  STACKOVERFLOW,
+  OTHER,
+];
+
 export const LEFT = "LEFT";
 export const RIGHT = "RIGHT";
 
@@ -49,3 +61,6 @@ export const reportOptions = [
   "Off-topic",
   "Other",
 ];
+
+export const RECENCY = "RECENCY";
+export const VOTES = "VOTES";

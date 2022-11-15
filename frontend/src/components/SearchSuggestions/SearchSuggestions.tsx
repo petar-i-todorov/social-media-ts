@@ -1,5 +1,6 @@
 import { useContext, FC, Dispatch, SetStateAction } from "react";
 import { useNavigate } from "react-router-dom";
+import { getPosts } from "../../api/posts";
 import {
   defaultFlashMessageConfig,
   searchSuggestions,
@@ -29,7 +30,33 @@ const SearchSuggestions: FC<SearchSuggestionsProps> = ({
     setFeedFlashMessageConfiguration,
   } = useContext(FlashMessageContext);
   const { devRole, sortBy, setPosts } = useContext(PostsContext);
+
   const navigate = useNavigate();
+
+  const onSuggestionClick = async (suggestion: string) => {
+    setSearchText(suggestion);
+    setAreSuggestionsVisible(false);
+    setIsLoader(true);
+    const response = await getPosts({
+      devRole,
+      sortBy,
+      substring: suggestion,
+    });
+    setIsLoader(false);
+    if (response.status === 200) {
+      setIsNavigatingToFeed(true);
+      navigate("/");
+      const posts = await response.json();
+      setPosts(posts);
+    } else if (response.status === 404) {
+      setIsNavigatingToFeed(true);
+      navigate("/");
+      setPosts([]);
+    } else {
+      setFeedFlashMessageConfiguration(defaultFlashMessageConfig);
+      setIsFeedFlashMessage(true);
+    }
+  };
   return (
     <div
       className={`${styles.searchSuggestions} ${isDarkMode && styles.darkMode}`}
@@ -45,59 +72,21 @@ const SearchSuggestions: FC<SearchSuggestionsProps> = ({
                 className={`${styles.suggestion} ${
                   isDarkMode && styles.darkMode
                 }`}
-                onClick={async () => {
-                  setSearchText(suggestion);
-                  setAreSuggestionsVisible(false);
-                  setIsLoader(true);
-                  const response = await fetch(
-                    `http://localhost:8080/posts?sortBy=${sortBy}&devRole=${devRole}&substring=${suggestion}`
-                  );
-                  setIsLoader(false);
-                  if (response.status === 200) {
-                    setIsNavigatingToFeed(true);
-                    navigate("/");
-                    const posts = await response.json();
-                    setPosts(posts);
-                  } else if (response.status === 404) {
-                    setIsNavigatingToFeed(true);
-                    navigate("/");
-                    setPosts([]);
-                  } else {
-                    setFeedFlashMessageConfiguration(defaultFlashMessageConfig);
-                    setIsFeedFlashMessage(true);
-                  }
+                onClick={() => {
+                  onSuggestionClick(suggestion);
                 }}
               >
                 {suggestion}
               </div>
             );
-          } else {
-            return null;
           }
+          return null;
         })
       ) : (
         <div
           className={`${styles.suggestion} ${isDarkMode && styles.darkMode}`}
-          onClick={async () => {
-            setAreSuggestionsVisible(false);
-            setIsLoader(true);
-            const response = await fetch(
-              `http://localhost:8080/posts?sortBy=${sortBy}&devRole=${devRole}&substring=${searchText}`
-            );
-            setIsLoader(false);
-            if (response.status === 200) {
-              setIsNavigatingToFeed(true);
-              navigate("/");
-              const posts = await response.json();
-              setPosts(posts);
-            } else if (response.status === 404) {
-              setIsNavigatingToFeed(true);
-              navigate("/");
-              setPosts([]);
-            } else {
-              setFeedFlashMessageConfiguration(defaultFlashMessageConfig);
-              setIsFeedFlashMessage(true);
-            }
+          onClick={() => {
+            onSuggestionClick(searchText);
           }}
         >
           {searchText}

@@ -1,6 +1,14 @@
-import { Dispatch, FC, SetStateAction, useContext, useState } from "react";
+import {
+  Dispatch,
+  FC,
+  KeyboardEventHandler,
+  SetStateAction,
+  useContext,
+  useState,
+} from "react";
 import { AiOutlineSearch } from "react-icons/ai";
 import { useNavigate } from "react-router-dom";
+import { getPosts } from "../../api/posts";
 import { defaultFlashMessageConfig } from "../../constants/feed";
 import { FlashMessageContext } from "../../contexts/FlashMessageFeedContext";
 import { PostsContext } from "../../contexts/PostsContext";
@@ -28,6 +36,33 @@ const SearchBar: FC<SearchBarProps> = ({
   const { devRole, sortBy, setPosts } = useContext(PostsContext);
 
   const navigate = useNavigate();
+
+  const onKeyDown: KeyboardEventHandler = async (event) => {
+    if (event.key === "Enter") {
+      (event.target as HTMLInputElement).blur();
+      setAreSuggestionsVisible(false);
+      setIsLoader(true);
+      const response = await getPosts({
+        devRole,
+        sortBy,
+        substring: searchText,
+      });
+      setIsLoader(false);
+      if (response.status === 200) {
+        setIsNavigatingToFeed(true);
+        navigate("/");
+        const posts = await response.json();
+        setPosts(posts);
+      } else if (response.status === 404) {
+        setIsNavigatingToFeed(true);
+        navigate("/");
+        setPosts([]);
+      } else {
+        setFeedFlashMessageConfiguration(defaultFlashMessageConfig);
+        setIsFeedFlashMessage(true);
+      }
+    }
+  };
   return (
     <div className={styles.searchContainer}>
       {areSuggestionsVisible && (
@@ -52,30 +87,7 @@ const SearchBar: FC<SearchBarProps> = ({
         onChange={(event) => {
           setSearchText((event.target as HTMLInputElement).value);
         }}
-        onKeyDown={async (event) => {
-          if (event.key === "Enter") {
-            (event.target as HTMLInputElement).blur();
-            setAreSuggestionsVisible(false);
-            setIsLoader(true);
-            const response = await fetch(
-              `http://localhost:8080/posts?sortBy=${sortBy}&devRole=${devRole}&substring=${searchText}`
-            );
-            setIsLoader(false);
-            if (response.status === 200) {
-              setIsNavigatingToFeed(true);
-              navigate("/");
-              const posts = await response.json();
-              setPosts(posts);
-            } else if (response.status === 404) {
-              setIsNavigatingToFeed(true);
-              navigate("/");
-              setPosts([]);
-            } else {
-              setFeedFlashMessageConfiguration(defaultFlashMessageConfig);
-              setIsFeedFlashMessage(true);
-            }
-          }
-        }}
+        onKeyDown={onKeyDown}
       />
     </div>
   );

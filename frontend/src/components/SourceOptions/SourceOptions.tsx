@@ -1,24 +1,8 @@
 import { useContext, FC, Dispatch, SetStateAction } from "react";
-import {
-  RiGithubFill,
-  RiLinkedinBoxFill,
-  RiRedditFill,
-  RiStackOverflowFill,
-  RiYoutubeFill,
-} from "react-icons/ri";
-import { SiUdemy } from "react-icons/si";
-
-import {
-  GITHUB,
-  LINKEDIN,
-  OTHER,
-  REDDIT,
-  STACKOVERFLOW,
-  UDEMY,
-  YOUTUBE,
-} from "../../constants/feed";
+import { PLATFORMS } from "../../constants/feed";
 import { SwitchThemeContext } from "../../contexts/SwitchThemeContext";
 import { Platform } from "../../types/feed";
+import SourcePlatform from "../SourcePlatform/SourcePlatform";
 import styles from "./SourceOptions.module.scss";
 
 interface SourceOptionsProps {
@@ -39,96 +23,22 @@ const SourceOptions: FC<SourceOptionsProps> = ({
     <>
       <span>Source' social media</span>
       <div className={styles.optionsContainer}>
-        <RiYoutubeFill
-          className={`${styles.option} ${
-            selectedOption === YOUTUBE && styles.selected
-          } ${isHighlighted && styles.invalid} ${
-            isDarkMode && styles.darkMode
-          }`}
-          size="50"
-          color="red"
-          onClick={() => {
-            setIsHighlighted(false);
-            setSelectedOption(YOUTUBE);
-          }}
-        />
-        <RiStackOverflowFill
-          className={`${styles.option} ${
-            selectedOption === STACKOVERFLOW && styles.selected
-          } ${isHighlighted && styles.invalid} ${
-            isDarkMode && styles.darkMode
-          }`}
-          size="50"
-          color="orange"
-          onClick={() => {
-            setIsHighlighted(false);
-            setSelectedOption(STACKOVERFLOW);
-          }}
-        />
-        <RiGithubFill
-          className={`${styles.option} ${
-            selectedOption === GITHUB && styles.selected
-          } ${isHighlighted && styles.invalid} ${
-            isDarkMode && styles.darkMode
-          }`}
-          size="50"
-          onClick={() => {
-            setIsHighlighted(false);
-            setSelectedOption(GITHUB);
-          }}
-        />
-        <RiRedditFill
-          className={`${styles.option} ${
-            selectedOption === REDDIT && styles.selected
-          } ${isHighlighted && styles.invalid} ${
-            isDarkMode && styles.darkMode
-          }`}
-          size="50"
-          color="red"
-          onClick={() => {
-            setIsHighlighted(false);
-            setSelectedOption(REDDIT);
-          }}
-        />
-        <RiLinkedinBoxFill
-          className={`${styles.option} ${
-            selectedOption === LINKEDIN && styles.selected
-          } ${isHighlighted && styles.invalid} ${
-            isDarkMode && styles.darkMode
-          }`}
-          size="50"
-          color="blue"
-          onClick={() => {
-            setIsHighlighted(false);
-            setSelectedOption(LINKEDIN);
-          }}
-        />
-        <SiUdemy
-          className={`${styles.option} ${
-            selectedOption === UDEMY && styles.selected
-          } ${isHighlighted && styles.invalid} ${
-            isDarkMode && styles.darkMode
-          }`}
-          size="50"
-          color="purple"
-          onClick={() => {
-            setIsHighlighted(false);
-            setSelectedOption(UDEMY);
-          }}
-        />
-        <p
-          className={`${styles.option} ${
-            selectedOption === OTHER && styles.selected
-          } ${isHighlighted && styles.invalid} ${
-            isDarkMode && styles.darkMode
-          }`}
-          onClick={() => {
-            setIsHighlighted(false);
-            setSelectedOption(OTHER);
-          }}
-        >
-          OTHER
-        </p>
+        {PLATFORMS.map((platform) => (
+          <SourcePlatform
+            key={platform}
+            platform={platform}
+            size={50}
+            className={`${styles.option} ${
+              selectedOption === platform && styles.selected
+            } ${isHighlighted && styles.invalid} ${
+              isDarkMode && styles.darkMode
+            }`}
+            onClick={() => {
+              setIsHighlighted(false);
+              setSelectedOption(platform);
+            }}
+          />
+        ))}
       </div>
     </>
   );
