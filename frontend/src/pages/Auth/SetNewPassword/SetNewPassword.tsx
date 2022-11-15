@@ -76,7 +76,6 @@ const SetNewPasswordPage = () => {
         />
         <h2 className={styles.title}>Set a new password</h2>
         <Input
-          id="password"
           type="password"
           placeholder="Password"
           value={password}

@@ -99,7 +99,6 @@ const SignupPage = () => {
           <Input
             isValid={firstNameIsValid}
             setIsValid={setFirstNameIsValid}
-            id="firstName"
             setErrorMessage={setFirstNameErrorMessage}
             isErrorMessageVisible={isFirstNameErrorVisible}
             setIsErrorMessageVisible={setIsFirstNameErrorVisible}
@@ -123,7 +122,6 @@ const SignupPage = () => {
           <Input
             isValid={lastNameIsValid}
             setIsValid={setLastNameIsValid}
-            id="lastName"
             setErrorMessage={setLastNameErrorMessage}
             isErrorMessageVisible={isLastNameErrorVisible}
             setIsErrorMessageVisible={setIsLastNameErrorVisible}
@@ -148,7 +146,6 @@ const SignupPage = () => {
         <Input
           isValid={emailIsValid}
           setIsValid={setEmailIsValid}
-          id="email"
           setErrorMessage={setEmailErrorMessage}
           isErrorMessageVisible={isEmailErrorVisible}
           setIsErrorMessageVisible={setIsEmailErrorVisible}
@@ -171,7 +168,6 @@ const SignupPage = () => {
         <Input
           isValid={passwordIsValid}
           setIsValid={setPasswordIsValid}
-          id="password"
           setErrorMessage={setPasswordErrorMessage}
           isErrorMessageVisible={isPasswordErrorVisible}
           setIsErrorMessageVisible={setIsPasswordErrorVisible}
@@ -200,7 +196,6 @@ const SignupPage = () => {
         <Input
           isValid={confirmPasswordIsValid}
           setIsValid={setConfirmPasswordIsValid}
-          id="confirmPassword"
           setErrorMessage={setConfirmPasswordErrorMessage}
           isErrorMessageVisible={isConfirmPasswordErrorVisible}
           setIsErrorMessageVisible={setIsConfirmPasswordErrorVisible}

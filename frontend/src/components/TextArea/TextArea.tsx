@@ -1,8 +1,10 @@
 import {
-  ChangeEvent,
+  ChangeEventHandler,
+  FC,
   MouseEventHandler,
   useContext,
   useEffect,
+  useId,
   useState,
 } from "react";
 import { RiErrorWarningLine } from "react-icons/ri";
@@ -11,24 +13,24 @@ import InputError from "../InputError/InputError";
 import { SwitchThemeContext } from "../../contexts/SwitchThemeContext";
 import { RIGHT } from "../../constants/feed";
 
-const TextArea: React.FC<{
+interface TextAreaProps {
   className?: string;
   errorMessage?: string;
-  id?: string;
   isErrorMessageVisible?: boolean;
   isValid: boolean;
   label: string;
   onBlur?: () => void;
-  onChange?: (e: ChangeEvent) => void;
+  onChange?: ChangeEventHandler;
   onClick?: MouseEventHandler;
   setErrorMessage?: (arg: string) => void;
   setIsErrorMessageVisible?: (arg: boolean) => void;
   setIsValid?: (arg: boolean) => void;
   value?: string;
-}> = ({
+}
+
+const TextArea: FC<TextAreaProps> = ({
   className,
   errorMessage,
-  id,
   isErrorMessageVisible,
   isValid, //css invalid input responsible
   label,
@@ -43,6 +45,8 @@ const TextArea: React.FC<{
   const [isFocused, setIsFocused] = useState(false);
 
   const { isDarkMode } = useContext(SwitchThemeContext);
+
+  const id = useId();
 
   useEffect(() => {
     if (isFocused && setIsValid) {

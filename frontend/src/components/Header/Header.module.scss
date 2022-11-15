@@ -57,13 +57,11 @@
     @media (max-width: 576px) {
       gap: 10px;
     }
-  }
-}
 
-.userAvatar {
-  border-radius: 50%;
-
-  @media (max-width: 576px) {
-    display: none;
+    a .userAvatar {
+      @media (max-width: 576px) {
+        display: none;
+      }
+    }
   }
 }

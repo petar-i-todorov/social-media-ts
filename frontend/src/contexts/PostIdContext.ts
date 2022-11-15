@@ -1,8 +1,8 @@
-import { createContext } from "react";
+import { createContext, Dispatch, SetStateAction } from "react";
 
 export const PostIdContext = createContext<{
   postId: string;
-  setPostId: React.Dispatch<React.SetStateAction<string>>;
+  setPostId: Dispatch<SetStateAction<string>>;
 }>({
   postId: "",
   setPostId: () => {},

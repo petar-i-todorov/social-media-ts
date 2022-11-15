@@ -1,14 +1,14 @@
-import { createContext, Dispatch } from "react";
+import { createContext, Dispatch, SetStateAction } from "react";
 
 export const ModalsManipulationContext = createContext<{
   addPostVisibility: boolean;
-  setAddPostVisibility: Dispatch<React.SetStateAction<boolean>>;
+  setAddPostVisibility: Dispatch<SetStateAction<boolean>>;
   deletePostVisibility: boolean;
-  setDeletePostVisibility: React.Dispatch<React.SetStateAction<boolean>>;
+  setDeletePostVisibility: Dispatch<SetStateAction<boolean>>;
   reportPostVisibility: boolean;
-  setReportPostVisibility: React.Dispatch<React.SetStateAction<boolean>>;
+  setReportPostVisibility: Dispatch<SetStateAction<boolean>>;
   editPostVisibility: boolean;
-  setEditPostVisibility: React.Dispatch<React.SetStateAction<boolean>>;
+  setEditPostVisibility: Dispatch<SetStateAction<boolean>>;
 }>({
   addPostVisibility: false,
   setAddPostVisibility: () => {},

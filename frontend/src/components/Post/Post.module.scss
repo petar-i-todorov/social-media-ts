@@ -61,7 +61,7 @@
       text-align: left;
 
       @media (max-width: 370px) {
-        font-size: 13px;
+        font-size: 0.8rem;
       }
 
       a {
@@ -113,7 +113,7 @@
       }
 
       .votesQty {
-        font-size: 20px;
+        font-size: 1.25rem;
         transform: translateY(2.5px);
       }
     }

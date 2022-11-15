@@ -52,7 +52,7 @@
     }
 
     @media (max-width: 420px) {
-      font-size: 80%;
+      font-size: 0.8rem;
     }
   }
 
@@ -67,7 +67,7 @@
     color: white;
     outline: none;
     border: none;
-    font-size: 17px;
+    font-size: 1rem;
     border-radius: 3px;
     -webkit-appearance: none;
     -moz-appearance: none;
@@ -78,11 +78,11 @@
     }
 
     @media (max-width: 450px) {
-      font-size: 80%;
+      font-size: 0.8rem;
     }
 
     @media (max-width: 360px) {
-      font-size: 70%;
+      font-size: 0.7rem;
     }
 
     &::-ms-expand {
@@ -94,7 +94,7 @@
       color: black;
 
       @media (max-width: 340px) {
-        font-size: 10px;
+        font-size: 0.625rem;
       }
     }
   }

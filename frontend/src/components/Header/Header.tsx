@@ -46,6 +46,7 @@ const Header: FC<HeaderProps> = ({
             setIsNavigatingToFeed={setIsNavigatingToFeed}
           />
           <Avatar
+            className={styles.userAvatar}
             url={userAvatar}
             size={35}
             linkTo={

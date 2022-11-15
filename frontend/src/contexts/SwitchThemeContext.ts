@@ -1,6 +1,6 @@
-import React from "react";
+import { createContext, Dispatch, SetStateAction } from "react";
 
-export const SwitchThemeContext = React.createContext<{
+export const SwitchThemeContext = createContext<{
   isDarkMode: boolean;
-  setIsDarkMode: React.Dispatch<React.SetStateAction<boolean>>;
+  setIsDarkMode: Dispatch<SetStateAction<boolean>>;
 }>({ isDarkMode: false, setIsDarkMode: () => {} });

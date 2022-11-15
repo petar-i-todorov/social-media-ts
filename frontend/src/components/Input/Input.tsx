@@ -6,6 +6,7 @@ import React, {
   SetStateAction,
   useContext,
   useEffect,
+  useId,
   useState,
 } from "react";
 import { RiErrorWarningLine } from "react-icons/ri";
@@ -18,7 +19,6 @@ import { LEFT } from "../../constants/feed";
 interface InputProps {
   errorMessage: string;
   errorPosition: ErrorPosition;
-  id: string;
   isErrorMessageVisible: boolean;
   isValid: boolean;
   onBlur: FocusEventHandler;
@@ -35,7 +35,6 @@ interface InputProps {
 const Input: React.FC<InputProps> = ({
   errorMessage,
   errorPosition,
-  id,
   isErrorMessageVisible,
   isValid, //responsible for css
   onBlur,
@@ -51,6 +50,8 @@ const Input: React.FC<InputProps> = ({
   const [isFocused, setIsFocused] = useState(false);
   const [isActive, setIsActive] = useState(false); //responsible for placeholder animation
   const { isDarkMode } = useContext(SwitchThemeContext);
+
+  const id = useId();
 
   useEffect(() => {
     if (isFocused && setIsValid) {

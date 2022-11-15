@@ -59,7 +59,6 @@ const ResetPasswordPage = () => {
           Enter the email you usually use to log in to your account:
         </span>
         <Input
-          id="reset"
           placeholder="Email"
           type="email"
           onChange={(e) => {

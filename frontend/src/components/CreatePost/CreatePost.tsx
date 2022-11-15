@@ -268,7 +268,6 @@ const CreatePost: FC<CreatePostProps> = ({
       <>
         <h2>Source info</h2>
         <Input
-          id="title"
           type="text"
           placeholder="Title"
           value={title}
@@ -290,7 +289,6 @@ const CreatePost: FC<CreatePostProps> = ({
         />
         <TextArea
           errorMessage={descriptionErrorMessage}
-          id="description"
           isErrorMessageVisible={isDescriptionErrorMessageVisible}
           isValid={isDescriptionValid}
           label="Description"
@@ -310,7 +308,6 @@ const CreatePost: FC<CreatePostProps> = ({
           }}
         />
         <Input
-          id="url"
           type="url"
           placeholder="Source URL"
           value={url}

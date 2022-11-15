@@ -1,7 +1,7 @@
-import React, { Dispatch, SetStateAction } from "react";
+import { createContext, Dispatch, SetStateAction } from "react";
 import { DevRole, IPost } from "../types/feed";
 
-export const PostsContext = React.createContext<{
+export const PostsContext = createContext<{
   posts: IPost[];
   setPosts: Dispatch<SetStateAction<IPost[]>>;
   sortBy: "RECENCY" | "VOTES";

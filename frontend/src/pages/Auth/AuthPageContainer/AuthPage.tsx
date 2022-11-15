@@ -1,8 +1,8 @@
-import React from "react";
+import { FC, PropsWithChildren } from "react";
 
 import styles from "./AuthPage.module.scss";
 
-const AuthPage: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+const AuthPage: FC<PropsWithChildren> = ({ children }) => {
   return <div className={styles.authPage}>{children}</div>;
 };
 

@@ -39,12 +39,12 @@
     padding-top: 20px;
     z-index: 2;
     .userName {
-      font-size: 70px;
+      font-size: 4.625rem;
       font-weight: 500;
       font-family: "Patrick Hand", cursive;
       text-align: center;
       @media (max-width: 576px) {
-        font-size: 40px;
+        font-size: 2.5rem;
       }
     }
   }
@@ -95,7 +95,7 @@
       width: 250px;
       text-align: center;
       font-family: "Handlee", cursive;
-      font-size: 20px;
+      font-size: 1.25rem;
       margin-top: 10px;
       padding: 10px;
       display: flex;
@@ -109,7 +109,7 @@
       }
       .editArea {
         font-family: "Handlee", cursive;
-        font-size: 20px;
+        font-size: 1.25rem;
       }
     }
     .avatarInput {
@@ -151,7 +151,7 @@
         width: 50px !important;
       }
       .currentPage {
-        font-size: 25px;
+        font-size: 1.5rem;
       }
     }
   }

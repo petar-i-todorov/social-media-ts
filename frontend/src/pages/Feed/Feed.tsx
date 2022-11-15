@@ -22,13 +22,16 @@ const FeedPage: React.FC<{
   const [isLoadingMore, setIsLoadingMore] = useState(false); //infinite scroll loader
   const [lastPostDate, setLastPostDate] = useState<null | string>(null);
   const [lastPostVotes, setLastPostVotes] = useState<null | number>(null);
+
   const { isDarkMode } = useContext(SwitchThemeContext);
+
   const infiniteObserver = new IntersectionObserver((entries, observer) => {
     if (entries[0].isIntersecting) {
       observer.unobserve(entries[0].target);
       setIsIntersecting(true);
     }
   });
+
   useEffect(() => {
     async function fetchData() {
       setIsLoading(true);
@@ -45,6 +48,7 @@ const FeedPage: React.FC<{
       setIsNavigatingToFeed(false);
     }
   }, [devRole, sortBy]);
+
   useEffect(() => {
     async function fetchData() {
       if (isIntersecting && lastPostDate && lastPostVotes !== null) {
@@ -62,12 +66,14 @@ const FeedPage: React.FC<{
     }
     fetchData();
   }, [isIntersecting]);
+
   useEffect(() => {
     if (posts.length) {
       setLastPostDate(posts[posts.length - 1].createdAt);
       setLastPostVotes(posts[posts.length - 1].upvotes);
     }
   }, [posts]);
+
   return (
     <>
       <main className={styles.feed + " " + (isDarkMode && appStyles.darkMode)}>
