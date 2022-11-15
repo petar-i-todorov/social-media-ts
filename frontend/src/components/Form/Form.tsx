@@ -1,14 +1,14 @@
-import React, { PropsWithChildren, useContext } from "react";
+import { FC, FormEventHandler, PropsWithChildren, useContext } from "react";
 
 import { SwitchThemeContext } from "../../contexts/SwitchThemeContext";
 import styles from "./Form.module.scss";
 
 interface FormProps {
-  onSubmit?: React.FormEventHandler;
+  onSubmit?: FormEventHandler;
   nonAnimated?: boolean;
 }
 
-const Form: React.FC<PropsWithChildren<FormProps>> = ({
+const Form: FC<PropsWithChildren<FormProps>> = ({
   onSubmit,
   children,
   nonAnimated,

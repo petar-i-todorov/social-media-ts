@@ -8,41 +8,54 @@
 
 .userPage {
   max-width: 768px;
-  margin: 0 auto;
-  padding: 50px 0 20px 0;
+  min-height: calc(100vh - 60px);
+
   display: flex;
   flex-direction: column;
   gap: 20px;
+
   position: relative;
+
+  margin: 0 auto;
+  padding: 50px 0 20px 0;
   box-shadow: 2px 2px 10px lightgray;
-  min-height: calc(100vh - 60px);
+
   .skeletonsContainer {
     display: flex;
     flex-direction: column;
     gap: 10px;
+
     padding: 0 20px;
+
     .skeleton {
+      height: 284px;
+
       box-shadow: 2px 2px 5px rgb(0 0 0 / 10%);
       outline: 1px solid lightgray;
-      height: 284px;
     }
   }
+
   .darkMode.pageHeader {
     border-bottom: 1px solid gray;
   }
+
   .pageHeader {
     height: 200px;
-    background-color: black;
-    color: white;
+
     display: flex;
     justify-content: center;
+
+    background-color: black;
+    color: white;
     padding-top: 20px;
     z-index: 2;
+
     .userName {
       font-size: 4.625rem;
       font-weight: 500;
       font-family: "Patrick Hand", cursive;
       text-align: center;
+
       @media (max-width: 576px) {
         font-size: 2.5rem;
       }
@@ -53,39 +66,51 @@
     border: 1px solid gray;
   }
   .userInfo {
+    width: 250px;
+
     display: flex;
     flex-direction: column;
-    align-items: center;
     justify-content: center;
-    width: 250px;
+
+    position: relative;
+
+    align-items: center;
     margin: -100px auto 0 auto;
     border-radius: 7px;
     box-shadow: 2px 2px 10px lightgray;
-    position: relative;
+
     .userAvatar {
       z-index: 3;
       border-radius: 50%;
     }
+
     label[for="avatar"] {
-      z-index: 3;
       position: relative;
+
+      z-index: 3;
+
       .userAvatar {
         cursor: pointer;
         border-radius: 50%;
       }
+
       .uploadLogo {
-        position: absolute;
-        left: 0;
-        bottom: 20px;
-        background-color: white;
-        border-radius: 50%;
-        cursor: pointer;
         width: 30px;
         height: 30px;
+
         display: flex;
         justify-content: center;
         align-items: center;
+
+        position: absolute;
+        left: 0;
+        bottom: 20px;
+
+        background-color: white;
+        border-radius: 50%;
+        cursor: pointer;
         background-color: lightgray;
+
         .darkMode {
           color: black;
         }
@@ -93,37 +118,47 @@
     }
     .userQuote {
       width: 250px;
+
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+
       text-align: center;
       font-family: "Handlee", cursive;
       font-size: 1.25rem;
       margin-top: 10px;
       padding: 10px;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
+
       .editArea.darkMode {
         background-color: black;
         color: rgba(255, 255, 255, 0.8);
         outline: none;
         border: 1px solid gray;
       }
+
       .editArea {
         font-family: "Handlee", cursive;
         font-size: 1.25rem;
       }
     }
+
     .avatarInput {
       display: none;
     }
+
     .editIcon {
       position: absolute;
       right: 20px;
       top: 120px;
+
       border-radius: 50%;
+
       cursor: pointer;
+
       &:hover {
         background-color: lightgray;
       }
+
       &:active {
         background-color: darkgray;
       }
@@ -133,23 +168,32 @@
     display: flex;
     flex-direction: column;
     gap: 20px;
+
     padding: 0 20px;
+
     span {
       font-weight: 500px;
     }
+
     .pagination {
+      width: 50%;
+
       display: flex;
       justify-content: space-around;
-      width: 50%;
+
       margin: 0 auto;
       align-items: center;
+
       @media (max-width: 400px) {
         width: 100%;
+
         justify-content: space-between;
       }
+
       button {
         width: 50px !important;
       }
+
       .currentPage {
         font-size: 1.5rem;
       }

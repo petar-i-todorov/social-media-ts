@@ -1,4 +1,11 @@
-import { useContext, useEffect, useState } from "react";
+import {
+  Dispatch,
+  FC,
+  SetStateAction,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 import { BiLoaderAlt } from "react-icons/bi";
 import Button from "../../components/Button/Button";
 import Post from "../../components/Post/Post";
@@ -9,9 +16,9 @@ import PostSkeleton from "../../components/Post/PostSkeleton";
 import { SwitchThemeContext } from "../../contexts/SwitchThemeContext";
 import appStyles from "../../scss/App.module.scss";
 
-const FeedPage: React.FC<{
+const FeedPage: FC<{
   isNavigatingToFeed: boolean;
-  setIsNavigatingToFeed: React.Dispatch<React.SetStateAction<boolean>>;
+  setIsNavigatingToFeed: Dispatch<SetStateAction<boolean>>;
   userAvatar: string | undefined;
 }> = ({ isNavigatingToFeed, setIsNavigatingToFeed, userAvatar }) => {
   const [isIntersecting, setIsIntersecting] = useState(false);

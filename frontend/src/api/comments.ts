@@ -1,4 +1,9 @@
-export const voteComment = (id: string, type: "like" | "dislike") => {
+type VoteCommentFunction = (config: {
+  id: string;
+  type: "like" | "dislike";
+}) => Promise<Response>;
+
+export const voteComment: VoteCommentFunction = ({ id, type }) => {
   return fetch(`http://localhost:8080/comments/${id}/${type}`, {
     method: "PATCH",
     headers: {

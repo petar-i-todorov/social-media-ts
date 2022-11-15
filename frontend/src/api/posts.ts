@@ -1,12 +1,10 @@
 import { DevRole, SortBy } from "../types/feed";
 
-interface GetPostsArguments {
+type GetPosts = (config: {
   sortBy: SortBy;
   devRole: DevRole;
   substring: string;
-}
-
-type GetPosts = (config: GetPostsArguments) => Promise<Response>;
+}) => Promise<Response>;
 
 export const getPosts: GetPosts = ({ sortBy, devRole, substring }) => {
   return fetch(
@@ -14,12 +12,10 @@ export const getPosts: GetPosts = ({ sortBy, devRole, substring }) => {
   );
 };
 
-interface CommentPostArguments {
+type CommentPostFunction = (config: {
   postId: string;
   comment: string;
-}
-
-type CommentPostFunction = (config: CommentPostArguments) => Promise<Response>;
+}) => Promise<Response>;
 
 export const commentPost: CommentPostFunction = ({ postId, comment }) => {
   return fetch(`http://localhost:8080/posts/addComment/${postId}`, {
@@ -65,13 +61,11 @@ export const downvotePost: VotePostFunction = (postId) => {
   });
 };
 
-interface ReportPostArguments {
+type ReportPostFunction = (config: {
   postId: string;
   reportType: string;
   reportMessage: string;
-}
-
-type ReportPostFunction = (config: ReportPostArguments) => Promise<Response>;
+}) => Promise<Response>;
 
 export const reportPost: ReportPostFunction = ({
   postId,

@@ -4,6 +4,8 @@
   align-items: center;
 
   .dot1 {
+    margin-left: 2px;
+
     @keyframes dot1-bounce {
       from {
         transform: translateY(0);
@@ -13,7 +15,6 @@
         opacity: 0.5;
       }
     }
-    margin-left: 2px;
     animation: dot1-bounce 1s infinite;
   }
 

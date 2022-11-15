@@ -1,16 +1,15 @@
-import React, { MouseEventHandler, PropsWithChildren, useMemo } from "react";
-
+import React from "react";
 import styles from "./Button.module.scss";
 
 interface ButtonProps {
   color: "blue" | "green" | "red";
-  onClick?: MouseEventHandler;
+  onClick?: React.MouseEventHandler;
   type?: "submit";
   className?: string;
   isLocked?: boolean;
 }
 
-const Button: React.FC<PropsWithChildren<ButtonProps>> = ({
+const Button: React.FC<React.PropsWithChildren<ButtonProps>> = ({
   className,
   color,
   type,
@@ -18,7 +17,7 @@ const Button: React.FC<PropsWithChildren<ButtonProps>> = ({
   onClick,
   children,
 }) => {
-  const colorStyle = useMemo(() => {
+  const colorStyle = (() => {
     switch (color) {
       case "blue":
         return styles.blue;
@@ -27,7 +26,8 @@ const Button: React.FC<PropsWithChildren<ButtonProps>> = ({
       default:
         return styles.red;
     }
-  }, [color]);
+  })();
+
   return (
     <button
       type={type}

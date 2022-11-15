@@ -14,6 +14,15 @@ export type Platform =
   | "REDDIT"
   | "OTHER";
 
+export type CommentType = {
+  _id: string;
+  creator: IUser;
+  text: string;
+  totalVotes: number;
+  votes: ICommentVote[];
+  createdAt: string;
+};
+
 export interface IPost {
   _id: string;
   title: string;
@@ -25,16 +34,7 @@ export interface IPost {
   upvotedBy: string[];
   downvotedBy: string[];
   creator: IUser;
-  comments: IComment[];
-  createdAt: string;
-}
-
-export interface IComment {
-  _id: string;
-  creator: IUser;
-  text: string;
-  totalVotes: number;
-  votes: ICommentVote[];
+  comments: CommentType[];
   createdAt: string;
 }
 

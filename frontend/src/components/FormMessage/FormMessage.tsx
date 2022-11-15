@@ -1,4 +1,4 @@
-import React, { PropsWithChildren } from "react";
+import React, { FC, PropsWithChildren } from "react";
 import styles from "./FormMessage.module.scss";
 
 interface FormMessageProps {
@@ -7,7 +7,7 @@ interface FormMessageProps {
   flashVisibility?: boolean;
 }
 
-const FormMessage: React.FC<PropsWithChildren<FormMessageProps>> = ({
+const FormMessage: FC<PropsWithChildren<FormMessageProps>> = ({
   children,
   color,
   flash,

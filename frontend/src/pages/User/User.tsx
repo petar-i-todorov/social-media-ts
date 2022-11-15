@@ -1,5 +1,8 @@
-import React, {
+import {
   ChangeEvent,
+  Dispatch,
+  FC,
+  SetStateAction,
   useContext,
   useEffect,
   useRef,
@@ -23,9 +26,9 @@ import UserSkeleton from "./UserSkeleton";
 import PostSkeleton from "../../components/Post/PostSkeleton";
 import { SwitchThemeContext } from "../../contexts/SwitchThemeContext";
 
-const User: React.FC<{
+const User: FC<{
   userAvatar: string;
-  setUserAvatar: React.Dispatch<React.SetStateAction<string>>;
+  setUserAvatar: Dispatch<SetStateAction<string>>;
 }> = ({ userAvatar, setUserAvatar }) => {
   const postsPerPage = useRef(10);
   const firstFetching = useRef(true);

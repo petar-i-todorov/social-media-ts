@@ -1,6 +1,7 @@
 import React, {
   ChangeEventHandler,
   Dispatch,
+  FC,
   FocusEventHandler,
   HTMLInputTypeAttribute,
   SetStateAction,
@@ -32,7 +33,7 @@ interface InputProps {
   value: string;
 }
 
-const Input: React.FC<InputProps> = ({
+const Input: FC<InputProps> = ({
   errorMessage,
   errorPosition,
   isErrorMessageVisible,

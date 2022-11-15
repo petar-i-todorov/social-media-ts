@@ -1,124 +1,50 @@
-import React, { useContext, useEffect, useMemo, useState } from "react";
+import React from "react";
 import { BsFillCircleFill } from "react-icons/bs";
 import ReactTimeAgo from "react-time-ago";
 import styles from "./Comment.module.scss";
-import { IComment } from "../../types/feed";
+import { CommentType } from "../../types/feed";
 import { SwitchThemeContext } from "../../contexts/SwitchThemeContext";
 import Avatar from "../Avatar/Avatar";
-import CommentVote from "../CommentVote/CommentVote";
-
-const useComment = (comment: IComment) => {
-  const [commentObj, setCommentObj] = useState<IComment>(comment);
-
-  useEffect(() => {
-    setCommentObj(comment);
-  }, [comment]);
-
-  const likesQty = useMemo(() => {
-    return commentObj.votes
-      .filter((vote) => {
-        return vote.isLike;
-      })
-      .map((vote) => {
-        return vote.user;
-      }).length;
-  }, [commentObj.votes]);
-
-  const dislikesQty = useMemo(() => {
-    return commentObj.votes
-      .filter((vote) => {
-        return !vote.isLike;
-      })
-      .map((vote) => {
-        return vote.user;
-      }).length;
-  }, [commentObj.votes]);
-
-  const isLikePressed = useMemo(() => {
-    return !!commentObj.votes
-      .filter((vote) => {
-        return vote.isLike;
-      })
-      .map((vote) => {
-        return vote.user;
-      })
-      .find((userId) => {
-        return userId === localStorage.getItem("userId");
-      });
-  }, [commentObj.votes]);
-
-  const isDislikePressed = useMemo(() => {
-    return !!commentObj.votes
-      .filter((vote) => {
-        return !vote.isLike;
-      })
-      .map((vote) => {
-        return vote.user;
-      })
-      .find((userId) => {
-        return userId === localStorage.getItem("userId");
-      });
-  }, [commentObj.votes]);
-
-  return {
-    commentObj,
-    setCommentObj,
-    isLikePressed,
-    likesQty,
-    isDislikePressed,
-    dislikesQty,
-  };
-};
+import CommentVotes from "../CommentVotes/CommentVotes";
 
 const Comment: React.FC<{
-  comment: IComment;
+  comment: CommentType;
 }> = ({ comment }) => {
-  const {
-    commentObj,
-    setCommentObj,
-    likesQty,
-    dislikesQty,
-    isLikePressed,
-    isDislikePressed,
-  } = useComment(comment);
+  const [commentState, setCommentState] = React.useState(comment);
 
-  const { isDarkMode } = useContext(SwitchThemeContext);
+  const { isDarkMode } = React.useContext(SwitchThemeContext);
 
   return (
     <div className={styles.container}>
       <div className={styles.commentContent}>
         <Avatar
           size={30.8}
-          url={commentObj.creator.avatarUrl}
-          linkTo={`/user/${commentObj.creator._id}`}
+          url={commentState.creator.avatarUrl}
+          linkTo={`/user/${commentState.creator._id}`}
         />
         <div
           className={`${styles.commentInfo} ${isDarkMode && styles.darkMode}`}
         >
           <div className={styles.commentHeader}>
             <span className={styles.commentAuthor}>
-              {`${commentObj.creator.name} `}
+              {`${commentState.creator.name} `}
             </span>
             <BsFillCircleFill size="5" color="gray" />{" "}
-            <ReactTimeAgo date={new Date(commentObj.createdAt)} />
+            <ReactTimeAgo date={new Date(commentState.createdAt)} />
           </div>
-          <div className={styles.commentText}>{commentObj.text}</div>
+          <div className={styles.commentText}>{commentState.text}</div>
         </div>
       </div>
       <div className={styles.votesContainer}>
-        <CommentVote
-          commentId={commentObj._id}
-          setComment={setCommentObj}
-          type={"like"}
-          quantity={likesQty}
-          isPressed={!!isLikePressed}
+        <CommentVotes
+          comment={commentState}
+          setComment={setCommentState}
+          type="like"
         />
-        <CommentVote
-          commentId={commentObj._id}
-          setComment={setCommentObj}
-          type={"dislike"}
-          quantity={dislikesQty}
-          isPressed={!!isDislikePressed}
+        <CommentVotes
+          comment={commentState}
+          setComment={setCommentState}
+          type="dislike"
         />
       </div>
     </div>

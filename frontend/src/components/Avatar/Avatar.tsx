@@ -1,4 +1,4 @@
-import { FC } from "react";
+import React from "react";
 import { FaUserCircle } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import styles from "./Avatar.module.scss";
@@ -10,7 +10,7 @@ interface AvatarProps {
   url: string | undefined;
 }
 
-const Avatar: FC<AvatarProps> = ({ url, size, linkTo, className }) => {
+const Avatar: React.FC<AvatarProps> = ({ url, size, linkTo, className }) => {
   return (
     <Link to={linkTo}>
       {url ? (
