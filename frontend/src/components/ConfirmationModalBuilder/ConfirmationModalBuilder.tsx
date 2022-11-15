@@ -1,43 +1,37 @@
-import { Dispatch, FC, MouseEventHandler, SetStateAction } from "react";
-
 import Button from "../Button/Button";
 import ModalBuilder from "../ModalBuilder/ModalBuilder";
 import styles from "./ConfirmationModalBuilder.module.scss";
 
-const Confirm: FC<{
+interface ConfirmationModalBuilderProps {
   question: string;
-  onConfirmation: MouseEventHandler;
-  setVisibility: Dispatch<SetStateAction<boolean>>;
-}> = ({ question, onConfirmation, setVisibility }) => {
+  onConfirmation: React.MouseEventHandler;
+  setVisibility: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+const ConfirmationModalBuilder: React.FC<ConfirmationModalBuilderProps> = ({
+  question,
+  onConfirmation,
+  setVisibility,
+}) => {
   return (
-    <ModalBuilder
-      onOverlayClick={() => {
-        setVisibility(false);
-      }}
-    >
+    <ModalBuilder onOverlayClick={() => setVisibility(false)}>
       <h2>{question}</h2>
-      <div className={styles.btnsContainer}>
-        <Button
-          color="red"
-          onClick={() => {
-            setVisibility(false);
-          }}
-        >
+      <div className={styles.buttonsContainer}>
+        <Button color="red" onClick={() => setVisibility(false)}>
           Actually, no
         </Button>
         <Button
           color="green"
           onClick={async (event) => {
-            event.preventDefault();
             setVisibility(false);
             onConfirmation(event);
           }}
         >
-          Yes, of course
+          Yes
         </Button>
       </div>
     </ModalBuilder>
   );
 };
 
-export default Confirm;
+export default ConfirmationModalBuilder;

@@ -14,6 +14,11 @@ const Comment: React.FC<{
 
   const { isDarkMode } = React.useContext(SwitchThemeContext);
 
+  const commentVotesProps = {
+    comment: commentState,
+    setComment: setCommentState,
+  };
+
   return (
     <div className={styles.container}>
       <div className={styles.commentContent}>
@@ -36,16 +41,8 @@ const Comment: React.FC<{
         </div>
       </div>
       <div className={styles.votesContainer}>
-        <CommentVotes
-          comment={commentState}
-          setComment={setCommentState}
-          type="like"
-        />
-        <CommentVotes
-          comment={commentState}
-          setComment={setCommentState}
-          type="dislike"
-        />
+        <CommentVotes {...commentVotesProps} type="like" />
+        <CommentVotes {...commentVotesProps} type="dislike" />
       </div>
     </div>
   );

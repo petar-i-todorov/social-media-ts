@@ -1,12 +1,4 @@
-import {
-  useContext,
-  useEffect,
-  useState,
-  Dispatch,
-  FC,
-  SetStateAction,
-  useCallback,
-} from "react";
+import React from "react";
 import Input from "../Input/Input";
 import TextArea from "../TextArea/TextArea";
 import Button from "../Button/Button";
@@ -25,30 +17,33 @@ import { defaultFlashMessageConfig } from "../../constants/feed";
 interface CreatePostProps {
   editPost?: boolean;
   postToEdit?: IPost;
-  setClosingConfirmationVisibility: Dispatch<SetStateAction<boolean>>;
+  setClosingConfirmationVisibility: React.Dispatch<
+    React.SetStateAction<boolean>
+  >;
 }
 
 const useValidate = () => {
-  const [isTitleValid, setIsTitleValid] = useState(true);
-  const [titleErrorMessage, setTitleErrorMessage] = useState("");
+  const [isTitleValid, setIsTitleValid] = React.useState(true);
+  const [titleErrorMessage, setTitleErrorMessage] = React.useState("");
   const [isTitleErrorMessageVisible, setIsTitleErrorMessageVisible] =
-    useState(false);
+    React.useState(false);
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (isTitleErrorMessageVisible) {
       setTitleErrorMessage("Title has to be at least 5 symbols.");
       setIsTitleValid(false);
     }
   }, [isTitleErrorMessageVisible]);
 
-  const [isDescriptionValid, setIsDescriptionValid] = useState(true);
-  const [descriptionErrorMessage, setDescriptionErrorMessage] = useState("");
+  const [isDescriptionValid, setIsDescriptionValid] = React.useState(true);
+  const [descriptionErrorMessage, setDescriptionErrorMessage] =
+    React.useState("");
   const [
     isDescriptionErrorMessageVisible,
     setIsDescriptionErrorMessageVisible,
-  ] = useState(false);
+  ] = React.useState(false);
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (isDescriptionErrorMessageVisible) {
       setDescriptionErrorMessage(
         "Description has to be at least 20 symbols. Please, describe the course with more details."
@@ -57,12 +52,12 @@ const useValidate = () => {
     }
   }, [isDescriptionErrorMessageVisible]);
 
-  const [isUrlValid, setIsUrlValid] = useState(true);
-  const [urlErrorMessage, setUrlErrorMessage] = useState("");
+  const [isUrlValid, setIsUrlValid] = React.useState(true);
+  const [urlErrorMessage, setUrlErrorMessage] = React.useState("");
   const [isUrlErrorMessageVisible, setIsUrlErrorMessageVisible] =
-    useState(false);
+    React.useState(false);
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (isUrlErrorMessageVisible) {
       setUrlErrorMessage("Invalid Url.");
       setIsUrlValid(false);
@@ -91,25 +86,25 @@ const useValidate = () => {
   };
 };
 
-const CreatePost: FC<CreatePostProps> = ({
+const CreatePost: React.FC<CreatePostProps> = ({
   setClosingConfirmationVisibility,
   editPost,
   postToEdit,
 }) => {
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [url, setUrl] = useState("");
-  const [selectedOption, setSelectedOption] = useState<Platform>();
-  const [isHighlighted, setIsHighlighted] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [isFormError, setIsFormError] = useState(false);
-  const [formErrorText, setFormErrorText] = useState("");
+  const [title, setTitle] = React.useState("");
+  const [description, setDescription] = React.useState("");
+  const [url, setUrl] = React.useState("");
+  const [selectedOption, setSelectedOption] = React.useState<Platform>();
+  const [isHighlighted, setIsHighlighted] = React.useState(false);
+  const [isLoading, setIsLoading] = React.useState(false);
+  const [isFormError, setIsFormError] = React.useState(false);
+  const [formErrorText, setFormErrorText] = React.useState("");
 
   const { setFeedFlashMessageConfiguration, setIsFeedFlashMessage } =
-    useContext(FlashMessageContext);
-  const { postId } = useContext(PostIdContext);
-  const { setPosts, posts, devRole } = useContext(PostsContext);
-  const { setAddPostVisibility, setEditPostVisibility } = useContext(
+    React.useContext(FlashMessageContext);
+  const { postId } = React.useContext(PostIdContext);
+  const { setPosts, posts, devRole } = React.useContext(PostsContext);
+  const { setAddPostVisibility, setEditPostVisibility } = React.useContext(
     ModalsManipulationContext
   );
 
@@ -134,7 +129,7 @@ const CreatePost: FC<CreatePostProps> = ({
     urlErrorMessage,
   } = useValidate();
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (postToEdit) {
       setTitle(postToEdit.title);
       setDescription(postToEdit.description);
@@ -143,7 +138,7 @@ const CreatePost: FC<CreatePostProps> = ({
     }
   }, [postToEdit]);
 
-  const editPostFunction = useCallback(async () => {
+  const editPostFunction = React.useCallback(async () => {
     const res = await updatePost({
       id: postId,
       title,
@@ -185,7 +180,7 @@ const CreatePost: FC<CreatePostProps> = ({
     url,
   ]);
 
-  const createPostFunction = useCallback(async () => {
+  const createPostFunction = React.useCallback(async () => {
     const res = await createPost({
       title,
       description,
@@ -220,7 +215,7 @@ const CreatePost: FC<CreatePostProps> = ({
     url,
   ]);
 
-  const onFormSubmit = useCallback(async () => {
+  const onFormSubmit = React.useCallback(async () => {
     if (title.length < 5) {
       setIsTitleErrorMessageVisible(true);
     } else if (description.length < 20) {

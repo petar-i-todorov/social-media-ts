@@ -78,6 +78,12 @@ const CommentVotes: React.FC<CommentVotesProps> = ({
 
   const { quantity, isIconPressed } = useCommentVotes({ comment, type });
 
+  const props = {
+    className: `${styles.voteLogo} ${
+      isIconPressed ? styles.pressed : styles.nonPressed
+    }`,
+  };
+
   const onVoteClickHandler = async (type: VoteType) => {
     const res = await voteComment({ id: comment._id, type });
     if (res.status === 200) {
@@ -93,22 +99,11 @@ const CommentVotes: React.FC<CommentVotesProps> = ({
     <div className={styles.commentVotes}>
       {`${quantity} `}
       {type === "like" ? (
-        <AiFillLike
-          className={`${styles.voteLogo} ${
-            isIconPressed ? styles.pressed : styles.nonPressed
-          }`}
-          onClick={() => {
-            onVoteClickHandler("like");
-          }}
-        />
+        <AiFillLike {...props} onClick={() => onVoteClickHandler("like")} />
       ) : (
         <AiFillDislike
-          className={`${styles.voteLogo} ${
-            isIconPressed ? styles.pressed : styles.nonPressed
-          }`}
-          onClick={() => {
-            onVoteClickHandler("dislike");
-          }}
+          {...props}
+          onClick={() => onVoteClickHandler("dislike")}
         />
       )}
     </div>

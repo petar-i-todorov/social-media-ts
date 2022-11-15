@@ -34,7 +34,10 @@ const Button: React.FC<React.PropsWithChildren<ButtonProps>> = ({
       className={`${styles.btn} ${colorStyle} ${className} ${
         isLocked && styles.locked
       }`}
-      onClick={onClick}
+      onClick={(event) => {
+        event.preventDefault();
+        onClick && onClick(event);
+      }}
     >
       {children}
     </button>
