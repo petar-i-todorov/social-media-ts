@@ -4,7 +4,7 @@ import styles from "./Button.module.scss";
 interface ButtonProps {
   color: "blue" | "green" | "red";
   onClick?: React.MouseEventHandler;
-  type?: "submit";
+  type?: "button" | "submit" | "reset" | undefined;
   className?: string;
   isLocked?: boolean;
 }

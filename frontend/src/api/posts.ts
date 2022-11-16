@@ -1,4 +1,4 @@
-import { DevRole, SortBy } from "../types/feed";
+import { DevRole, Platform, SortBy } from "../types/feed";
 
 type GetPosts = (config: {
   sortBy: SortBy;
@@ -82,5 +82,69 @@ export const reportPost: ReportPostFunction = ({
       "Content-Type": "application/json",
       Authorization: "Bearer " + localStorage.getItem("token"),
     },
+  });
+};
+
+interface PostArgument {
+  description: string;
+  devRole: DevRole;
+  platform: Platform | undefined;
+  title: string;
+  url: string;
+}
+
+interface PostArgumentWithId extends PostArgument {
+  id: string;
+}
+
+type EditPostFunction = (arg: PostArgumentWithId) => Promise<Response>;
+
+type CreatePostFunction = (arg: PostArgument) => Promise<Response>;
+
+export const updatePost: EditPostFunction = ({
+  description,
+  devRole,
+  id,
+  platform,
+  title,
+  url,
+}) => {
+  return fetch(`http://localhost:8080/posts/${id}`, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: "Bearer " + localStorage.getItem("token"),
+    },
+    body: JSON.stringify({
+      description,
+      devRole,
+      platform,
+      title,
+      url,
+    }),
+  });
+};
+
+export const createPost: CreatePostFunction = ({
+  description,
+  devRole,
+  platform,
+  title,
+  url,
+}) => {
+  return fetch("http://localhost:8080/posts/new", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: "Bearer " + localStorage.getItem("token"),
+    },
+    body: JSON.stringify({
+      creator: localStorage.getItem("userId"),
+      description,
+      devRole,
+      platform,
+      title,
+      url,
+    }),
   });
 };

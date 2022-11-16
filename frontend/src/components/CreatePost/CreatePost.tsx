@@ -10,9 +10,17 @@ import ModalBuilder from "../ModalBuilder/ModalBuilder";
 import { IPost, Platform } from "../../types/feed";
 import { PostIdContext } from "../../contexts/PostIdContext";
 import { FlashMessageContext } from "../../contexts/FlashMessageFeedContext";
-import { createPost, updatePost } from "./utils";
+import { createPost, updatePost } from "../../api/posts";
 import SourceOptions from "../SourceOptions/SourceOptions";
 import { defaultFlashMessageConfig } from "../../constants/feed";
+import {
+  reducer as formReducer,
+  initialState as formInitialState,
+  TITLE,
+  DESCRIPTION,
+  URL,
+  SET_VALUES,
+} from "../../reducers/createPostReducer";
 
 interface CreatePostProps {
   editPost?: boolean;
@@ -23,66 +31,48 @@ interface CreatePostProps {
 }
 
 const useValidate = () => {
-  const [isTitleValid, setIsTitleValid] = React.useState(true);
-  const [titleErrorMessage, setTitleErrorMessage] = React.useState("");
-  const [isTitleErrorMessageVisible, setIsTitleErrorMessageVisible] =
-    React.useState(false);
+  const [formState, dispatch] = React.useReducer(formReducer, formInitialState);
 
   React.useEffect(() => {
-    if (isTitleErrorMessageVisible) {
-      setTitleErrorMessage("Title has to be at least 5 symbols.");
-      setIsTitleValid(false);
+    if (formState.title.isErrorVisible) {
+      dispatch({
+        type: TITLE,
+        payload: {
+          errorText: "Title has to be at least 5 symbols.",
+          isValid: false,
+        },
+      });
     }
-  }, [isTitleErrorMessageVisible]);
-
-  const [isDescriptionValid, setIsDescriptionValid] = React.useState(true);
-  const [descriptionErrorMessage, setDescriptionErrorMessage] =
-    React.useState("");
-  const [
-    isDescriptionErrorMessageVisible,
-    setIsDescriptionErrorMessageVisible,
-  ] = React.useState(false);
+  }, [formState.title.isErrorVisible]);
 
   React.useEffect(() => {
-    if (isDescriptionErrorMessageVisible) {
-      setDescriptionErrorMessage(
-        "Description has to be at least 20 symbols. Please, describe the course with more details."
-      );
-      setIsDescriptionValid(false);
+    if (formState.description.isErrorVisible) {
+      dispatch({
+        type: DESCRIPTION,
+        payload: {
+          errorText:
+            "Description has to be at least 20 symbols. Please, describe the course with more details.",
+          isValid: false,
+        },
+      });
     }
-  }, [isDescriptionErrorMessageVisible]);
-
-  const [isUrlValid, setIsUrlValid] = React.useState(true);
-  const [urlErrorMessage, setUrlErrorMessage] = React.useState("");
-  const [isUrlErrorMessageVisible, setIsUrlErrorMessageVisible] =
-    React.useState(false);
+  }, [formState.description.isErrorVisible]);
 
   React.useEffect(() => {
-    if (isUrlErrorMessageVisible) {
-      setUrlErrorMessage("Invalid Url.");
-      setIsUrlValid(false);
+    if (formState.url.isErrorVisible) {
+      dispatch({
+        type: URL,
+        payload: {
+          errorText: "Invalid URL.",
+          isValid: false,
+        },
+      });
     }
-  }, [isUrlErrorMessageVisible]);
+  }, [formState.url.isErrorVisible]);
 
   return {
-    descriptionErrorMessage,
-    isDescriptionErrorMessageVisible,
-    isDescriptionValid,
-    isTitleErrorMessageVisible,
-    isTitleValid,
-    isUrlErrorMessageVisible,
-    isUrlValid,
-    setDescriptionErrorMessage,
-    setIsDescriptionErrorMessageVisible,
-    setIsDescriptionValid,
-    setIsTitleErrorMessageVisible,
-    setIsTitleValid,
-    setIsUrlErrorMessageVisible,
-    setIsUrlValid,
-    setTitleErrorMessage,
-    setUrlErrorMessage,
-    titleErrorMessage,
-    urlErrorMessage,
+    formState,
+    dispatch,
   };
 };
 
@@ -91,9 +81,6 @@ const CreatePost: React.FC<CreatePostProps> = ({
   editPost,
   postToEdit,
 }) => {
-  const [title, setTitle] = React.useState("");
-  const [description, setDescription] = React.useState("");
-  const [url, setUrl] = React.useState("");
   const [selectedOption, setSelectedOption] = React.useState<Platform>();
   const [isHighlighted, setIsHighlighted] = React.useState(false);
   const [isLoading, setIsLoading] = React.useState(false);
@@ -108,44 +95,30 @@ const CreatePost: React.FC<CreatePostProps> = ({
     ModalsManipulationContext
   );
 
-  const { isTitleValid, setIsTitleValid } = useValidate();
-
-  const {
-    descriptionErrorMessage,
-    isDescriptionErrorMessageVisible,
-    isDescriptionValid,
-    isTitleErrorMessageVisible,
-    isUrlErrorMessageVisible,
-    isUrlValid,
-    setDescriptionErrorMessage,
-    setIsDescriptionErrorMessageVisible,
-    setIsDescriptionValid,
-    setIsTitleErrorMessageVisible,
-    setIsUrlErrorMessageVisible,
-    setIsUrlValid,
-    setTitleErrorMessage,
-    setUrlErrorMessage,
-    titleErrorMessage,
-    urlErrorMessage,
-  } = useValidate();
+  const { formState, dispatch } = useValidate();
 
   React.useEffect(() => {
     if (postToEdit) {
-      setTitle(postToEdit.title);
-      setDescription(postToEdit.description);
-      setUrl(postToEdit.url);
+      dispatch({
+        type: SET_VALUES,
+        payload: {
+          title: postToEdit.title,
+          description: postToEdit.description,
+          url: postToEdit.url,
+        },
+      });
       setSelectedOption(postToEdit.platform);
     }
   }, [postToEdit]);
 
-  const editPostFunction = React.useCallback(async () => {
+  const editPostFunction = async () => {
     const res = await updatePost({
       id: postId,
-      title,
-      description,
+      title: formState.title.value,
+      description: formState.description.value,
       devRole,
       platform: selectedOption,
-      url,
+      url: formState.url.value,
     });
     setIsLoading(false);
     setEditPostVisibility(false);
@@ -166,25 +139,13 @@ const CreatePost: React.FC<CreatePostProps> = ({
       setIsFeedFlashMessage(true);
       setFeedFlashMessageConfiguration(defaultFlashMessageConfig);
     }
-  }, [
-    description,
-    devRole,
-    postId,
-    posts,
-    selectedOption,
-    setEditPostVisibility,
-    setFeedFlashMessageConfiguration,
-    setIsFeedFlashMessage,
-    setPosts,
-    title,
-    url,
-  ]);
+  };
 
-  const createPostFunction = React.useCallback(async () => {
+  const createPostFunction = async () => {
     const res = await createPost({
-      title,
-      description,
-      url,
+      title: formState.title.value,
+      description: formState.description.value,
+      url: formState.url.value,
       platform: selectedOption,
       devRole,
     });
@@ -203,25 +164,15 @@ const CreatePost: React.FC<CreatePostProps> = ({
       setFormErrorText(resData.message);
       setIsFormError(true);
     }
-  }, [
-    description,
-    devRole,
-    selectedOption,
-    setAddPostVisibility,
-    setFeedFlashMessageConfiguration,
-    setIsFeedFlashMessage,
-    setPosts,
-    title,
-    url,
-  ]);
+  };
 
-  const onFormSubmit = React.useCallback(async () => {
-    if (title.length < 5) {
-      setIsTitleErrorMessageVisible(true);
-    } else if (description.length < 20) {
-      setIsDescriptionErrorMessageVisible(true);
-    } else if (url.length < 10) {
-      setIsUrlErrorMessageVisible(true);
+  const onFormSubmit = async () => {
+    if (formState.title.value.length < 5) {
+      dispatch({ type: TITLE, payload: { isErrorVisible: true } });
+    } else if (formState.description.value.length < 20) {
+      dispatch({ type: DESCRIPTION, payload: { isErrorVisible: true } });
+    } else if (formState.url.value.length < 10) {
+      dispatch({ type: URL, payload: { isErrorVisible: true } });
     } else if (!selectedOption) {
       setIsHighlighted(true);
     } else {
@@ -237,88 +188,65 @@ const CreatePost: React.FC<CreatePostProps> = ({
         setFeedFlashMessageConfiguration(defaultFlashMessageConfig);
       }
     }
-  }, [
-    title.length,
-    description.length,
-    url.length,
-    selectedOption,
-    setIsTitleErrorMessageVisible,
-    setIsDescriptionErrorMessageVisible,
-    setIsUrlErrorMessageVisible,
-    editPost,
-    postToEdit,
-    editPostFunction,
-    createPostFunction,
-    setIsFeedFlashMessage,
-    setFeedFlashMessageConfiguration,
-  ]);
+  };
 
   return (
     <ModalBuilder
-      onOverlayClick={() => {
-        setClosingConfirmationVisibility(true);
-      }}
+      onOverlayClick={() => setClosingConfirmationVisibility(true)}
       onFormSubmit={onFormSubmit}
     >
       <>
         <h2>Source info</h2>
-        <Input
-          type="text"
-          placeholder="Title"
-          value={title}
-          errorPosition="RIGHT"
-          isValid={isTitleValid}
-          setIsValid={setIsTitleValid}
-          errorMessage={titleErrorMessage}
-          isErrorMessageVisible={isTitleErrorMessageVisible}
-          setIsErrorMessageVisible={setIsTitleErrorMessageVisible}
-          onChange={(event) => {
-            setTitle((event.target as HTMLInputElement).value);
-          }}
-          onBlur={() => {
-            if (title.length < 5) {
-              setTitleErrorMessage("Title has to be at least 5 symbols.");
-              setIsTitleValid(false);
-            }
-          }}
-        />
+        <Input errorPosition="RIGHT" placeholder="Title" type="text" />
         <TextArea
-          errorMessage={descriptionErrorMessage}
-          isErrorMessageVisible={isDescriptionErrorMessageVisible}
-          isValid={isDescriptionValid}
+          errorMessage={formState.description.errorText}
+          isErrorMessageVisible={formState.description.isErrorVisible}
+          isValid={formState.description.isValid}
           label="Description"
           setIsErrorMessageVisible={setIsDescriptionErrorMessageVisible}
           setIsValid={setIsDescriptionValid}
-          value={description}
+          value={formState.description.value}
           onChange={(event) => {
-            setDescription((event.target as HTMLInputElement).value);
+            dispatch({
+              type: DESCRIPTION,
+              payload: { value: (event.target as HTMLInputElement).value },
+            });
           }}
           onBlur={() => {
-            if (description.length < 20) {
-              setDescriptionErrorMessage(
-                "Description has to be at least 20 symbols. Please, describe the course with more details."
-              );
-              setIsDescriptionValid(false);
+            if (formState.description.value.length < 20) {
+              dispatch({
+                type: DESCRIPTION,
+                payload: {
+                  errorText:
+                    "Description has to be at least 20 symbols. Please, describe the course with more details.",
+                  isValid: false,
+                },
+              });
             }
           }}
         />
         <Input
           type="url"
           placeholder="Source URL"
-          value={url}
+          value={formState.url.value}
           errorPosition="RIGHT"
-          isValid={isUrlValid}
+          isValid={formState.url.isValid}
           setIsValid={setIsUrlValid}
-          errorMessage={urlErrorMessage}
-          isErrorMessageVisible={isUrlErrorMessageVisible}
+          errorMessage={formState.url.errorText}
+          isErrorMessageVisible={formState.url.isErrorVisible}
           setIsErrorMessageVisible={setIsUrlErrorMessageVisible}
           onChange={(event) => {
-            setUrl((event.target as HTMLInputElement).value);
+            dispatch({
+              type: URL,
+              payload: { value: (event.target as HTMLInputElement).value },
+            });
           }}
           onBlur={() => {
-            if (url.length < 10) {
-              setUrlErrorMessage("Invalid Url.");
-              setIsUrlValid(false);
+            if (formState.url.value.length < 10) {
+              dispatch({
+                type: URL,
+                payload: { errorText: "Invalid URL.", isValid: false },
+              });
             }
           }}
         />

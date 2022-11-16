@@ -7,9 +7,11 @@ import { SwitchThemeContext } from "../../contexts/SwitchThemeContext";
 import Avatar from "../Avatar/Avatar";
 import CommentVotes from "../CommentVotes/CommentVotes";
 
-const Comment: React.FC<{
+interface CommentProps {
   comment: CommentType;
-}> = ({ comment }) => {
+}
+
+const Comment: React.FC<CommentProps> = ({ comment }) => {
   const [commentState, setCommentState] = React.useState(comment);
 
   const { isDarkMode } = React.useContext(SwitchThemeContext);
