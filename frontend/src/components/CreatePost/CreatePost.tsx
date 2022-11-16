@@ -12,7 +12,7 @@ import { PostIdContext } from "../../contexts/PostIdContext";
 import { FlashMessageContext } from "../../contexts/FlashMessageFeedContext";
 import { createPost, updatePost } from "../../api/posts";
 import SourceOptions from "../SourceOptions/SourceOptions";
-import { defaultFlashMessageConfig } from "../../constants/feed";
+import { defaultFlashMessageConfig, RIGHT } from "../../constants/feed";
 import {
   reducer as formReducer,
   initialState as formInitialState,
@@ -20,6 +20,8 @@ import {
   DESCRIPTION,
   URL,
   SET_VALUES,
+  ActionType,
+  ActionPayload,
 } from "../../reducers/createPostReducer";
 
 interface CreatePostProps {
@@ -96,6 +98,12 @@ const CreatePost: React.FC<CreatePostProps> = ({
   );
 
   const { formState, dispatch } = useValidate();
+
+  const customDispatch = (type: ActionType) => {
+    return (payload: ActionPayload) => {
+      dispatch({ type: type, payload: payload });
+    };
+  };
 
   React.useEffect(() => {
     if (postToEdit) {
@@ -197,14 +205,32 @@ const CreatePost: React.FC<CreatePostProps> = ({
     >
       <>
         <h2>Source info</h2>
-        <Input errorPosition="RIGHT" placeholder="Title" type="text" />
+        <Input
+          errorPosition={RIGHT}
+          placeholder="Title"
+          type="text"
+          configuration={formState.title}
+          changeConfiguration={customDispatch(TITLE)}
+          onBlur={() => {
+            if (formState.title.value.length < 20) {
+              dispatch({
+                type: TITLE,
+                payload: {
+                  errorText:
+                    "Description has to be at least 20 symbols. Please, describe the course with more details.",
+                  isValid: false,
+                },
+              });
+            }
+          }}
+        />
         <TextArea
           errorMessage={formState.description.errorText}
           isErrorMessageVisible={formState.description.isErrorVisible}
           isValid={formState.description.isValid}
           label="Description"
-          setIsErrorMessageVisible={setIsDescriptionErrorMessageVisible}
-          setIsValid={setIsDescriptionValid}
+          // setIsErrorMessageVisible={setIsDescriptionErrorMessageVisible}
+          // setIsValid={setIsDescriptionValid}
           value={formState.description.value}
           onChange={(event) => {
             dispatch({
@@ -228,19 +254,7 @@ const CreatePost: React.FC<CreatePostProps> = ({
         <Input
           type="url"
           placeholder="Source URL"
-          value={formState.url.value}
           errorPosition="RIGHT"
-          isValid={formState.url.isValid}
-          setIsValid={setIsUrlValid}
-          errorMessage={formState.url.errorText}
-          isErrorMessageVisible={formState.url.isErrorVisible}
-          setIsErrorMessageVisible={setIsUrlErrorMessageVisible}
-          onChange={(event) => {
-            dispatch({
-              type: URL,
-              payload: { value: (event.target as HTMLInputElement).value },
-            });
-          }}
           onBlur={() => {
             if (formState.url.value.length < 10) {
               dispatch({
@@ -249,6 +263,8 @@ const CreatePost: React.FC<CreatePostProps> = ({
               });
             }
           }}
+          configuration={formState.url}
+          changeConfiguration={customDispatch(URL)}
         />
         <SourceOptions
           isHighlighted={isHighlighted}

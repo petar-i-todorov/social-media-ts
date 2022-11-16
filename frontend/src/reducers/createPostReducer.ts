@@ -24,15 +24,19 @@ export const initialState = {
   },
 };
 
+export type ActionType = "TITLE" | "DESCRIPTION" | "URL";
+
+export type ActionPayload = {
+  errorText?: string;
+  isErrorVisible?: boolean;
+  isValid?: boolean;
+  value?: string;
+};
+
 type ReducerAction =
   | {
       type: "TITLE" | "DESCRIPTION" | "URL";
-      payload: {
-        errorText?: string;
-        isErrorVisible?: boolean;
-        isValid?: boolean;
-        value?: string;
-      };
+      payload: {};
     }
   | {
       type: "SET_VALUES";

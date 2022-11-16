@@ -1,10 +1,6 @@
-import React, {
-  ChangeEventHandler,
-  Dispatch,
+import {
   FC,
-  FocusEventHandler,
   HTMLInputTypeAttribute,
-  SetStateAction,
   useContext,
   useEffect,
   useId,
@@ -16,37 +12,31 @@ import InputError from "../InputError/InputError";
 import { SwitchThemeContext } from "../../contexts/SwitchThemeContext";
 import { ErrorPosition } from "../../types/feed";
 import { LEFT } from "../../constants/feed";
+import { ActionPayload } from "../../reducers/createPostReducer";
 
 interface InputProps {
-  errorMessage: string;
   errorPosition: ErrorPosition;
-  isErrorMessageVisible: boolean;
-  isValid: boolean;
-  onBlur: FocusEventHandler;
-  onChange: ChangeEventHandler;
   placeholder: string;
-  setErrorMessage?: Dispatch<SetStateAction<string>>;
-  setIsErrorMessageVisible: Dispatch<SetStateAction<boolean>>;
-  setIsValid: Dispatch<SetStateAction<boolean>>;
   split?: boolean;
   type: HTMLInputTypeAttribute;
-  value: string;
+  onBlur: React.FocusEventHandler;
+  configuration: {
+    errorText: string;
+    isErrorVisible: boolean;
+    isValid: boolean;
+    value: string;
+  };
+  changeConfiguration: (payload: ActionPayload) => void;
 }
 
 const Input: FC<InputProps> = ({
-  errorMessage,
   errorPosition,
-  isErrorMessageVisible,
-  isValid, //responsible for css
-  onBlur,
-  onChange,
   placeholder,
-  setErrorMessage,
-  setIsErrorMessageVisible,
-  setIsValid,
   split,
   type,
-  value,
+  configuration,
+  changeConfiguration,
+  onBlur,
 }) => {
   const [isFocused, setIsFocused] = useState(false);
   const [isActive, setIsActive] = useState(false); //responsible for placeholder animation
@@ -55,18 +45,18 @@ const Input: FC<InputProps> = ({
   const id = useId();
 
   useEffect(() => {
-    if (isFocused && setIsValid) {
-      setIsValid(true);
+    if (isFocused) {
+      changeConfiguration({ isValid: true });
     }
-  }, [isFocused, setIsValid]);
+  }, [isFocused]);
 
   useEffect(() => {
-    if (isFocused || value !== "") {
+    if (isFocused || configuration.value !== "") {
       setIsActive(true);
     } else {
       setIsActive(false);
     }
-  }, [isFocused, value]);
+  }, [isFocused, configuration.value]);
   return (
     <div className={`${styles.mainContainer} ${isDarkMode && styles.darkMode}`}>
       <label htmlFor={id} className={(isActive && styles.active) || undefined}>
@@ -75,13 +65,13 @@ const Input: FC<InputProps> = ({
       <div
         className={`${styles.inputContainer} ${isDarkMode && styles.darkMode}`}
       >
-        {!isValid && (
+        {!configuration.isValid && (
           <span
             onClick={() => {
-              if (isErrorMessageVisible) {
-                setIsErrorMessageVisible(false);
+              if (configuration.isErrorVisible) {
+                changeConfiguration({ isErrorVisible: false });
               } else {
-                setIsErrorMessageVisible(true);
+                changeConfiguration({ isErrorVisible: true });
               }
             }}
             className={
@@ -95,22 +85,22 @@ const Input: FC<InputProps> = ({
         )}
         <input
           id={id}
-          value={value}
+          value={configuration.value}
           onChange={(event) => {
-            onChange(event);
+            changeConfiguration({
+              value: (event.target as HTMLInputElement).value,
+            });
             if (isFocused) {
-              if (setIsValid) {
-                setIsValid(true);
-              }
-              if (setErrorMessage) {
-                setErrorMessage("");
-              }
+              changeConfiguration({
+                isValid: true,
+                errorText: "",
+              });
             }
           }}
           type={type}
-          className={`${styles.input} ${!isValid && styles.invalid} ${
-            isFocused && styles.focused
-          } ${isDarkMode && styles.darkMode}`}
+          className={`${styles.input} ${
+            !configuration.isValid && styles.invalid
+          } ${isFocused && styles.focused} ${isDarkMode && styles.darkMode}`}
           onBlur={(event) => {
             if (onBlur) {
               onBlur(event);
@@ -119,19 +109,12 @@ const Input: FC<InputProps> = ({
           }}
           onFocus={() => {
             setIsFocused(true);
-            if (setErrorMessage) {
-              if (setIsValid) {
-                setIsValid(true);
-              }
-            }
-            if (setIsErrorMessageVisible) {
-              setIsErrorMessageVisible(false);
-            }
+            changeConfiguration({ isValid: true, isErrorVisible: false });
           }}
         />
-        {isErrorMessageVisible && (
+        {configuration.isErrorVisible && (
           <InputError
-            error={errorMessage || ""}
+            error={configuration.errorText || ""}
             position={errorPosition || LEFT}
           ></InputError>
         )}
