@@ -69,9 +69,7 @@ const LoginPage = () => {
               isErrorMessageVisible={isEmailErrorMessageVisible}
               setIsErrorMessageVisible={setIsEmailErrorVisible}
               errorMessage={emailErrorMessage}
-              onChange={(e) => {
-                setEmail((e.target as HTMLInputElement).value);
-              }}
+              onChange={(e) => setEmail((e.target as HTMLInputElement).value)}
               type="email"
               placeholder="Email"
               isValid={isEmailValid}

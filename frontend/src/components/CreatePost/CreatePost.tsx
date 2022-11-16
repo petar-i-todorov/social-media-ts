@@ -211,60 +211,31 @@ const CreatePost: React.FC<CreatePostProps> = ({
           type="text"
           configuration={formState.title}
           changeConfiguration={customDispatch(TITLE)}
-          onBlur={() => {
-            if (formState.title.value.length < 20) {
-              dispatch({
-                type: TITLE,
-                payload: {
-                  errorText:
-                    "Description has to be at least 20 symbols. Please, describe the course with more details.",
-                  isValid: false,
-                },
-              });
-            }
+          error={{
+            condition: formState.title.value.length < 5,
+            response: "Title has to be at least 5 symbols.",
           }}
         />
         <TextArea
-          errorMessage={formState.description.errorText}
-          isErrorMessageVisible={formState.description.isErrorVisible}
-          isValid={formState.description.isValid}
           label="Description"
-          // setIsErrorMessageVisible={setIsDescriptionErrorMessageVisible}
-          // setIsValid={setIsDescriptionValid}
-          value={formState.description.value}
-          onChange={(event) => {
-            dispatch({
-              type: DESCRIPTION,
-              payload: { value: (event.target as HTMLInputElement).value },
-            });
-          }}
-          onBlur={() => {
-            if (formState.description.value.length < 20) {
-              dispatch({
-                type: DESCRIPTION,
-                payload: {
-                  errorText:
-                    "Description has to be at least 20 symbols. Please, describe the course with more details.",
-                  isValid: false,
-                },
-              });
-            }
+          configuration={formState.description}
+          changeConfiguration={customDispatch(DESCRIPTION)}
+          error={{
+            condition: formState.description.value.length < 20,
+            response:
+              "Description has to be at least 20 symbols. Please, describe the course with more details.",
           }}
         />
         <Input
           type="url"
           placeholder="Source URL"
           errorPosition="RIGHT"
-          onBlur={() => {
-            if (formState.url.value.length < 10) {
-              dispatch({
-                type: URL,
-                payload: { errorText: "Invalid URL.", isValid: false },
-              });
-            }
-          }}
           configuration={formState.url}
           changeConfiguration={customDispatch(URL)}
+          error={{
+            condition: formState.url.value.length < 10,
+            response: "Invalid URL.",
+          }}
         />
         <SourceOptions
           isHighlighted={isHighlighted}

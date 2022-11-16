@@ -1,56 +1,43 @@
-import {
-  ChangeEventHandler,
-  FC,
-  MouseEventHandler,
-  useContext,
-  useEffect,
-  useId,
-  useState,
-} from "react";
+import React from "react";
 import { RiErrorWarningLine } from "react-icons/ri";
 import styles from "./TextArea.module.scss";
 import InputError from "../InputError/InputError";
 import { SwitchThemeContext } from "../../contexts/SwitchThemeContext";
 import { RIGHT } from "../../constants/feed";
+import { ActionPayload } from "../../reducers/createPostReducer";
 
 interface TextAreaProps {
   className?: string;
-  errorMessage?: string;
-  isErrorMessageVisible?: boolean;
-  isValid: boolean;
   label: string;
-  onBlur?: () => void;
-  onChange?: ChangeEventHandler;
-  onClick?: MouseEventHandler;
-  setErrorMessage?: (arg: string) => void;
-  setIsErrorMessageVisible?: (arg: boolean) => void;
-  setIsValid?: (arg: boolean) => void;
-  value?: string;
+  configuration: {
+    errorText: string;
+    isErrorVisible: boolean;
+    isValid: boolean;
+    value: string;
+  };
+  changeConfiguration: (payload: ActionPayload) => void;
+  error: {
+    condition: boolean;
+    response: string;
+  };
 }
 
-const TextArea: FC<TextAreaProps> = ({
+const TextArea: React.FC<TextAreaProps> = ({
+  changeConfiguration,
   className,
-  errorMessage,
-  isErrorMessageVisible,
-  isValid, //css invalid input responsible
+  configuration,
+  error,
   label,
-  onBlur,
-  onChange,
-  onClick,
-  setErrorMessage,
-  setIsErrorMessageVisible,
-  setIsValid,
-  value,
 }) => {
-  const [isFocused, setIsFocused] = useState(false);
+  const [isFocused, setIsFocused] = React.useState(false);
 
-  const { isDarkMode } = useContext(SwitchThemeContext);
+  const { isDarkMode } = React.useContext(SwitchThemeContext);
 
-  const id = useId();
+  const id = React.useId();
 
-  useEffect(() => {
-    if (isFocused && setIsValid) {
-      setIsValid(true);
+  React.useEffect(() => {
+    if (isFocused) {
+      changeConfiguration({ isValid: true });
     }
   }, [isFocused]);
 
@@ -58,64 +45,61 @@ const TextArea: FC<TextAreaProps> = ({
     <div className={styles.textAreaContainer}>
       <label htmlFor={id}>{label}</label>
       <div
-        className={`${styles.pseudoTextarea} ${!isValid && styles.invalid} ${
-          isFocused && styles.focused
-        } ${isDarkMode && styles.darkMode}`}
+        className={`${styles.pseudoTextarea} ${
+          !configuration.isValid && styles.invalid
+        } ${isFocused && styles.focused} ${isDarkMode && styles.darkMode}`}
       >
         <textarea
-          onClick={onClick}
-          value={value}
+          // onClick={onClick}
+          value={configuration.value}
           id={id}
           onChange={(event) => {
-            if (onChange) {
-              onChange(event);
-            }
+            changeConfiguration({
+              value: (event.target as HTMLTextAreaElement).value,
+            });
             if (isFocused) {
-              if (setIsValid) {
-                setIsValid(true);
-              }
-              if (setErrorMessage) {
-                setErrorMessage("");
-              }
+              changeConfiguration({
+                isValid: true,
+                errorText: "",
+              });
             }
           }}
           className={`${styles.textarea} ${className} ${
             isDarkMode && styles.darkMode
           }`}
           onBlur={() => {
-            if (onBlur) {
-              onBlur();
+            if (error.condition) {
+              changeConfiguration({
+                isValid: false,
+                errorText: error.response,
+              });
             }
             setIsFocused(false);
           }}
           onFocus={() => {
             setIsFocused(true);
-            if (setErrorMessage && setIsValid) {
-              setIsValid(true);
-            }
-            if (setIsErrorMessageVisible) {
-              setIsErrorMessageVisible(false);
-            }
+            changeConfiguration({
+              isValid: true,
+              isErrorVisible: false,
+            });
           }}
         />
-        {isErrorMessageVisible && (
+        {configuration.isErrorVisible && (
           <InputError
-            error={errorMessage || ""}
+            error={configuration.errorText || ""}
             position={RIGHT}
             className={styles.textareaError}
           ></InputError>
         )}
-        {!isValid && (
+        {!configuration.isValid && (
           <RiErrorWarningLine
             color="red"
             size="23"
-            onClick={() => {
-              if (isErrorMessageVisible && setIsErrorMessageVisible) {
-                setIsErrorMessageVisible(false);
-              } else if (setIsErrorMessageVisible) {
-                setIsErrorMessageVisible(true);
-              }
-            }}
+            onClick={() =>
+              changeConfiguration({
+                isErrorVisible: !configuration.isErrorVisible,
+              })
+            }
           />
         )}
       </div>

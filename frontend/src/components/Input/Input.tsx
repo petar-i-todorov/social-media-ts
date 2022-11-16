@@ -1,65 +1,61 @@
-import {
-  FC,
-  HTMLInputTypeAttribute,
-  useContext,
-  useEffect,
-  useId,
-  useState,
-} from "react";
 import { RiErrorWarningLine } from "react-icons/ri";
 import styles from "./Input.module.scss";
 import InputError from "../InputError/InputError";
 import { SwitchThemeContext } from "../../contexts/SwitchThemeContext";
 import { ErrorPosition } from "../../types/feed";
 import { LEFT } from "../../constants/feed";
-import { ActionPayload } from "../../reducers/createPostReducer";
+import {
+  ActionPayload,
+  InputConfiguration,
+} from "../../reducers/createPostReducer";
+import React from "react";
 
 interface InputProps {
   errorPosition: ErrorPosition;
   placeholder: string;
   split?: boolean;
-  type: HTMLInputTypeAttribute;
-  onBlur: React.FocusEventHandler;
-  configuration: {
-    errorText: string;
-    isErrorVisible: boolean;
-    isValid: boolean;
-    value: string;
-  };
+  type: React.HTMLInputTypeAttribute;
+  configuration: InputConfiguration;
   changeConfiguration: (payload: ActionPayload) => void;
+  error: {
+    condition: boolean;
+    response: string;
+  };
 }
 
-const Input: FC<InputProps> = ({
+const Input: React.FC<InputProps> = ({
   errorPosition,
   placeholder,
   split,
   type,
   configuration,
   changeConfiguration,
-  onBlur,
+  error,
 }) => {
-  const [isFocused, setIsFocused] = useState(false);
-  const [isActive, setIsActive] = useState(false); //responsible for placeholder animation
-  const { isDarkMode } = useContext(SwitchThemeContext);
+  const { isDarkMode } = React.useContext(SwitchThemeContext);
 
-  const id = useId();
+  const id = React.useId();
 
-  useEffect(() => {
-    if (isFocused) {
+  React.useEffect(() => {
+    if (configuration.isFocused) {
       changeConfiguration({ isValid: true });
     }
-  }, [isFocused]);
+  }, [configuration.isFocused]);
 
-  useEffect(() => {
-    if (isFocused || configuration.value !== "") {
-      setIsActive(true);
+  React.useEffect(() => {
+    if (configuration.isFocused || configuration.value !== "") {
+      changeConfiguration({ isActive: true });
     } else {
-      setIsActive(false);
+      changeConfiguration({ isActive: false });
     }
-  }, [isFocused, configuration.value]);
+  }, [configuration.isFocused, configuration.value]);
+
   return (
     <div className={`${styles.mainContainer} ${isDarkMode && styles.darkMode}`}>
-      <label htmlFor={id} className={(isActive && styles.active) || undefined}>
+      <label
+        htmlFor={id}
+        className={(configuration.isActive && styles.active) || undefined}
+      >
         {placeholder}
       </label>
       <div
@@ -67,13 +63,11 @@ const Input: FC<InputProps> = ({
       >
         {!configuration.isValid && (
           <span
-            onClick={() => {
-              if (configuration.isErrorVisible) {
-                changeConfiguration({ isErrorVisible: false });
-              } else {
-                changeConfiguration({ isErrorVisible: true });
-              }
-            }}
+            onClick={() =>
+              changeConfiguration({
+                isErrorVisible: !configuration.isErrorVisible,
+              })
+            }
             className={
               split
                 ? styles.warningIconSplitInput
@@ -87,29 +81,42 @@ const Input: FC<InputProps> = ({
           id={id}
           value={configuration.value}
           onChange={(event) => {
-            changeConfiguration({
-              value: (event.target as HTMLInputElement).value,
-            });
-            if (isFocused) {
+            if (configuration.isFocused) {
               changeConfiguration({
                 isValid: true,
                 errorText: "",
+                value: (event.target as HTMLInputElement).value,
+              });
+            } else {
+              changeConfiguration({
+                value: (event.target as HTMLInputElement).value,
               });
             }
           }}
           type={type}
           className={`${styles.input} ${
             !configuration.isValid && styles.invalid
-          } ${isFocused && styles.focused} ${isDarkMode && styles.darkMode}`}
-          onBlur={(event) => {
-            if (onBlur) {
-              onBlur(event);
+          } ${configuration.isFocused && styles.focused} ${
+            isDarkMode && styles.darkMode
+          }`}
+          onBlur={() => {
+            if (error.condition) {
+              changeConfiguration({
+                errorText: error.response,
+                isValid: false,
+                isActive: false,
+                isFocused: false,
+              });
+            } else {
+              changeConfiguration({ isActive: false, isFocused: false });
             }
-            setIsFocused(false);
           }}
           onFocus={() => {
-            setIsFocused(true);
-            changeConfiguration({ isValid: true, isErrorVisible: false });
+            changeConfiguration({
+              isValid: true,
+              isErrorVisible: false,
+              isFocused: true,
+            });
           }}
         />
         {configuration.isErrorVisible && (

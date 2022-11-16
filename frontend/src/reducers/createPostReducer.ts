@@ -6,19 +6,25 @@ export const SET_VALUES = "SET_VALUES";
 export const initialState = {
   title: {
     errorText: "",
+    isActive: false,
     isErrorVisible: false,
+    isFocused: false,
     isValid: true,
     value: "",
   },
   description: {
     errorText: "",
+    isActive: false,
     isErrorVisible: false,
+    isFocused: false,
     isValid: true,
     value: "",
   },
   url: {
     errorText: "",
+    isActive: false,
     isErrorVisible: false,
+    isFocused: false,
     isValid: true,
     value: "",
   },
@@ -28,15 +34,17 @@ export type ActionType = "TITLE" | "DESCRIPTION" | "URL";
 
 export type ActionPayload = {
   errorText?: string;
+  isActive?: boolean; //placeholder animation
   isErrorVisible?: boolean;
-  isValid?: boolean;
+  isFocused?: boolean; //blue border around
+  isValid?: boolean; //warning icon
   value?: string;
 };
 
 type ReducerAction =
   | {
       type: "TITLE" | "DESCRIPTION" | "URL";
-      payload: {};
+      payload: ActionPayload;
     }
   | {
       type: "SET_VALUES";
@@ -73,3 +81,12 @@ export const reducer = (state: typeof initialState, action: ReducerAction) => {
       return state;
   }
 };
+
+export interface InputConfiguration {
+  errorText: string;
+  isActive: boolean;
+  isErrorVisible: boolean;
+  isFocused: boolean;
+  isValid: boolean;
+  value: string;
+}
