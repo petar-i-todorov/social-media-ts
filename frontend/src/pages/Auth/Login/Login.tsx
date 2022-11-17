@@ -1,4 +1,4 @@
-import { FormEvent, useState } from "react";
+import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import styles from "./Login.module.scss";
 import { isEmail, isPassword } from "../../../utils/validation";
@@ -10,24 +10,17 @@ import Form from "../../../components/Form/Form";
 import AuthPage from "../AuthPageContainer/AuthPage";
 import { RIGHT } from "../../../constants/feed";
 import { login } from "../../../api/auth";
+import { initialState, reducer } from "../../../reducers/loginReducer";
 
 const LoginPage = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
-  const [isEmailValid, setIsEmailValid] = useState(true);
-  const [isPasswordValid, setIsPasswordValid] = useState(true);
-  const [emailErrorMessage, setEmailErrorMessage] = useState("");
-  const [passwordErrorMessage, setPasswordErrorMessage] = useState("");
-  const [isEmailErrorMessageVisible, setIsEmailErrorVisible] = useState(false);
-  const [isPasswordErrorMessageVisible, setIsPasswordErrorVisible] =
-    useState(false);
-  const [isServerError, setIsServerError] = useState(false);
-  const [responseMessage, setResponseMessage] = useState("");
+  const [isLoading, setIsLoading] = React.useState(false);
+  const [isServerError, setIsServerError] = React.useState(false);
+  const [responseMessage, setResponseMessage] = React.useState("");
+  const [formState, dispatch] = React.useReducer(reducer, initialState);
 
   const navigate = useNavigate();
 
-  const onLoginSubmit = async (event: FormEvent) => {
+  const onLoginSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     setIsServerError(false);
     if (!isEmail(email)) {
@@ -64,24 +57,7 @@ const LoginPage = () => {
         <Form onSubmit={onLoginSubmit}>
           <>
             <h2>Log in</h2>
-            <Input
-              errorPosition={RIGHT}
-              isErrorMessageVisible={isEmailErrorMessageVisible}
-              setIsErrorMessageVisible={setIsEmailErrorVisible}
-              errorMessage={emailErrorMessage}
-              onChange={(e) => setEmail((e.target as HTMLInputElement).value)}
-              type="email"
-              placeholder="Email"
-              isValid={isEmailValid}
-              setIsValid={setIsEmailValid}
-              value={email}
-              onBlur={() => {
-                if (!isEmail(email)) {
-                  setEmailErrorMessage("Invalid email address.");
-                  setIsEmailValid(false);
-                }
-              }}
-            />
+            <Input errorPosition={RIGHT} type="email" placeholder="Email" />
             <Input
               errorPosition={RIGHT}
               isErrorMessageVisible={isPasswordErrorMessageVisible}
