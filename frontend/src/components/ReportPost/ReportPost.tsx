@@ -18,9 +18,13 @@ import { defaultFlashMessageConfig, reportOptions } from "../../constants/feed";
 import { reportPost } from "../../api/posts";
 import ReportPostOption from "../ReportPostOption/ReportPostOption";
 
-const ReportPost: FC<{
+interface ReportPostProps {
   setClosingConfirmationVisibility: Dispatch<SetStateAction<boolean>>;
-}> = ({ setClosingConfirmationVisibility }) => {
+}
+
+const ReportPost: FC<ReportPostProps> = ({
+  setClosingConfirmationVisibility,
+}) => {
   const [isError, setIsError] = useState(false);
   const [reportMessage, setReportMessage] = useState("");
   const [chosenOptions, setChosenOptions] = useState<string[]>([]);

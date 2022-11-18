@@ -10,30 +10,54 @@ import Form from "../../../components/Form/Form";
 import AuthPage from "../AuthPageContainer/AuthPage";
 import { RIGHT } from "../../../constants/feed";
 import { login } from "../../../api/auth";
-import { initialState, reducer } from "../../../reducers/loginReducer";
+import {
+  EMAIL,
+  initialState,
+  PASSWORD,
+  reducer,
+} from "../../../reducers/loginReducer";
+import { ActionPayload } from "../../../reducers/createPostReducer";
 
 const LoginPage = () => {
   const [isLoading, setIsLoading] = React.useState(false);
   const [isServerError, setIsServerError] = React.useState(false);
   const [responseMessage, setResponseMessage] = React.useState("");
-  const [formState, dispatch] = React.useReducer(reducer, initialState);
+  const [inputsState, dispatch] = React.useReducer(reducer, initialState);
 
   const navigate = useNavigate();
 
-  const onLoginSubmit = async (event: React.FormEvent) => {
-    event.preventDefault();
+  const customDispatch = (actionType: "EMAIL" | "PASSWORD") => {
+    return (actionPayload: ActionPayload) => {
+      dispatch({ type: actionType, payload: actionPayload });
+    };
+  };
+
+  const onLoginSubmit = async () => {
     setIsServerError(false);
-    if (!isEmail(email)) {
-      setEmailErrorMessage("Invalid email address.");
-      setIsEmailErrorVisible(true);
-      setIsEmailValid(false);
-    } else if (!isPassword(password)) {
-      setPasswordErrorMessage("Invalid password. Must be at least 10 symbols.");
-      setIsPasswordErrorVisible(true);
-      setIsPasswordValid(false);
+    if (!isEmail(inputsState.email.value)) {
+      dispatch({
+        type: EMAIL,
+        payload: {
+          isErrorVisible: true,
+          errorText: "Invalid email address.",
+          isValid: false,
+        },
+      });
+    } else if (!isPassword(inputsState.password.value)) {
+      dispatch({
+        type: PASSWORD,
+        payload: {
+          isErrorVisible: true,
+          errorText: "Invalid password. Must be at least 10 symbols.",
+          isValid: false,
+        },
+      });
     } else {
       setIsLoading(true);
-      const response = await login({ email, password });
+      const response = await login({
+        email: inputsState.email.value,
+        password: inputsState.password.value,
+      });
       const resData = await response.json();
       setIsLoading(false);
       if (response.status === 200 || response.status === 201) {
@@ -55,41 +79,39 @@ const LoginPage = () => {
     <AuthPage>
       <>
         <Form onSubmit={onLoginSubmit}>
-          <>
-            <h2>Log in</h2>
-            <Input errorPosition={RIGHT} type="email" placeholder="Email" />
-            <Input
-              errorPosition={RIGHT}
-              isErrorMessageVisible={isPasswordErrorMessageVisible}
-              setIsErrorMessageVisible={setIsPasswordErrorVisible}
-              errorMessage={passwordErrorMessage}
-              onChange={(e) => {
-                setPassword((e.target as HTMLInputElement).value);
-              }}
-              type="password"
-              placeholder="Password"
-              isValid={isPasswordValid}
-              setIsValid={setIsPasswordValid}
-              value={password}
-              onBlur={() => {
-                if (!isPassword(password)) {
-                  setPasswordErrorMessage(
-                    "Invalid password. Must be at least 10 symbols."
-                  );
-                  setIsPasswordValid(false);
-                }
-              }}
-            />
-            <Link to="../reset-password" relative="path">
-              Forgot password?
-            </Link>
-            {isServerError && (
-              <FormMessage color="red">{responseMessage}</FormMessage>
-            )}
-            <Button color="blue" type="submit">
-              {isLoading ? <BouncingDotsLoader text="Loging in" /> : "Log in"}
-            </Button>
-          </>
+          <h2>Log in</h2>
+          <Input
+            errorPosition={RIGHT}
+            type="email"
+            placeholder="Email"
+            configuration={inputsState.email}
+            changeConfiguration={customDispatch(EMAIL)}
+            error={{
+              condition: !isEmail(inputsState.email.value),
+              response: "Invalid email address.",
+            }}
+          />
+          <Input
+            errorPosition={RIGHT}
+            type="password"
+            placeholder="Password"
+            configuration={inputsState.password}
+            changeConfiguration={customDispatch(PASSWORD)}
+            error={{
+              condition: !isPassword(inputsState.password.value),
+              response: "Invalid password. Must be at least 10 symbols.",
+            }}
+          />
+          <Link to="../reset-password" relative="path">
+            Forgot password?
+          </Link>
+          {isServerError && (
+            <FormMessage color="red">{responseMessage}</FormMessage>
+          )}
+          <button type="submit">Submit</button>
+          <Button color="blue" type="submit">
+            {isLoading ? <BouncingDotsLoader text="Loging in" /> : "Log in"}
+          </Button>
         </Form>
         <Form>
           <>

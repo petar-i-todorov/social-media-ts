@@ -20,10 +20,13 @@ const Form: FC<PropsWithChildren<FormProps>> = ({
     >
       <form
         noValidate
-        onSubmit={onSubmit}
+        onSubmit={(e) => {
+          e.preventDefault();
+          onSubmit && onSubmit(e);
+        }}
         className={`${styles.form} ${isDarkMode && styles.darkMode}`}
-        onClick={(event) => {
-          event.stopPropagation();
+        onClick={(e) => {
+          e.stopPropagation();
         }}
       >
         {children}
